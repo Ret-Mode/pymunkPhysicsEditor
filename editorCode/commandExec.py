@@ -1143,7 +1143,7 @@ class ComSetContainerPosXY(CommandUndo):
 
     def __init__(self, obj: Container, x:float, y:float):
         self.object = obj
-        cog = obj.cog.get()
+        cog = obj.physics.cog.get()
         self.newAnchor = V2().unTV(cog).tD(x, y)
         self.oldAnchor = self.object.transform.objectAnchor.clone()
 
@@ -1373,8 +1373,8 @@ class CommandExec:
     def clearAll() -> None:
         instance = CommandExec.getInstance()
         instance.processed.clear()
-        instance.getInstance().reverse.clear()
-        instance.getInstance().toProcess.clear()
+        instance.reverse.clear()
+        instance.toProcess.clear()
 
     @staticmethod
     def process() -> None:
