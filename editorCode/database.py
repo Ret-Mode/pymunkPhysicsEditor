@@ -30,6 +30,7 @@ class Database:
 
     _instance: "Database" = None
 
+    @staticmethod
     def getInstance() -> "Database":
         if Database._instance is None:
             Database._instance = Database()
@@ -320,3 +321,14 @@ class Database:
         if constraint:
             self.constraints.remove(constraint)
         return constraint
+    
+    def getConstraintsOfBody(self, label):
+        body = self.getBodyByLabel(label)
+        result = []
+        if body:
+            for constraint in self.constraints:
+                if body == constraint.bodyA:
+                    result.append((constraint, True))
+                elif body == constraint.bodyB:
+                    result.append((constraint, False))
+        return result

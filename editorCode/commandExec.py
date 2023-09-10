@@ -190,9 +190,14 @@ class ComDelBody(CommandUndo):
         self.object = self.database.getBodyByLabel(label)
         self.objIndex = -1
         self.deletedShapes: List[ShapeI] = []
+        if self.object:
+            self.constraintsOfDeletedBody = self.database.getConstraintsOfBody(label)
+        else:
+            self.constraintsOfDeletedBody = []
 
     def execute(self):           
         if self.object:
+            # TODO remove this body from constraints
             self.objIndex = self.database.getBodyIndex(self.object)
             for shape in self.object.shapes:
                 self.deletedShapes.append(shape)
@@ -207,6 +212,7 @@ class ComDelBody(CommandUndo):
             for shape in self.deletedShapes:
                 self.database.addNewShape(shape, self.object)
             self.database.setCurrentBodyByLabel(self.object.label)
+            # TODO add this body to constraints
 
 
 class ComSetBodyAsCurrent(CommandUndo):
