@@ -413,12 +413,12 @@ class SimpleMotorSpecPanel(arcade.gui.UIBoxLayout):
     def setPhase(self):
         if self.current:
             CommandExec.addCommand(ComSetRate(self.current, 
-                                                 floatFromString(self.rateLine.getVal(), 0.0)))
+                                                 angleFromString(self.rateLine.getVal(), 0.0)))
 
     def refresh(self, constraint:SimpleMotor):
         if self.current != constraint:
             self.current = constraint
-        self.rateLine.setNewVal(floatToString(self.current.rate, '0.0'))
+        self.rateLine.setNewVal(angleToString(self.current.rate.angle, '0.0'))
 
 
 class SlideJointSpecPanel(arcade.gui.UIBoxLayout):

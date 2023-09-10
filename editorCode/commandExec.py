@@ -1049,13 +1049,31 @@ class ComSetRate(CommandUndo):
     def __init__(self, constraint:SimpleMotor, value:float):
         self.entity = constraint
         self.newValue = value
-        self.oldValue = constraint.rate
+        self.oldValue = constraint.rate.angle
 
     def execute(self):
-        self.entity.rate = self.newValue
+        self.entity.rate.set(self.newValue)
 
     def undo(self):
-        self.entity.rate = self.oldValue
+        self.entity.rate.set(self.oldValue)
+
+
+class ComSetRateFromCoords(CommandUndo):
+
+    def __init__(self, constraint:SimpleMotor, coords:V2, isBodyB:bool):
+        self.entity = constraint
+        center = constraint.bodyB.physics.cog.final if isBodyB else constraint.bodyA.physics.cog.final
+        value = math.atan2(coords.y - center.y, coords.x - center.x)
+        if not isBodyB:
+            value = - value
+        self.newValue = value
+        self.oldValue = constraint.rate.angle
+
+    def execute(self):
+        self.entity.rate.set(self.newValue)
+
+    def undo(self):
+        self.entity.rate.set(self.oldValue)
 
 
 class ComSetSlideMin(CommandUndo):

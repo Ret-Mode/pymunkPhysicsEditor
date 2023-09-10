@@ -1,6 +1,6 @@
 from ..editorTypes import EditorPoint, Angle, UnboundAngle, OffsetPoint
 from ..drawing import drawAnchor, drawGroove, drawAngleArm, drawSpring, drawAngleRatioArm, drawCapsule, drawPivot
-from ..drawing import drawRatchetA, drawRatchetB, drawPhaseMinMaxA, drawPhaseMinMaxB
+from ..drawing import drawRatchetA, drawRatchetB, drawPhaseMinMaxA, drawPhaseMinMaxB, drawRateA, drawRateB
 
 from .editorConstraintI import ConstraintI
 
@@ -241,8 +241,20 @@ class SimpleMotor(ConstraintI):
         super().__init__(label)
         self.type = ConstraintI.SIMPLEMOTOR
 
-        self.rate: float = 1.0
+        self.rate: UnboundAngle = UnboundAngle(1.0)
 
+    def drawInternals(self):
+        if self.bodyA and self.bodyB: 
+            drawRateA(self.bodyA.physics.cog.final, self.rate)
+            drawRateB(self.bodyB.physics.cog.final, self.rate)
+
+    def drawInternalA(self):
+        if self.bodyA and self.bodyB:
+            drawRateA(self.bodyA.physics.cog.final, self.rate)
+    
+    def drawInternalB(self):
+        if self.bodyA and self.bodyB:
+            drawRateB(self.bodyB.physics.cog.final, self.rate)
 
 class SlideJoint(ConstraintI):
 
