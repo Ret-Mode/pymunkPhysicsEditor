@@ -9,6 +9,7 @@ from .commandExec import CommandExec
 from .commandExec import ComSetPivot, ComScaleView, ComResizeView, ComMoveCursor, ComMoveView
 from .commandExec import ComSetRestAngleFromXYOffset, ComSetAnchorAFromCoords, ComSetAnchorBFromCoords, ComSetRestLengthFromCoords
 from .commandExec import ComSetPhaseFromCoords, ComSetRatioFromCoords, ComSetGrooveAFromCoords, ComSetGrooveBFromCoords, ComSetAnchorsFromCoords
+from .commandExec import ComSetRatchetFromCoords
 from .drawing import drawCursor, drawHelperPoint, drawBody
 
 from .config import toJSON
@@ -31,6 +32,7 @@ class EditorConstraintView:
     PHASEMIN = "Phase MIN"
     PHASEMAX = "Phase MAX"
     RATIO   = "Ratio"
+    RATCHET   = "Ratchet"
 
     allowedModes = {ConstraintI.DAMPEDROTARYSPRING: [DEFAULT],
                     ConstraintI.DAMPEDSPRING: [DEFAULT, ANCHORA, ANCHORB],
@@ -38,7 +40,7 @@ class EditorConstraintView:
                     ConstraintI.GROOVEJOINT: [DEFAULT, GROOVEA, GROOVEB],
                     ConstraintI.PINJOINT: [DEFAULT, ANCHORB],
                     ConstraintI.PIVOTJOINT: [DEFAULT, ANCHORA, ANCHORB],
-                    ConstraintI.RATCHETJOINT: [DEFAULT],
+                    ConstraintI.RATCHETJOINT: [DEFAULT, RATCHET],
                     ConstraintI.ROTARYLIMITJOINT: [DEFAULT, PHASEMAX],
                     ConstraintI.SIMPLEMOTOR: [DEFAULT],
                     ConstraintI.SLIDEJOINT: [DEFAULT, DISTMAX, ANCHORA, ANCHORB]
@@ -195,13 +197,13 @@ class EditorConstraintView:
 
             elif constraint.type == ConstraintI.GEARJOINT:
                 if view == self.viewBodyAOffset:
-                    bodyB = False
+                    isBodyB = False
                 else:
-                    bodyB = True
+                    isBodyB = True
                 if self.mode == EditorConstraintView.RATIO:
-                    CommandExec.addCommand(ComSetRatioFromCoords(constraint, coords, bodyB))
+                    CommandExec.addCommand(ComSetRatioFromCoords(constraint, coords, isBodyB))
                 else:
-                    CommandExec.addCommand(ComSetPhaseFromCoords(constraint, coords, bodyB))
+                    CommandExec.addCommand(ComSetPhaseFromCoords(constraint, coords, isBodyB))
 
             elif constraint.type == ConstraintI.GROOVEJOINT:
                 if view == self.viewBodyAOffset:
@@ -242,7 +244,14 @@ class EditorConstraintView:
                     CommandExec.addCommand(ComSetAnchorsFromCoords(constraint, coords))
 
             elif constraint.type == ConstraintI.RATCHETJOINT:
-                pass
+                if view == self.viewBodyAOffset:
+                    isBodyB = False
+                else:
+                    isBodyB = True
+                if self.mode == EditorConstraintView.RATCHET:
+                    CommandExec.addCommand(ComSetRatchetFromCoords(constraint, coords, isBodyB))
+                else:
+                    CommandExec.addCommand(ComSetPhaseFromCoords(constraint, coords, isBodyB))
                 # if view == self.viewBodyAOffset:
                 #     CommandExec.addCommand(ComSetAnchorAFromCoords(constraint, coords))
             # elif constraint.type == ConstraintI.SLIDEJOINT:

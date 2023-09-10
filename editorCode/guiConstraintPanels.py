@@ -366,7 +366,7 @@ class RatchetJointSpecPanel(arcade.gui.UIBoxLayout):
         if self.current != constraint:
             self.current = constraint
         self.phaseLine.setNewVal(angleToString(self.current.phase.angle, '0.0'))
-        self.ratchetLine.setNewVal(angleToString(self.current.ratchet, '0.0'))
+        self.ratchetLine.setNewVal(angleToString(self.current.ratchet.angle, '0.0'))
 
 
 class RotaryLimitJointSpecPanel(arcade.gui.UIBoxLayout):

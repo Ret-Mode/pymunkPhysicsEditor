@@ -958,6 +958,28 @@ class ComSetRatchet(CommandUndo):
         self.entity.ratchet.set(self.oldValue)
 
 
+class ComSetRatchetFromCoords(CommandUndo):
+
+    def __init__(self, constraint:RatchetJoint, coords:V2, isBodyB:bool):
+        center = constraint.bodyB.physics.cog.final if isBodyB else constraint.bodyA.physics.cog.final
+        self.entity = constraint
+        self.newValue = math.atan2(coords.y - center.y, coords.x - center.x)
+        if isBodyB:
+            self.newValue = constraint.phase.angle - self.newValue
+            while self.newValue > math.pi:
+                self.newValue -= 2.0 * math.pi
+            while self.newValue < - math.pi:
+                self.newValue += 2.0 * math.pi
+        
+        self.oldValue = constraint.ratchet.angle
+
+    def execute(self):
+        self.entity.ratchet.set(self.newValue)
+
+    def undo(self):
+        self.entity.ratchet.set(self.oldValue)
+
+
 class ComSetRotaryMin(CommandUndo):
 
     def __init__(self, constraint:RotaryLimitJoint, value:float):

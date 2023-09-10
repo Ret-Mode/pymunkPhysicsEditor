@@ -4,7 +4,7 @@ from pyglet.math import Mat4
 import math
 
 from .config import pointConfig, editorButtonSetup
-from .editorTypes import V2, EditorPoint
+from .editorTypes import V2, EditorPoint, UnboundAngle
 
 from .shapeInternals.editorBodyI import BodyI
 from .shapeInternals.editorShapeI import ShapeI
@@ -94,6 +94,22 @@ def drawSpring(frm:V2, to:V2, restLength:float):
     else:
         arcade.draw_circle_outline(to.x, to.y, restLength/2.0, pointConfig['anchorColor'], _shaderScale, num_segments=32)
 
+def drawRatchetA(posA:V2, ratchet:UnboundAngle):
+    x = pointConfig['ratchetArmLength'] * ratchet.cos
+    y = pointConfig['ratchetArmLength'] * ratchet.sin
+    drawPointXY(posA.x + x, posA.y + y, pointConfig['secondaryBodyColor'], pointConfig['pointHalfWH'])
+
+def drawRatchetB(posB:V2, phase:UnboundAngle, ratchet:UnboundAngle):
+    x = pointConfig['ratchetArmLength'] * math.cos(phase.angle - ratchet.angle)
+    y = pointConfig['ratchetArmLength'] * math.sin(phase.angle - ratchet.angle)
+    drawPointXY(posB.x + x, posB.y + y, pointConfig['secondaryBodyColor'], pointConfig['pointHalfWH'])
+
+def drawAngleArm(point:V2, dX:float, dY:float):
+    armLength: float = pointConfig['armLength']
+    arcade.draw_line(point.x, point.y, 
+                     point.x + armLength*dX*_shaderScale, point.y + armLength*dY*_shaderScale, 
+                     pointConfig['anchorColor'], _shaderScale)
+    
 def drawAngleRatioArm(point:V2, dX:float, dY:float, ratio:float):
     armLength: float = pointConfig['armLength']
     ratioLength = armLength / ratio

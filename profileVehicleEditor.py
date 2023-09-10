@@ -2,7 +2,7 @@ import cProfile
 import pstats
 from pstats import SortKey
 
-import VehicleEditor
+import PymunkPhysicsEditor
 
-cProfile.run('VehicleEditor.main()', 'output.perf')
+cProfile.run('PymunkPhysicsEditor.main()', 'output.perf')
 pstats.Stats('output.perf').sort_stats(SortKey.CUMULATIVE).print_stats('editorCode')

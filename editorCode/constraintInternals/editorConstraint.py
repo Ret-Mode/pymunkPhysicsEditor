@@ -1,5 +1,6 @@
 from ..editorTypes import EditorPoint, Angle, UnboundAngle, OffsetPoint
 from ..drawing import drawAnchor, drawGroove, drawAngleArm, drawSpring, drawAngleRatioArm, drawCapsule, drawPivot
+from ..drawing import drawRatchetA, drawRatchetB
 
 from .editorConstraintI import ConstraintI
 
@@ -191,22 +192,26 @@ class RatchetJoint(ConstraintI):
         self.type = ConstraintI.RATCHETJOINT
 
         self.phase: UnboundAngle = UnboundAngle(0.5)
-        self.ratchet: UnboundAngle = UnboundAngle(0.0)
+        self.ratchet: UnboundAngle = UnboundAngle(0.5)
 
     def drawInternals(self):
         if self.bodyA and self.bodyB: 
             drawAngleArm(self.bodyA.physics.cog.final, 1.0, 0.0)
             drawAngleArm(self.bodyB.physics.cog.final, 
                          self.phase.cos, self.phase.sin)
+            drawRatchetA(self.bodyA.physics.cog.final, self.ratchet)
+            drawRatchetB(self.bodyB.physics.cog.final, self.phase, self.ratchet)
 
     def drawInternalA(self):
         if self.bodyA and self.bodyB:
             drawAngleArm(self.bodyA.physics.cog.final, 1.0, 0.0)
+            drawRatchetA(self.bodyA.physics.cog.final, self.ratchet)
     
     def drawInternalB(self):
         if self.bodyA and self.bodyB:
             drawAngleArm(self.bodyB.physics.cog.final, 
                          self.phase.cos, self.phase.sin)
+            drawRatchetB(self.bodyB.physics.cog.final, self.phase, self.ratchet)
 
 
 class RotaryLimitJoint(ConstraintI):
