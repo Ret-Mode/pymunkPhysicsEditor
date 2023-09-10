@@ -1,6 +1,6 @@
 from ..editorTypes import EditorPoint, Angle, UnboundAngle, OffsetPoint
 from ..drawing import drawAnchor, drawGroove, drawAngleArm, drawSpring, drawAngleRatioArm, drawCapsule, drawPivot
-from ..drawing import drawRatchetA, drawRatchetB
+from ..drawing import drawRatchetA, drawRatchetB, drawPhaseMinMaxA, drawPhaseMinMaxB
 
 from .editorConstraintI import ConstraintI
 
@@ -154,7 +154,6 @@ class PinJoint(ConstraintI):
             drawAnchor(self.anchorB.final)
 
 
-# todo - 1 pivot or 2 anchors??
 class PivotJoint(ConstraintI):
 
     def __init__(self, label:str):
@@ -223,6 +222,18 @@ class RotaryLimitJoint(ConstraintI):
         self.min: UnboundAngle = UnboundAngle(0.2)
         self.max: UnboundAngle = UnboundAngle(0.5)
 
+    def drawInternals(self):
+        if self.bodyA and self.bodyB: 
+            drawPhaseMinMaxA(self.bodyA.physics.cog.final, self.min, self.max)
+            drawPhaseMinMaxB(self.bodyB.physics.cog.final, self.min, self.max)
+
+    def drawInternalA(self):
+        if self.bodyA and self.bodyB:
+            drawPhaseMinMaxA(self.bodyA.physics.cog.final, self.min, self.max)
+    
+    def drawInternalB(self):
+        if self.bodyA and self.bodyB:
+            drawPhaseMinMaxB(self.bodyB.physics.cog.final, self.min, self.max)
 
 class SimpleMotor(ConstraintI):
 

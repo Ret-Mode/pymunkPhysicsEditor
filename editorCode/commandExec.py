@@ -984,7 +984,25 @@ class ComSetRotaryMin(CommandUndo):
 
     def __init__(self, constraint:RotaryLimitJoint, value:float):
         self.entity = constraint
-        self.newValue = value
+        self.newValue = min(value, self.entity.max.angle)
+        self.oldValue = constraint.min.angle
+
+    def execute(self):
+        self.entity.min.set(self.newValue)
+
+    def undo(self):
+        self.entity.min.set(self.oldValue)
+
+
+class ComSetRotaryMinFromCoords(CommandUndo):
+
+    def __init__(self, constraint:RotaryLimitJoint, coords:V2, isBodyB:bool):
+        self.entity = constraint
+        center = constraint.bodyB.physics.cog.final if isBodyB else constraint.bodyA.physics.cog.final
+        value = math.atan2(coords.y - center.y, coords.x - center.x)
+        if not isBodyB:
+            value = - value
+        self.newValue = min(value, self.entity.max.angle)
         self.oldValue = constraint.min.angle
 
     def execute(self):
@@ -998,8 +1016,26 @@ class ComSetRotaryMax(CommandUndo):
 
     def __init__(self, constraint:RotaryLimitJoint, value:float):
         self.entity = constraint
-        self.newValue = value
+        self.newValue = max(value, self.entity.min.angle)
         self.oldValue = constraint.max.angle
+
+    def execute(self):
+        self.entity.max.set(self.newValue)
+
+    def undo(self):
+        self.entity.max.set(self.oldValue)
+
+
+class ComSetRotaryMaxFromCoords(CommandUndo):
+
+    def __init__(self, constraint:RotaryLimitJoint, coords:V2, isBodyB:bool):
+        self.entity = constraint
+        center = constraint.bodyB.physics.cog.final if isBodyB else constraint.bodyA.physics.cog.final
+        value = math.atan2(coords.y - center.y, coords.x - center.x)
+        if not isBodyB:
+            value = - value
+        self.newValue = max(value, self.entity.min.angle)
+        self.oldValue = constraint.min.angle
 
     def execute(self):
         self.entity.max.set(self.newValue)

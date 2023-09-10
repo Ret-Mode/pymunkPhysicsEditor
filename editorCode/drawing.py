@@ -76,6 +76,46 @@ def drawCapsule(frm:V2, to:V2, dist: float):
         angX = nextAngX
         angY = nextAngY
 
+def drawPhaseMinMaxB(point:V2, minPhase:UnboundAngle, maxPhase:UnboundAngle):
+    angle = maxPhase.angle - minPhase.angle
+    if not (-2.0 * math.pi < angle < 2.0 * math.pi):
+        arcade.draw_circle_outline(point.x, point.y, pointConfig['armLength'], pointConfig['anchorColor'], _shaderScale, num_segments=32)
+    else:
+        circleParts = -angle / 32.0
+        sin = math.sin(circleParts)
+        cos = math.cos(circleParts)
+        x = pointConfig['armLength'] * minPhase.cos
+        y = pointConfig['armLength'] * minPhase.sin
+        
+        for i in range(32):
+            nX = x * cos + y * sin
+            nY = -x * sin + y * cos
+            arcade.draw_line(point.x + x, point.y + y,
+                             point.x + nX, point.y + nY,
+                             pointConfig['anchorColor'], _shaderScale)
+            x, y = nX, nY
+
+
+def drawPhaseMinMaxA(point:V2, minPhase:UnboundAngle, maxPhase:UnboundAngle):
+    angle = maxPhase.angle - minPhase.angle
+    if not (-2.0 * math.pi < angle < 2.0 * math.pi):
+        arcade.draw_circle_outline(point.x, point.y, pointConfig['armLength'], pointConfig['anchorColor'], _shaderScale, num_segments=32)
+    else:
+        circleParts = angle / 32.0
+        sin = math.sin(circleParts)
+        cos = math.cos(circleParts)
+        x = pointConfig['armLength'] * minPhase.cos
+        y = - pointConfig['armLength'] * minPhase.sin
+        
+        for i in range(32):
+            nX = x * cos + y * sin
+            nY = -x * sin + y * cos
+            arcade.draw_line(point.x + x, point.y + y,
+                             point.x + nX, point.y + nY,
+                             pointConfig['anchorColor'], _shaderScale)
+            x, y = nX, nY
+
+
 def drawSpring(frm:V2, to:V2, restLength:float):
     #drawEdge(frm, to, pointConfig['anchorColor'])
     realLength = frm.distV(to)

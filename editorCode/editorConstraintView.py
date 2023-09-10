@@ -9,7 +9,8 @@ from .commandExec import CommandExec
 from .commandExec import ComSetPivot, ComScaleView, ComResizeView, ComMoveCursor, ComMoveView
 from .commandExec import ComSetRestAngleFromXYOffset, ComSetAnchorAFromCoords, ComSetAnchorBFromCoords, ComSetRestLengthFromCoords
 from .commandExec import ComSetPhaseFromCoords, ComSetRatioFromCoords, ComSetGrooveAFromCoords, ComSetGrooveBFromCoords, ComSetAnchorsFromCoords
-from .commandExec import ComSetRatchetFromCoords
+from .commandExec import ComSetRatchetFromCoords, ComSetRotaryMaxFromCoords, ComSetRotaryMinFromCoords
+
 from .drawing import drawCursor, drawHelperPoint, drawBody
 
 from .config import toJSON
@@ -252,6 +253,16 @@ class EditorConstraintView:
                     CommandExec.addCommand(ComSetRatchetFromCoords(constraint, coords, isBodyB))
                 else:
                     CommandExec.addCommand(ComSetPhaseFromCoords(constraint, coords, isBodyB))
+
+            elif constraint.type == ConstraintI.ROTARYLIMITJOINT:
+                if view == self.viewBodyAOffset:
+                    isBodyB = False
+                else:
+                    isBodyB = True
+                if self.mode == EditorConstraintView.PHASEMAX:
+                    CommandExec.addCommand(ComSetRotaryMaxFromCoords(constraint, coords, isBodyB))
+                else:
+                    CommandExec.addCommand(ComSetRotaryMinFromCoords(constraint, coords, isBodyB))
                 # if view == self.viewBodyAOffset:
                 #     CommandExec.addCommand(ComSetAnchorAFromCoords(constraint, coords))
             # elif constraint.type == ConstraintI.SLIDEJOINT:
