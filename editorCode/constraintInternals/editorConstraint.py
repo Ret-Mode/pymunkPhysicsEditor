@@ -1,6 +1,6 @@
-from ..editorTypes import EditorPoint, Angle, UnboundAngle, OffsetPoint
+from ..editorTypes import UnboundAngle, OffsetPoint
 from ..drawing import drawAnchor, drawGroove, drawAngleArm, drawSpring, drawAngleRatioArm, drawCapsule, drawPivot
-from ..drawing import drawRatchetA, drawRatchetB, drawPhaseMinMaxA, drawPhaseMinMaxB, drawRateA, drawRateB
+from ..drawing import drawRatchetA, drawRatchetB, drawPhaseMinMaxA, drawPhaseMinMaxB, drawRateA, drawRateB, drawSlide
 
 from .editorConstraintI import ConstraintI
 
@@ -29,6 +29,7 @@ class DampedRotarySpring(ConstraintI):
         if self.bodyA and self.bodyB:
             drawAngleArm(self.bodyB.physics.cog.final, 
                          self.restAngle.cos, self.restAngle.sin)
+
 
 class DampedSpring(ConstraintI):
 
@@ -235,6 +236,7 @@ class RotaryLimitJoint(ConstraintI):
         if self.bodyA and self.bodyB:
             drawPhaseMinMaxB(self.bodyB.physics.cog.final, self.min, self.max)
 
+
 class SimpleMotor(ConstraintI):
 
     def __init__(self, label:str):
@@ -256,6 +258,7 @@ class SimpleMotor(ConstraintI):
         if self.bodyA and self.bodyB:
             drawRateB(self.bodyB.physics.cog.final, self.rate)
 
+
 class SlideJoint(ConstraintI):
 
     def __init__(self, label:str):
@@ -268,17 +271,20 @@ class SlideJoint(ConstraintI):
         self.max: float = 2.0
 
     def updateInternals(self):
-        if self.bodyA:
+        if self.bodyA and self.bodyB:
             self.anchorA.calcOffset(self.bodyA.transform.getMat(), self.bodyA.physics.cog.final)
-        if self.bodyB:
             self.anchorB.calcOffset(self.bodyB.transform.getMat(), self.bodyB.physics.cog.final)
 
     def drawInternals(self):
-        drawAnchor(self.anchorA.final)
-        drawAnchor(self.anchorB.final)
+        if self.bodyA and self.bodyB:
+            drawAnchor(self.anchorA.final)
+            drawAnchor(self.anchorB.final)
+            drawSlide(self.anchorA.final, self.anchorB.final, self.min, self.max)
 
     def drawInternalA(self):
-        drawAnchor(self.anchorA.final)
+        if self.bodyA and self.bodyB:
+            drawAnchor(self.anchorA.final)
     
     def drawInternalB(self):
-        drawAnchor(self.anchorB.final)
+        if self.bodyA and self.bodyB:
+            drawAnchor(self.anchorB.final)

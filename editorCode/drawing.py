@@ -78,12 +78,12 @@ def drawCapsule(frm:V2, to:V2, dist: float):
 
 def drawRateA(point:V2, rate:UnboundAngle):
     if not (-2.0 * math.pi < rate.angle < 2.0 * math.pi):
-        arcade.draw_circle_outline(point.x, point.y, pointConfig['armLength'], pointConfig['anchorColor'], _shaderScale, num_segments=32)
+        arcade.draw_circle_outline(point.x, point.y, pointConfig['armLength'] * _shaderScale, pointConfig['anchorColor'], _shaderScale, num_segments=32)
     else:
         circleParts = -rate.angle / 32.0
         sin = math.sin(circleParts)
         cos = math.cos(circleParts)
-        x = pointConfig['armLength']
+        x = pointConfig['armLength'] * _shaderScale
         y = 0.0
         
         for i in range(32):
@@ -96,12 +96,12 @@ def drawRateA(point:V2, rate:UnboundAngle):
 
 def drawRateB(point:V2, rate:UnboundAngle):
     if not (-2.0 * math.pi < rate.angle < 2.0 * math.pi):
-        arcade.draw_circle_outline(point.x, point.y, pointConfig['armLength'], pointConfig['anchorColor'], _shaderScale, num_segments=32)
+        arcade.draw_circle_outline(point.x, point.y, pointConfig['armLength'] * _shaderScale, pointConfig['anchorColor'], _shaderScale, num_segments=32)
     else:
         circleParts = rate.angle / 32.0
         sin = math.sin(circleParts)
         cos = math.cos(circleParts)
-        x = pointConfig['armLength']
+        x = pointConfig['armLength'] * _shaderScale
         y = 0.0
         
         for i in range(32):
@@ -121,8 +121,8 @@ def drawPhaseMinMaxB(point:V2, minPhase:UnboundAngle, maxPhase:UnboundAngle):
         circleParts = -angle / 32.0
         sin = math.sin(circleParts)
         cos = math.cos(circleParts)
-        x = pointConfig['armLength'] * minPhase.cos
-        y = pointConfig['armLength'] * minPhase.sin
+        x = pointConfig['armLength'] * _shaderScale * minPhase.cos
+        y = pointConfig['armLength'] * _shaderScale * minPhase.sin
         
         for i in range(32):
             nX = x * cos + y * sin
@@ -136,13 +136,13 @@ def drawPhaseMinMaxB(point:V2, minPhase:UnboundAngle, maxPhase:UnboundAngle):
 def drawPhaseMinMaxA(point:V2, minPhase:UnboundAngle, maxPhase:UnboundAngle):
     angle = maxPhase.angle - minPhase.angle
     if not (-2.0 * math.pi < angle < 2.0 * math.pi):
-        arcade.draw_circle_outline(point.x, point.y, pointConfig['armLength'], pointConfig['anchorColor'], _shaderScale, num_segments=32)
+        arcade.draw_circle_outline(point.x, point.y, pointConfig['armLength'] * _shaderScale, pointConfig['anchorColor'], _shaderScale, num_segments=32)
     else:
         circleParts = angle / 32.0
         sin = math.sin(circleParts)
         cos = math.cos(circleParts)
-        x = pointConfig['armLength'] * minPhase.cos
-        y = - pointConfig['armLength'] * minPhase.sin
+        x = pointConfig['armLength'] * _shaderScale * minPhase.cos
+        y = - pointConfig['armLength']* _shaderScale * minPhase.sin
         
         for i in range(32):
             nX = x * cos + y * sin
@@ -151,6 +151,35 @@ def drawPhaseMinMaxA(point:V2, minPhase:UnboundAngle, maxPhase:UnboundAngle):
                              point.x + nX, point.y + nY,
                              pointConfig['anchorColor'], _shaderScale)
             x, y = nX, nY
+
+
+def drawSlide(frm:V2, to:V2, distMin:float, distMax:float):
+    #drawEdge(frm, to, pointConfig['anchorColor'])
+    anchorLength = frm.distV(to)
+    if anchorLength != 0.0:
+        minLength = (anchorLength - distMin) / anchorLength
+        minX = (to.x - frm.x)*minLength
+        minY = (to.y - frm.y)*minLength
+
+        maxLength = (anchorLength - distMax) / anchorLength
+        maxX = (to.x - frm.x)*maxLength
+        maxY = (to.y - frm.y)*maxLength
+
+        drawEdgeXY(frm.x + minX/2, frm.y + minY/2, frm.x + maxX/2, frm.y + maxY/2,
+                    pointConfig['anchorColor'])
+        drawEdgeXY(to.x - minX/2, to.y - minY/2, to.x - maxX/2, to.y - maxY/2,
+                    pointConfig['anchorColor'])
+        drawPointXY(frm.x + minX/2, frm.y + minY/2, 
+                    pointConfig['anchorColor'], pointConfig['pointHalfWH'] * _shaderScale)
+        drawPointXY(frm.x + maxX/2, frm.y + maxY/2,
+                    pointConfig['anchorColor'], pointConfig['pointHalfWH'] * _shaderScale)
+        drawPointXY(to.x - minX/2, to.y - minY/2,
+                    pointConfig['anchorColor'], pointConfig['pointHalfWH'] * _shaderScale)
+        drawPointXY(to.x - maxX/2, to.y - maxY/2,
+                    pointConfig['anchorColor'], pointConfig['pointHalfWH'] * _shaderScale)
+    else:
+        arcade.draw_circle_outline(to.x, to.y, distMin/2.0, pointConfig['anchorColor'], _shaderScale, num_segments=32)
+        arcade.draw_circle_outline(to.x, to.y, distMax/2.0, pointConfig['anchorColor'], _shaderScale, num_segments=32)
 
 
 def drawSpring(frm:V2, to:V2, restLength:float):
@@ -172,14 +201,14 @@ def drawSpring(frm:V2, to:V2, restLength:float):
         arcade.draw_circle_outline(to.x, to.y, restLength/2.0, pointConfig['anchorColor'], _shaderScale, num_segments=32)
 
 def drawRatchetA(posA:V2, ratchet:UnboundAngle):
-    x = pointConfig['ratchetArmLength'] * ratchet.cos
-    y = pointConfig['ratchetArmLength'] * ratchet.sin
-    drawPointXY(posA.x + x, posA.y + y, pointConfig['secondaryBodyColor'], pointConfig['pointHalfWH'])
+    x = pointConfig['ratchetArmLength'] * _shaderScale * ratchet.cos
+    y = pointConfig['ratchetArmLength'] * _shaderScale * ratchet.sin
+    drawPointXY(posA.x + x, posA.y + y, pointConfig['secondaryBodyColor'], pointConfig['pointHalfWH'] * _shaderScale)
 
 def drawRatchetB(posB:V2, phase:UnboundAngle, ratchet:UnboundAngle):
-    x = pointConfig['ratchetArmLength'] * math.cos(phase.angle - ratchet.angle)
-    y = pointConfig['ratchetArmLength'] * math.sin(phase.angle - ratchet.angle)
-    drawPointXY(posB.x + x, posB.y + y, pointConfig['secondaryBodyColor'], pointConfig['pointHalfWH'])
+    x = pointConfig['ratchetArmLength'] * _shaderScale * math.cos(phase.angle - ratchet.angle)
+    y = pointConfig['ratchetArmLength'] * _shaderScale * math.sin(phase.angle - ratchet.angle)
+    drawPointXY(posB.x + x, posB.y + y, pointConfig['secondaryBodyColor'], pointConfig['pointHalfWH'] * _shaderScale)
 
 def drawAngleArm(point:V2, dX:float, dY:float):
     armLength: float = pointConfig['armLength']

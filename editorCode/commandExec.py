@@ -632,11 +632,13 @@ class ComSetRestLengthFromCoords(CommandUndo):
 
     def __init__(self, constraint:DampedSpring, coords:V2):
         dist = constraint.anchorA.final.distV(constraint.anchorB.final)
-        projA = constraint.anchorA.final.dotVV(coords, constraint.anchorB.final) / (dist)
-
+        if dist != 0.0:
+            projA = constraint.anchorA.final.dotVV(coords, constraint.anchorB.final) / (dist)
+            self.newValue = 2 * abs(dist/2.0 - projA)
+        else:
+            self.newValue = constraint.restLength
 
         self.entity = constraint
-        self.newValue = 2 * abs(dist/2.0 - projA)
         self.oldValue = constraint.restLength
 
     def execute(self):
@@ -1080,6 +1082,26 @@ class ComSetSlideMin(CommandUndo):
 
     def __init__(self, constraint:SlideJoint, value:float):
         self.entity = constraint
+        self.newValue = max(min(value, constraint.max), 0.0)
+        self.oldValue = constraint.min
+
+    def execute(self):
+        self.entity.min = self.newValue
+
+    def undo(self):
+        self.entity.min = self.oldValue
+
+
+class ComSetSlideMinFromCoords(CommandUndo):
+
+    def __init__(self, constraint:SlideJoint, coords:V2):
+        dist = constraint.anchorA.final.distV(constraint.anchorB.final)
+        value = constraint.min
+        if dist != 0.0:
+            projA = constraint.anchorA.final.dotVV(coords, constraint.anchorB.final) / (dist)
+            value = max(min(2 * abs(dist/2.0 - projA), constraint.max), 0.0)
+
+        self.entity = constraint
         self.newValue = value
         self.oldValue = constraint.min
 
@@ -1093,6 +1115,26 @@ class ComSetSlideMin(CommandUndo):
 class ComSetSlideMax(CommandUndo):
 
     def __init__(self, constraint:SlideJoint, value:float):
+        self.entity = constraint
+        self.newValue = max(value, constraint.min, 0.0)
+        self.oldValue = constraint.max
+
+    def execute(self):
+        self.entity.max = self.newValue
+
+    def undo(self):
+        self.entity.max = self.oldValue
+
+
+class ComSetSlideMaxFromCoords(CommandUndo):
+
+    def __init__(self, constraint:SlideJoint, coords:V2):
+        dist = constraint.anchorA.final.distV(constraint.anchorB.final)
+        value = constraint.min
+        if dist != 0.0:
+            projA = constraint.anchorA.final.dotVV(coords, constraint.anchorB.final) / (dist)
+            value = max(2 * abs(dist/2.0 - projA), constraint.min, 0.0)
+
         self.entity = constraint
         self.newValue = value
         self.oldValue = constraint.max

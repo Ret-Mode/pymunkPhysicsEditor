@@ -10,6 +10,7 @@ from .commandExec import ComSetPivot, ComScaleView, ComResizeView, ComMoveCursor
 from .commandExec import ComSetRestAngleFromXYOffset, ComSetAnchorAFromCoords, ComSetAnchorBFromCoords, ComSetRestLengthFromCoords
 from .commandExec import ComSetPhaseFromCoords, ComSetRatioFromCoords, ComSetGrooveAFromCoords, ComSetGrooveBFromCoords, ComSetAnchorsFromCoords
 from .commandExec import ComSetRatchetFromCoords, ComSetRotaryMaxFromCoords, ComSetRotaryMinFromCoords, ComSetRateFromCoords
+from .commandExec import ComSetSlideMaxFromCoords, ComSetSlideMinFromCoords
 
 from .drawing import drawCursor, drawHelperPoint, drawBody
 
@@ -270,15 +271,17 @@ class EditorConstraintView:
                 else:
                     isBodyB = True
                 CommandExec.addCommand(ComSetRateFromCoords(constraint, coords, isBodyB))
-                # if view == self.viewBodyAOffset:
-                #     CommandExec.addCommand(ComSetAnchorAFromCoords(constraint, coords))
-            # elif constraint.type == ConstraintI.SLIDEJOINT:
-            #     if view == self.viewBodyAOffset or self.mode == EditorConstraintView.ANCHORA:
-            #         CommandExec.addCommand(ComSetAnchorAFromCoords(constraint, coords))
-            #     elif view == self.viewBodyBOffset or self.mode == EditorConstraintView.ANCHORB:
-            #         CommandExec.addCommand(ComSetAnchorBFromCoords(constraint, coords))
-            #     elif view == self.viewAllOffset:
-            #         CommandExec.addCommand(ComSetRestLengthFromCoords(constraint, coords))
+
+            elif constraint.type == ConstraintI.SLIDEJOINT:
+                if view == self.viewBodyAOffset or self.mode == EditorConstraintView.ANCHORA:
+                    CommandExec.addCommand(ComSetAnchorAFromCoords(constraint, coords))
+                elif view == self.viewBodyBOffset or self.mode == EditorConstraintView.ANCHORB:
+                    CommandExec.addCommand(ComSetAnchorBFromCoords(constraint, coords))
+                else:
+                    if self.mode == EditorConstraintView.DISTMAX:
+                        CommandExec.addCommand(ComSetSlideMaxFromCoords(constraint, coords))
+                    else:
+                        CommandExec.addCommand(ComSetSlideMinFromCoords(constraint, coords))
 
 
 
