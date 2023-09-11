@@ -190,9 +190,14 @@ class ComDelBody(CommandUndo):
         self.object = self.database.getBodyByLabel(label)
         self.objIndex = -1
         self.deletedShapes: List[ShapeI] = []
+        if self.object:
+            self.constraintsOfDeletedBody = self.database.getConstraintsOfBody(label)
+        else:
+            self.constraintsOfDeletedBody = []
 
     def execute(self):           
         if self.object:
+            # TODO remove this body from constraints
             self.objIndex = self.database.getBodyIndex(self.object)
             for shape in self.object.shapes:
                 self.deletedShapes.append(shape)
@@ -207,6 +212,7 @@ class ComDelBody(CommandUndo):
             for shape in self.deletedShapes:
                 self.database.addNewShape(shape, self.object)
             self.database.setCurrentBodyByLabel(self.object.label)
+            # TODO add this body to constraints
 
 
 class ComSetBodyAsCurrent(CommandUndo):
@@ -632,11 +638,13 @@ class ComSetRestLengthFromCoords(CommandUndo):
 
     def __init__(self, constraint:DampedSpring, coords:V2):
         dist = constraint.anchorA.final.distV(constraint.anchorB.final)
-        projA = constraint.anchorA.final.dotVV(coords, constraint.anchorB.final) / (dist)
-
+        if dist != 0.0:
+            projA = constraint.anchorA.final.dotVV(coords, constraint.anchorB.final) / (dist)
+            self.newValue = 2 * abs(dist/2.0 - projA)
+        else:
+            self.newValue = constraint.restLength
 
         self.entity = constraint
-        self.newValue = 2 * abs(dist/2.0 - projA)
         self.oldValue = constraint.restLength
 
     def execute(self):
@@ -984,7 +992,25 @@ class ComSetRotaryMin(CommandUndo):
 
     def __init__(self, constraint:RotaryLimitJoint, value:float):
         self.entity = constraint
-        self.newValue = value
+        self.newValue = min(value, self.entity.max.angle)
+        self.oldValue = constraint.min.angle
+
+    def execute(self):
+        self.entity.min.set(self.newValue)
+
+    def undo(self):
+        self.entity.min.set(self.oldValue)
+
+
+class ComSetRotaryMinFromCoords(CommandUndo):
+
+    def __init__(self, constraint:RotaryLimitJoint, coords:V2, isBodyB:bool):
+        self.entity = constraint
+        center = constraint.bodyB.physics.cog.final if isBodyB else constraint.bodyA.physics.cog.final
+        value = math.atan2(coords.y - center.y, coords.x - center.x)
+        if not isBodyB:
+            value = - value
+        self.newValue = min(value, self.entity.max.angle)
         self.oldValue = constraint.min.angle
 
     def execute(self):
@@ -998,8 +1024,26 @@ class ComSetRotaryMax(CommandUndo):
 
     def __init__(self, constraint:RotaryLimitJoint, value:float):
         self.entity = constraint
-        self.newValue = value
+        self.newValue = max(value, self.entity.min.angle)
         self.oldValue = constraint.max.angle
+
+    def execute(self):
+        self.entity.max.set(self.newValue)
+
+    def undo(self):
+        self.entity.max.set(self.oldValue)
+
+
+class ComSetRotaryMaxFromCoords(CommandUndo):
+
+    def __init__(self, constraint:RotaryLimitJoint, coords:V2, isBodyB:bool):
+        self.entity = constraint
+        center = constraint.bodyB.physics.cog.final if isBodyB else constraint.bodyA.physics.cog.final
+        value = math.atan2(coords.y - center.y, coords.x - center.x)
+        if not isBodyB:
+            value = - value
+        self.newValue = max(value, self.entity.min.angle)
+        self.oldValue = constraint.min.angle
 
     def execute(self):
         self.entity.max.set(self.newValue)
@@ -1013,18 +1057,56 @@ class ComSetRate(CommandUndo):
     def __init__(self, constraint:SimpleMotor, value:float):
         self.entity = constraint
         self.newValue = value
-        self.oldValue = constraint.rate
+        self.oldValue = constraint.rate.angle
 
     def execute(self):
-        self.entity.rate = self.newValue
+        self.entity.rate.set(self.newValue)
 
     def undo(self):
-        self.entity.rate = self.oldValue
+        self.entity.rate.set(self.oldValue)
+
+
+class ComSetRateFromCoords(CommandUndo):
+
+    def __init__(self, constraint:SimpleMotor, coords:V2, isBodyB:bool):
+        self.entity = constraint
+        center = constraint.bodyB.physics.cog.final if isBodyB else constraint.bodyA.physics.cog.final
+        value = math.atan2(coords.y - center.y, coords.x - center.x)
+        if not isBodyB:
+            value = - value
+        self.newValue = value
+        self.oldValue = constraint.rate.angle
+
+    def execute(self):
+        self.entity.rate.set(self.newValue)
+
+    def undo(self):
+        self.entity.rate.set(self.oldValue)
 
 
 class ComSetSlideMin(CommandUndo):
 
     def __init__(self, constraint:SlideJoint, value:float):
+        self.entity = constraint
+        self.newValue = max(min(value, constraint.max), 0.0)
+        self.oldValue = constraint.min
+
+    def execute(self):
+        self.entity.min = self.newValue
+
+    def undo(self):
+        self.entity.min = self.oldValue
+
+
+class ComSetSlideMinFromCoords(CommandUndo):
+
+    def __init__(self, constraint:SlideJoint, coords:V2):
+        dist = constraint.anchorA.final.distV(constraint.anchorB.final)
+        value = constraint.min
+        if dist != 0.0:
+            projA = constraint.anchorA.final.dotVV(coords, constraint.anchorB.final) / (dist)
+            value = max(min(2 * abs(dist/2.0 - projA), constraint.max), 0.0)
+
         self.entity = constraint
         self.newValue = value
         self.oldValue = constraint.min
@@ -1039,6 +1121,26 @@ class ComSetSlideMin(CommandUndo):
 class ComSetSlideMax(CommandUndo):
 
     def __init__(self, constraint:SlideJoint, value:float):
+        self.entity = constraint
+        self.newValue = max(value, constraint.min, 0.0)
+        self.oldValue = constraint.max
+
+    def execute(self):
+        self.entity.max = self.newValue
+
+    def undo(self):
+        self.entity.max = self.oldValue
+
+
+class ComSetSlideMaxFromCoords(CommandUndo):
+
+    def __init__(self, constraint:SlideJoint, coords:V2):
+        dist = constraint.anchorA.final.distV(constraint.anchorB.final)
+        value = constraint.min
+        if dist != 0.0:
+            projA = constraint.anchorA.final.dotVV(coords, constraint.anchorB.final) / (dist)
+            value = max(2 * abs(dist/2.0 - projA), constraint.min, 0.0)
+
         self.entity = constraint
         self.newValue = value
         self.oldValue = constraint.max
