@@ -28,5 +28,7 @@ class BBox:
             return False
         return True
 
+
+# TODO remove this with its references
 class Container(BodyI):
     pass
