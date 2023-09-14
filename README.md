@@ -15,6 +15,7 @@ Missing features (ordered somewhat as they are planned to be developed):
 - [ ] Support skewing
 - [ ] Snapping to edges
 - [ ] Adjusting GUI
-- [ ] Support for higher versions of Arcade
+- [ ] Support for higher versions of Arcade / other libraries
+- [ ] Support for other 2d engines
 - [ ] Adding documentation
 
