@@ -27,25 +27,25 @@ editorButtonSetup = {'width': 240,
                      'style': {"font_size": 10} }
 
 pointConfig = {'pointHalfWH':  3,
-               'inactivePointColor': (100, 100, 100),
-               'activePointColor': (200, 200, 200),
-               'inactiveEdgeColor': (75,75,75),
-               'activeEdgeColor': (255,200,100),
-               'underCursorEdgeColor': (160,150,100),
-               'anchorColor': (150,150,250),
-               'secondaryBodyColor': (170,120,100),
-               'grooveColor': (150,250,150),
+               'inactivePointColor': (100, 100, 100, 255),
+               'activePointColor': (200, 200, 200, 255),
+               'inactiveEdgeColor': (75,75,75, 255),
+               'activeEdgeColor': (255,200,100, 255),
+               'underCursorEdgeColor': (160,150,100, 255),
+               'anchorColor': (150,150,250, 255),
+               'secondaryBodyColor': (170,120,100, 255),
+               'grooveColor': (150,250,150, 255),
                'armLength' : 40.0,
                'ratchetArmLength' : 30.0,
                'cursorHalfWH': 5.0,
-               'cursorLineColor': (93, 138, 168),
-               'cursorLineMenuColor': (255, 0, 0),
+               'cursorLineColor': (93, 138, 168, 255),
+               'cursorLineMenuColor': (255, 0, 0, 255),
                'helperHalfWH': 4.0,
-               'helperColor': (255, 100, 100),
+               'helperColor': (255, 100, 100, 255),
                'anchorHalfWH': 3.0,
-               'anchorColor': (100,100,200),
+               'anchorColor': (100,100,200, 255),
                'cogHalfWH': 3.0,
-               'cogColor': (200,100,100)}
+               'cogColor': (200,100,100, 255)}
 
 
 def toJSON(data: dict) -> str:

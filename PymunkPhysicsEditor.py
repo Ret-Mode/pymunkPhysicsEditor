@@ -99,7 +99,7 @@ class EditorView(arcade.View):
 
     def draw_cursor(self):
         self.baseView.start()
-        self.cursor.draw()
+        self.cursor.draw(self.baseView.sizeInPixels, self.baseView.offset, self.baseView.sizeInPixels.x - self.editableWidth)
 
     def on_draw(self):
         self.clear(arcade.color.BLACK)

@@ -4,11 +4,12 @@ from .editorTypes import EditorPoint
 from .editorCursor import Cursor
 from .editorViewTransform import ContinuousTransform
 from .database import Database
+from .bufferContainer import BufferContainer
 
 from .commandExec import CommandExec
 from .commandExec import ComSetPivot, ComScaleView, ComResizeView, ComMoveCursor, ComMoveView
 from .commandExec import ComStartTransform, ComCancelTransform,ComApplyTransform
-from .drawing import drawCursor, drawHelperPoint, drawBody
+from .drawing import drawHelperPoint, drawBody
 
 from .config import toJSON
 
@@ -105,8 +106,11 @@ class EditorBodyView:
             constraint.updateInternals()
         
     def draw(self):
+        buffer = BufferContainer.getInstance()
         database = Database.getInstance()
         self.viewOffset.start()
+
+        buffer.drawScale = self.viewOffset.scale
         currentBody = database.getCurrentBody()
         if self.hideOthers and currentBody:
             drawBody(currentBody, True, False)
