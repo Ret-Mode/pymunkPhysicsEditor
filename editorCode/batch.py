@@ -11,9 +11,6 @@ from .shapeInternals.editorShapeI import ShapeI
 from .bufferContainer import BufferContainer
 
 
-
-
-
 # temporary global state for builtin shader
 # to del when shader will be changed
 _shaderScale: float = 1.0
@@ -78,6 +75,7 @@ def drawCapsule(frm:V2, to:V2, dist: float):
         angX = nextAngX
         angY = nextAngY
 
+
 def drawRateA(point:V2, rate:UnboundAngle):
     if not (-2.0 * math.pi < rate.angle < 2.0 * math.pi):
         arcade.draw_circle_outline(point.x, point.y, pointConfig['armLength'] * _shaderScale, pointConfig['anchorColor'], _shaderScale, num_segments=32)
@@ -95,6 +93,7 @@ def drawRateA(point:V2, rate:UnboundAngle):
                              point.x + nX, point.y + nY,
                              pointConfig['anchorColor'], _shaderScale)
             x, y = nX, nY
+
 
 def drawRateB(point:V2, rate:UnboundAngle):
     if not (-2.0 * math.pi < rate.angle < 2.0 * math.pi):
@@ -184,74 +183,81 @@ def drawSlide(frm:V2, to:V2, distMin:float, distMax:float):
         arcade.draw_circle_outline(to.x, to.y, distMax/2.0, pointConfig['anchorColor'], _shaderScale, num_segments=32)
 
 
-def drawSpring(frm:V2, to:V2, restLength:float):
-    #drawEdge(frm, to, pointConfig['anchorColor'])
+def drawSpring(buffer:BufferContainer, frm:V2, to:V2, restLength:float):
     realLength = frm.distV(to)
     if realLength != 0.0:
         diffLength = (realLength - restLength) / realLength
         diffX = (to.x - frm.x)*diffLength
         diffY = (to.y - frm.y)*diffLength
-        drawEdgeXY(frm.x + diffX/2, frm.y + diffY/2, frm.x, frm.y,
+        drawEdgeXY(buffer, frm.x + diffX/2.0, frm.y + diffY/2.0, frm.x, frm.y,
                     pointConfig['anchorColor'])
-        drawPointXY(frm.x + diffX/2, frm.y + diffY/2,
-                    pointConfig['anchorColor'], pointConfig['pointHalfWH'] * _shaderScale)
-        drawEdgeXY(to.x - diffX/2, to.y - diffY/2, to.x, to.y,
+        drawPointXY(buffer, frm.x + diffX/2.0, frm.y + diffY/2.0,
+                    pointConfig['anchorColor'], pointConfig['pointHalfWH'] * buffer.drawScale)
+        drawEdgeXY(buffer, to.x - diffX/2.0, to.y - diffY/2.0, to.x, to.y,
                     pointConfig['anchorColor'])
-        drawPointXY(to.x - diffX/2, to.y - diffY/2,
-                    pointConfig['anchorColor'], pointConfig['pointHalfWH'] * _shaderScale)
+        drawPointXY(buffer, to.x - diffX/2.0, to.y - diffY/2.0,
+                    pointConfig['anchorColor'], pointConfig['pointHalfWH'] * buffer.drawScale)
     else:
-        arcade.draw_circle_outline(to.x, to.y, restLength/2.0, pointConfig['anchorColor'], _shaderScale, num_segments=32)
+        arcade.draw_circle_outline(to.x, to.y, restLength/2.0, pointConfig['anchorColor'], buffer.drawScale, num_segments=32)
 
-def drawRatchetA(posA:V2, ratchet:UnboundAngle):
-    x = pointConfig['ratchetArmLength'] * _shaderScale * ratchet.cos
-    y = pointConfig['ratchetArmLength'] * _shaderScale * ratchet.sin
-    drawPointXY(posA.x + x, posA.y + y, pointConfig['secondaryBodyColor'], pointConfig['pointHalfWH'] * _shaderScale)
 
-def drawRatchetB(posB:V2, phase:UnboundAngle, ratchet:UnboundAngle):
-    x = pointConfig['ratchetArmLength'] * _shaderScale * math.cos(phase.angle - ratchet.angle)
-    y = pointConfig['ratchetArmLength'] * _shaderScale * math.sin(phase.angle - ratchet.angle)
-    drawPointXY(posB.x + x, posB.y + y, pointConfig['secondaryBodyColor'], pointConfig['pointHalfWH'] * _shaderScale)
+def drawRatchetA(buffer:BufferContainer, posA:V2, ratchet:UnboundAngle):
+    x = pointConfig['ratchetArmLength'] * buffer.drawScale * ratchet.cos
+    y = pointConfig['ratchetArmLength'] * buffer.drawScale * ratchet.sin
+    drawPointXY(buffer, posA.x + x, posA.y + y, pointConfig['secondaryBodyColor'], pointConfig['pointHalfWH'] * buffer.drawScale)
 
-def drawAngleArm(point:V2, dX:float, dY:float):
+
+def drawRatchetB(buffer:BufferContainer, posB:V2, phase:UnboundAngle, ratchet:UnboundAngle):
+    x = pointConfig['ratchetArmLength'] * buffer.drawScale * math.cos(phase.angle - ratchet.angle)
+    y = pointConfig['ratchetArmLength'] * buffer.drawScale * math.sin(phase.angle - ratchet.angle)
+    drawPointXY(buffer, posB.x + x, posB.y + y, pointConfig['secondaryBodyColor'], pointConfig['pointHalfWH'] * buffer.drawScale)
+
+
+def drawAngleArm(buffer:BufferContainer, point:V2, dX:float, dY:float):
     armLength: float = pointConfig['armLength']
-    arcade.draw_line(point.x, point.y, 
-                     point.x + armLength*dX*_shaderScale, point.y + armLength*dY*_shaderScale, 
-                     pointConfig['anchorColor'], _shaderScale)
-    
-def drawAngleRatioArm(point:V2, dX:float, dY:float, ratio:float):
+    drawEdgeXY(buffer, point.x, point.y, 
+               point.x + armLength*dX*buffer.drawScale, point.y + armLength*dY*buffer.drawScale, 
+               pointConfig['anchorColor'])
+
+
+def drawAngleRatioArm(buffer:BufferContainer, point:V2, dX:float, dY:float, ratio:float):
+    if ratio != 0.0:
+        armLength: float = pointConfig['armLength']
+        ratioLength = armLength / ratio
+        offsetX = point.x + armLength*dX*buffer.drawScale
+        offsetY = point.y + armLength*dY*buffer.drawScale
+        drawEdgeXY(buffer, offsetX, offsetY, 
+                        offsetX + ratioLength * dY*buffer.drawScale, offsetY - ratioLength * dX * buffer.drawScale, 
+                        pointConfig['anchorColor'])
+
+
+def drawAngleArm(buffer:BufferContainer, point:V2, dX:float, dY:float):
     armLength: float = pointConfig['armLength']
-    ratioLength = armLength / ratio
-    offsetX = point.x + armLength*dX*_shaderScale
-    offsetY = point.y + armLength*dY*_shaderScale
-    
-    arcade.draw_line(offsetX, offsetY, 
-                     offsetX + ratioLength * dY*_shaderScale, offsetY - ratioLength * dX * _shaderScale, 
-                     pointConfig['anchorColor'], _shaderScale)
-
-def drawAngleArm(point:V2, dX:float, dY:float):
-    armLength: float = pointConfig['armLength']
-    arcade.draw_line(point.x, point.y, 
-                     point.x + armLength*dX*_shaderScale, point.y + armLength*dY*_shaderScale, 
-                     pointConfig['anchorColor'], _shaderScale)
+    drawEdgeXY(buffer, 
+               point.x, point.y, 
+               point.x + armLength*dX*buffer.drawScale, point.y + armLength*dY*buffer.drawScale, 
+               pointConfig['anchorColor'])
 
 
-def drawPivot(pointA:V2, pointB:V2):
+def drawPivot(buffer:BufferContainer, pointA:V2, pointB:V2):
     if pointA.distSqrV(pointB) != 0.0:
-        drawEdge(pointA, pointB, pointConfig['anchorColor'])
+        drawEdge(buffer, pointA, pointB, pointConfig['anchorColor'])
         x = pointA.x + (pointB.x - pointA.x)/2.0
         y = pointA.y + (pointB.y - pointA.y)/2.0
-        drawPointXY(x, y, pointConfig['anchorColor'], pointConfig['pointHalfWH'] * _shaderScale)
+        drawPointXY(buffer, x, y, pointConfig['anchorColor'], pointConfig['pointHalfWH'] * buffer.drawScale)
 
-def drawGroove(pointA:V2, pointB:V2):
-    drawPoint(pointA, pointConfig['grooveColor'], pointConfig['pointHalfWH'] * _shaderScale)   
-    drawPoint(pointB, pointConfig['grooveColor'], pointConfig['pointHalfWH'] * _shaderScale)
-    drawEdge(pointA, pointB, pointConfig['grooveColor'])
+
+def drawGroove(buffer:BufferContainer, pointA:V2, pointB:V2):
+    drawPoint(buffer, pointA, pointConfig['grooveColor'], pointConfig['pointHalfWH'] * buffer.drawScale)   
+    drawPoint(buffer, pointB, pointConfig['grooveColor'], pointConfig['pointHalfWH'] * buffer.drawScale)
+    drawEdge(buffer, pointA, pointB, pointConfig['grooveColor'])
     
 
-def drawAnchor(point:V2, buffer:BufferContainer):
-    drawPoint(point, buffer, pointConfig['anchorColor'], pointConfig['pointHalfWH'] * buffer.drawScale)    
+def drawAnchor(buffer:BufferContainer, point:V2):
+    drawPoint(buffer, point, pointConfig['anchorColor'], pointConfig['pointHalfWH'] * buffer.drawScale)    
 
-def drawDiamond(point:V2, buffer:BufferContainer, color, halfWH:float):
+
+def drawDiamond(buffer:BufferContainer, point:V2, color, halfWH:float):
     ind = buffer.currentIndex
 
     buffer.verts += [point.x + halfWH, point.y,          
@@ -262,7 +268,8 @@ def drawDiamond(point:V2, buffer:BufferContainer, color, halfWH:float):
     buffer.indices += [ind, ind +1, ind +1, ind +2, ind +2, ind +3, ind +3, ind]
     buffer.currentIndex += 4
 
-def drawPoint(point:V2, buffer:BufferContainer, color, halfWH:float):
+
+def drawPoint(buffer:BufferContainer, point:V2, color, halfWH:float):
 
     ind = buffer.currentIndex
     buffer.verts += [point.x-halfWH, point.y-halfWH, point.x-halfWH, point.y+halfWH,
@@ -272,7 +279,8 @@ def drawPoint(point:V2, buffer:BufferContainer, color, halfWH:float):
     buffer.indices += [ind, ind +1, ind +1, ind +2, ind +2, ind +3, ind +3, ind]
     buffer.currentIndex += 4
 
-def drawPointXY(x:float, y:float, buffer:BufferContainer, color, halfWH:float):
+
+def drawPointXY(buffer:BufferContainer, x:float, y:float, color, halfWH:float):
 
     ind = buffer.currentIndex
     buffer.verts += [x-halfWH, y-halfWH, x-halfWH, y+halfWH,
@@ -281,6 +289,7 @@ def drawPointXY(x:float, y:float, buffer:BufferContainer, color, halfWH:float):
     buffer.colors += 4 * color
     buffer.indices += [ind, ind +1, ind +1, ind +2, ind +2, ind +3, ind +3, ind]
     buffer.currentIndex += 4
+
 
 def drawEdge(buffer:BufferContainer, frm:V2, to:V2, color):
 
@@ -309,85 +318,123 @@ def drawBBox(buffer: BufferContainer, center:V2, halfWH:V2, color, offset:float)
     buffer.colors += 4 * color
     buffer.indices += [ind, ind +1, ind +1, ind +2, ind +2, ind +3, ind +3, ind]
     buffer.currentIndex += 4
-    
-def drawBody(body: BodyI, buffer:BufferContainer, isActive:bool, isUnderCursor:bool):
+
+
+def drawBody(buffer:BufferContainer, body: BodyI, isActive:bool, isUnderCursor:bool):
     color = pointConfig['activeEdgeColor'] if isActive else (pointConfig['underCursorEdgeColor'] if isUnderCursor else pointConfig['inactivePointColor'])
     for shape in body.shapes:
         shape.draw()
 
     drawBBox(buffer, body.box.center.final, body.box.halfWH.final, color, pointConfig['pointHalfWH'] * buffer.drawScale)
 
-    drawPoint(body.physics.cog.final, buffer, pointConfig['cogColor'], pointConfig['cogHalfWH'] * buffer.drawScale)
+    drawPoint(buffer, body.physics.cog.final, pointConfig['cogColor'], pointConfig['cogHalfWH'] * buffer.drawScale)
 
 
-def drawShape(shape: ShapeI, buffer:BufferContainer, isActive:bool, isUnderCursor:bool):
+def drawShape(buffer:BufferContainer, shape: ShapeI, isActive:bool, isUnderCursor:bool):
     color = pointConfig['activeEdgeColor'] if isActive else (pointConfig['underCursorEdgeColor'] if isUnderCursor else pointConfig['inactivePointColor'])
     shape.draw()
 
     drawBBox(buffer, shape.box.center.final, shape.box.halfWH.final, color, pointConfig['pointHalfWH'] * buffer.drawScale)
 
-    drawPoint(shape.physics.cog.final, buffer, pointConfig['cogColor'], pointConfig['cogHalfWH'] * buffer.drawScale)
+    drawPoint(buffer, shape.physics.cog.final, pointConfig['cogColor'], pointConfig['cogHalfWH'] * buffer.drawScale)
 
 
-def drawCircle(center:V2, halfWH:V2, elems:int):
-    radius = halfWH.length()
+def drawCircle(buffer:BufferContainer, center:V2, halfWH:V2, elems:int):
     color = pointConfig['inactivePointColor']
-    arcade.draw_circle_outline(center.x, center.y, radius, color, _shaderScale, num_segments=elems)
-    arcade.draw_line(center.x, center.y, center.x + halfWH.x, center.y + halfWH.y, color, _shaderScale)
+
+    circleELemAngle = math.pi * 2.0 / elems
+    cos = math.cos(circleELemAngle)
+    sin = math.sin(circleELemAngle)
+
+    prevX = halfWH.x
+    prevY = halfWH.y
+
+    ind = buffer.currentIndex
+
+    for i in range(elems - 1):
+        postX = prevX * cos - prevY * sin
+        postY = prevX * sin + prevY * cos
+
+        buffer.verts += [center.x + prevX, center.y + prevY, center.x + postX, center.y + postY]
+        buffer.indices += [ind + i, ind + i + 1]
+
+        prevX = postX
+        prevY = postY
+
+    buffer.verts += [center.x + prevX, center.y + prevY, center.x + halfWH.x, center.y + halfWH.y]
+    
+    buffer.colors += elems * color
+    buffer.indices += [ind + elems-1, ind]
+
+    #arcade.draw_circle_outline(center.x, center.y, radius, color, _shaderScale, num_segments=elems)
+
+    # add arm
+    buffer.verts += [center.x, center.y]
+    buffer.colors +=  color
+    buffer.indices += [ind, ind + elems]
+
+    buffer.currentIndex += elems + 2
+
+    #arcade.draw_line(center.x, center.y, center.x + halfWH.x, center.y + halfWH.y, color, _shaderScale)
 
 
-def drawLineShape(points: List[EditorPoint]):
+def drawLineShape(buffer:BufferContainer, points: List[EditorPoint]):
     color = pointConfig['inactivePointColor']
     if points:
         point = points[0].final
-        drawPoint(point, pointConfig['inactivePointColor'], pointConfig['pointHalfWH']* _shaderScale)
+        drawPoint(buffer, point, pointConfig['inactivePointColor'], pointConfig['pointHalfWH'] * buffer.drawScale)
         for nextPoint in points[1:]:
-            drawEdge(point, nextPoint.final, color)
-            drawPoint(nextPoint.final, pointConfig['inactivePointColor'], pointConfig['pointHalfWH']* _shaderScale)
+            drawEdge(buffer, point, nextPoint.final, color)
+            drawPoint(buffer, nextPoint.final, pointConfig['inactivePointColor'], pointConfig['pointHalfWH'] * buffer.drawScale)
             point = nextPoint.final
 
-def drawPolygon(points: List[EditorPoint]):
+
+def drawPolygon(buffer:BufferContainer, points: List[EditorPoint]):
     color = pointConfig['inactivePointColor']
     if points:
         #prevPoint = poly.points[-1]
         prevPoint = points[-1].final
         for point in points:
-            drawEdge(prevPoint, point.final, color)
-            drawPoint(point.final, pointConfig['inactivePointColor'], pointConfig['pointHalfWH'] * _shaderScale)
+            drawEdge(buffer, prevPoint, point.final, color)
+            drawPoint(buffer, point.final, pointConfig['inactivePointColor'], pointConfig['pointHalfWH'] * buffer.drawScale)
             prevPoint = point.final
 
-def drawBox(points: List[EditorPoint]):
+
+def drawBox(buffer:BufferContainer, points: List[EditorPoint]):
     color = pointConfig['inactivePointColor']
 
-    prevPoint = points[-1]
+    prevPoint = points[-1].final
     for point in points[1:]:
-        arcade.draw_line(prevPoint.final.x, prevPoint.final.y, 
-                         point.final.x,     point.final.y, color, _shaderScale)
-        drawPoint(prevPoint.final, color, pointConfig['pointHalfWH'] * _shaderScale)
-        prevPoint = point
+        drawEdge(buffer, prevPoint, point.final, color)
+        # arcade.draw_line(prevPoint.final.x, prevPoint.final.y, 
+        #                  point.final.x,     point.final.y, color, _shaderScale)
+        drawPoint(buffer, prevPoint, color, pointConfig['pointHalfWH'] * buffer.drawScale)
+        prevPoint = point.final
 
-def drawRect(points: List[EditorPoint]):
+
+def drawRect(buffer:BufferContainer, points: List[EditorPoint]):
     color = pointConfig['inactivePointColor']
     
     # TODO this to internal rect state
-    prevPoint = points[-1]
+    prevPoint = points[-1].final
     for point in points[1:]:
-        arcade.draw_line(prevPoint.final.x, prevPoint.final.y, 
-                         point.final.x,     point.final.y, color, _shaderScale)
-        drawPoint(prevPoint.final, color, pointConfig['pointHalfWH'] * _shaderScale)
-        prevPoint = point
+        drawEdge(buffer, prevPoint, point.final, color)
+        # arcade.draw_line(prevPoint.final.x, prevPoint.final.y, 
+        #                  point.final.x,     point.final.y, color, _shaderScale)
+        drawPoint(buffer, prevPoint, color, pointConfig['pointHalfWH'] * buffer.drawScale)
+        prevPoint = point.final
 
     
-def drawHelperPoint(point:V2, buffer:BufferContainer):
-    drawDiamond(point, buffer, pointConfig['helperColor'], pointConfig['helperHalfWH'] * buffer.drawScale)
+def drawHelperPoint(buffer:BufferContainer, point:V2):
+    drawDiamond(buffer, point, pointConfig['helperColor'], pointConfig['helperHalfWH'] * buffer.drawScale)
 
 
-def drawCursor(cursor:V2, buffer:BufferContainer):
+def drawCursor(buffer:BufferContainer, cursor:V2):
     color = pointConfig['cursorLineColor']
     if cursor.x >= _viewLimits.x - _menuDistance:
         color = pointConfig['cursorLineMenuColor']
     
-    drawPoint(cursor, buffer, color, pointConfig['cursorHalfWH'] * buffer.drawScale)
+    drawPoint(buffer, cursor, color, pointConfig['cursorHalfWH'] * buffer.drawScale)
     
     ind = buffer.currentIndex
     buffer.verts += [_viewOffset.x, cursor.y,
