@@ -9,6 +9,7 @@ from typing import List, Optional, Tuple
 class PolygonSpec(ShapeSpec):
 
     def __init__(self):
+        # TODO correct all shapes internals - points to hold geometry only
         self.points: List[EditorPoint] = []
         self.currentPoint: Optional[EditorPoint] = None
         self.radius: Radius = Radius(1.0)
@@ -260,6 +261,7 @@ class RectSpec(ShapeSpec):
 class LineSpec(ShapeSpec):
 
     def __init__(self):
+        # TODO correct all shapes internals - points to hold geometry only
         self.points: List[EditorPoint] = []
         self.currentPoint: Optional[EditorPoint] = None
         self.radius: Radius = Radius(1.0)
