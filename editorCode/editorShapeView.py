@@ -12,6 +12,9 @@ from .pymunkTester import testShapes
 
 from .drawing import drawCursor, drawHelperPoint, drawShape
 
+from .bufferContainer import BufferContainer
+from .lineShader import LineDraw
+
 from .config import toJSON
 
 class EditorShapeView:
@@ -27,6 +30,7 @@ class EditorShapeView:
         self.hideOthers = False
 
         self.transform = ContinuousTransform()
+        self.shader = LineDraw()
         #self.moveView(-width/2, -height/2)
 
 
@@ -124,19 +128,40 @@ class EditorShapeView:
  
     def draw(self):
         database = Database.getInstance()
+        buffer = BufferContainer.getInstance()
+
         self.viewOffset.start()
+
+        buffer.reset()
+        buffer.drawScale = self.viewOffset.scale
+
         if self.hideOthers:
             shape = database.getCurrentShape()
             if shape:
-                drawShape(shape, True, False)
+                buffer.addBBox(shape.box.center.final, shape.box.halfWH.final, True, False)
+                shape.bufferData(buffer)
+                buffer.addCenterOfGravity(shape.physics.cog.final, True)
+                
+                #drawShape(shape, True, False)
         else:
             parent = database.getCurrentBody()
             if parent:
                 currentShape = database.getCurrentShape()
                 for shape in parent.shapes:
-                    drawShape(shape, shape == currentShape, shape in self.objectsUnderCursor)
+                    active = (currentShape == shape)
+                    buffer.addBBox(shape.box.center.final, shape.box.halfWH.final, active, False)
+                    shape.bufferData(buffer)
+                    buffer.addCenterOfGravity(shape.physics.cog.final, True)
+                    
+                    #drawShape(shape, shape == currentShape, shape in self.objectsUnderCursor)
 
-        drawHelperPoint(self.pivot.local)
+        buffer.addHelperPoint(self.pivot.local)
+
+        #drawHelperPoint(self.pivot.final)
+
+        self.shader.update(buffer.verts, buffer.colors, buffer.indices)
+        self.shader.draw()
+        #drawHelperPoint(self.pivot.local)
 
     # ######## TODO
     def nextSnappableObject(self):

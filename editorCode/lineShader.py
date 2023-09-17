@@ -24,6 +24,7 @@ class LineDraw:
             uniform Projection {
                 uniform mat4 matrix;
             } proj;
+            
             in vec2 inVert;
             in vec4 inColor;
 
@@ -53,18 +54,18 @@ class LineDraw:
                         -0.5,  0.5,
         ])
         
-        self.verts = ctx.buffer(data=verts)
+        self.verts = ctx.buffer(data=verts, usage='static')
         vertsDescription = BufferDescription(self.verts, '2f', ['inVert'] )
 
         colors = array.array('B', [255, 0, 0, 255, 
                                    0, 255, 0, 255,
                                    0, 0, 255, 255,
                                    255, 255, 255, 255])
-        self.colors = ctx.buffer(data=colors)
+        self.colors = ctx.buffer(data=colors, usage='static')
         colorsDescription = BufferDescription(self.colors, '4f1', ['inColor'], normalized=['inColor'])
 
         indices = array.array('I', [0,1,2,1])
-        self.indices = ctx.buffer(data=indices)
+        self.indices = ctx.buffer(data=indices, usage='static')
 
         self.geometry = ctx.geometry([vertsDescription, colorsDescription], 
                                      index_buffer=self.indices, 
@@ -88,6 +89,7 @@ class LineDraw:
         if indicesInBytes > self.indices.size:
             self.indices.orphan(size=indicesInBytes)
         self.indices.write(array.array('I', indices))
+        self.geometry.num_vertices = len(indices)
 
     def draw(self):
         self.geometry.render(self.program)

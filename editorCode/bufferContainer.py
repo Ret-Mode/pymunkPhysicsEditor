@@ -43,8 +43,8 @@ class BufferContainer:
         sin = math.sin(circleParts)
         cos = math.cos(circleParts)
 
-        startOffsetX = - dist * (to.y - frm.y) / capLen
-        startOffsetY =   dist * (to.x - frm.x) / capLen
+        startOffsetX =   dist * (to.y - frm.y) / capLen
+        startOffsetY = - dist * (to.x - frm.x) / capLen
 
         # TODO add actual update of a buffer
         self.addEdgeXY(frm.x + startOffsetX, frm.y + startOffsetY, 
@@ -257,8 +257,8 @@ class BufferContainer:
             prevX = postX
             prevY = postY
 
-        self.colors += elems * color
-        self.currentIndex += elems
+        self.colors += (elems+1) * color
+        self.currentIndex += elems + 1
 
 
     def addCircleXYFromXY(self, centerX:float, centerY:float, halfWHX:float, halfWHY:float, elems:int, color):
@@ -303,7 +303,7 @@ class BufferContainer:
 
         ind = self.currentIndex
         self.verts += [point.x-halfWH, point.y-halfWH, point.x-halfWH, point.y+halfWH,
-                        point.x+halfWH, point.y+halfWH, point.x-halfWH, point.y+halfWH]
+                        point.x+halfWH, point.y+halfWH, point.x+halfWH, point.y-halfWH]
         
         self.colors += 4 * color
         self.indices += [ind, ind +1, ind +1, ind +2, ind +2, ind +3, ind +3, ind]
@@ -314,7 +314,7 @@ class BufferContainer:
 
         ind = self.currentIndex
         self.verts += [x-halfWH, y-halfWH, x-halfWH, y+halfWH,
-                        x+halfWH, y+halfWH, x-halfWH, y+halfWH]
+                        x+halfWH, y+halfWH, x+halfWH, y-halfWH]
         
         self.colors += 4 * color
         self.indices += [ind, ind +1, ind +1, ind +2, ind +2, ind +3, ind +3, ind]
@@ -341,10 +341,12 @@ class BufferContainer:
 
     def addBBox(self, center:V2, halfWH:V2, isActive:bool, isUnderCursor:bool):
         color = pointConfig['activeEdgeColor'] if isActive else (pointConfig['underCursorEdgeColor'] if isUnderCursor else pointConfig['inactivePointColor'])
-        #offset = pointConfig['pointHalfWH'] * self.drawScale
+        offset = pointConfig['pointHalfWH'] * self.drawScale
+        offsetX = halfWH.x + offset
+        offsetY = halfWH.y + offset
         ind = self.currentIndex
-        self.verts += [center.x-halfWH.x, center.y-halfWH.y, center.x-halfWH.x, center.y+halfWH.y,
-                        center.x+halfWH.x, center.y+halfWH.y, center.x-halfWH.x, center.y+halfWH.y]
+        self.verts += [center.x-offsetX, center.y-offsetY, center.x-offsetX, center.y+offsetY,
+                        center.x+offsetX, center.y+offsetY, center.x+offsetX, center.y-offsetY]
         
         self.colors += 4 * color
         self.indices += [ind, ind +1, ind +1, ind +2, ind +2, ind +3, ind +3, ind]
@@ -353,25 +355,6 @@ class BufferContainer:
 
     def addCenterOfGravity(self, cog:V2, isChildCog:bool):
         self.addPoint(cog, pointConfig['cogColor'], pointConfig['cogHalfWH'] * self.drawScale)
-
-
-#     def addBody(self, body: BodyI, isActive:bool, isUnderCursor:bool):
-#         color = pointConfig['activeEdgeColor'] if isActive else (pointConfig['underCursorEdgeColor'] if isUnderCursor else pointConfig['inactivePointColor'])
-#         for shape in body.shapes:
-#             shape.draw()
-
-#         #self.addBBox(body.box.center.final, body.box.halfWH.final, color)
-
-# #        self.addPoint(body.physics.cog.final, pointConfig['cogColor'], pointConfig['cogHalfWH'] * self.drawScale)
-
-
-#     def addShape(self, shape: ShapeI, isActive:bool, isUnderCursor:bool):
-#         color = pointConfig['activeEdgeColor'] if isActive else (pointConfig['underCursorEdgeColor'] if isUnderCursor else pointConfig['inactivePointColor'])
-#         shape.draw()
-
-        #self.addBBox(shape.box.center.final, shape.box.halfWH.final, color)
-
-#        self.addPoint(shape.physics.cog.final, pointConfig['cogColor'], pointConfig['cogHalfWH'] * self.drawScale)
 
 
     def addCircle(self, center:V2, halfWH:V2, elems:int):

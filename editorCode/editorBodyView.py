@@ -122,28 +122,28 @@ class EditorBodyView:
             currentBody.bufferData(buffer)
             buffer.addCenterOfGravity(currentBody.physics.cog.final, True)
 
-            drawBody(currentBody, True, False)
+            #drawBody(currentBody, True, False)
         else:
             for body in database.bodies:
                 active = (currentBody == body)
 
-                buffer.addBBox(body.box.center.final, currentBody.box.halfWH.final, active, False)
+                buffer.addBBox(body.box.center.final, body.box.halfWH.final, active, False)
                 body.bufferData(buffer)
                 buffer.addCenterOfGravity(body.physics.cog.final, True)
 
-                drawBody(body, active, False)
+                #drawBody(body, active, False)
 
         for constraint in database.constraints:
             constraint.bufferInternals(buffer)
 
-            constraint.drawInternals()
+            #constraint.drawInternals()
 
-        buffer.addHelperPoint(self.pivot.final)
+        buffer.addHelperPoint(self.pivot.local)
 
-        drawHelperPoint(self.pivot.final)
+        #drawHelperPoint(self.pivot.final)
 
-        # self.shader.update(buffer.verts, buffer.colors, buffer.indices)
-        # self.shader.draw()
+        self.shader.update(buffer.verts, buffer.colors, buffer.indices)
+        self.shader.draw()
 
     def undo(self):
         self.clearCurrentOperations()

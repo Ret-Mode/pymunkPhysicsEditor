@@ -54,37 +54,37 @@ class CircleSpec(ShapeSpec):
 
     def __init__(self):
         self.points: List[EditorPoint] = [EditorPoint(0.0, 0.0), EditorPoint(1.0, 0.0)]
-        self.center: EditorPoint = EditorPoint(0.0, 0.0)
+        self.center: EditorPoint = self.points[0]
         # this is basically radius
-        self.halfWH: EditorPoint = EditorPoint(0.0, 0.0)
+        self.halfWH: EditorPoint = self.points[1]
         #user radius, unusable on circles
         self.radius: Radius = Radius(0.0)
         self.drawLines: int = 32
 
     def getJSONDict(self, parent:dict):
-        center = self.points[0]
-        halfWH = self.points[1]
+        center = self.center
+        halfWH = self.halfWH
         this = {'offset' : [center.final.x, center.final.y],
                 'radius' : halfWH.final.length()}
         parent['internal'] = this
 
     def draw(self):
-        center = self.points[0]
-        halfWH = self.points[1]
+        center = self.center
+        halfWH = self.halfWH
         drawCircle(center.final, halfWH.final, self.drawLines)
 
     def addPoint(self, point:EditorPoint):
         assert False
 
     def resetWH(self, point:EditorPoint):
-        center = self.points[0]
-        halfWH = self.points[1]
+        center = self.center
+        halfWH = self.halfWH
         halfWH.local.setFromV(point.local).unTV(center.local)
         length = halfWH.local.length()
         halfWH.local.setFromXY(length, 0.0)
 
     def setWH(self, point:EditorPoint):
-        halfWH = self.points[1]
+        halfWH = self.halfWH
         halfWH.local.setFromV(point.local)
         length = halfWH.local.length()
         halfWH.local.setFromXY(length, 0.0)
@@ -93,14 +93,14 @@ class CircleSpec(ShapeSpec):
         pass
 
     def updatePos(self, final: Mat):
-        center = self.points[0]
-        halfWH = self.points[1]
+        center = self.center
+        halfWH = self.halfWH
         final.mulV(center.local, center.final)
         final.mulV(halfWH.local, halfWH.final).unTV(center.final)
 
     def getBounds(self, box: BoundingBox) -> Tuple[float]:
-        center = self.points[0]
-        halfWH = self.points[1]
+        center = self.center
+        halfWH = self.halfWH
         length = halfWH.final.length()
         box.setFinal(center.final.x - length, center.final.y - length, center.final.x + length, center.final.y + length)
 
