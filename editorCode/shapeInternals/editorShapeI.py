@@ -1,4 +1,5 @@
 from ..editorTypes import Mat, ContainerTransform, BoundingBox
+from ..bufferContainer import BufferContainer
 from .editorPhysicsI import PhysicsProp
 from .editorShapeSpecI import ShapeSpec
 
@@ -56,6 +57,9 @@ class ShapeI:
         this['type'] = self.type
         self.internal.getJSONDict(this)
         parent[self.label] = this
+
+    def bufferData(self, buffer:BufferContainer):
+        raise NotImplementedError
 
     @staticmethod
     def getTypes() -> List[str]:

@@ -4,7 +4,7 @@ from arcade import ArcadeContext
 import pyglet.gl
 
 from typing import List
-
+import arcade
 
 class LineDraw:
 
@@ -16,10 +16,14 @@ class LineDraw:
             LineDraw._instance = LineDraw()
         return LineDraw._instance
 
-    def __init__(self, ctx:ArcadeContext):
+    def __init__(self):
+        ctx = arcade.get_window().ctx
         vertexShader="""
             #version 330
 
+            uniform Projection {
+                uniform mat4 matrix;
+            } proj;
             in vec2 inVert;
             in vec4 inColor;
 
@@ -27,7 +31,7 @@ class LineDraw:
 
             void main() {
                 fColor = inColor;
-                gl_Position = vec4(inVert.xy, 0.0, 1.0);
+                gl_Position = proj.matrix * vec4(inVert.xy, 0.0, 1.0);
             }
             """
 
@@ -65,8 +69,8 @@ class LineDraw:
         self.geometry = ctx.geometry([vertsDescription, colorsDescription], 
                                      index_buffer=self.indices, 
                                      mode=ctx.LINES)
-        ctx.enable(pyglet.gl.GL_LINE_SMOOTH)
-        ctx.disable(pyglet.gl.GL_DEPTH_TEST)
+        #ctx.enable(pyglet.gl.GL_LINE_SMOOTH)
+        #ctx.disable(pyglet.gl.GL_DEPTH_TEST)
 
     def update(self, verts:List[float], colors:List[int], indices:List[int]):
         vertsInBytes = len(verts) * 4

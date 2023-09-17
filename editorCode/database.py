@@ -1,5 +1,4 @@
 from typing import List
-from .editorShapes import Container
 from .shapeInternals.editorShapeI import ShapeI
 from .shapeInternals.editorBodyI import BodyI
 from .constraintInternals.editorConstraintI import ConstraintI
@@ -37,10 +36,10 @@ class Database:
         return Database._instance
 
     def __init__(self):
-        self.bodies: List[Container] = []
+        self.bodies: List[BodyI] = []
         self.shapeList: List[ShapeI] = []
         self.constraints: List[ConstraintI] = []
-        self.currentBody: Container = None
+        self.currentBody: BodyI = None
         self.currentShape: ShapeI = None
         self.currentConstraint: ConstraintI = None
 
@@ -87,7 +86,7 @@ class Database:
         if shape and self.currentShape != shape:
             self.currentShape = shape
 
-    def getCurrentBody(self) -> Container:
+    def getCurrentBody(self) -> BodyI:
         return self.currentBody
     
     def getCurrentShape(self) -> ShapeI:
@@ -131,7 +130,7 @@ class Database:
         else:
             return None
 
-    def renameBody(self, body:Container, label):
+    def renameBody(self, body:BodyI, label):
         newLabel = _getUniqueLabel(label, self.getAllBodyLabels(), 'BODY')
         body.label = newLabel
 
@@ -144,7 +143,7 @@ class Database:
     def cloneBodyFully(self, label:str):
         pass
 
-    def addBody(self, body:Container, at: int = -1):
+    def addBody(self, body:BodyI, at: int = -1):
         if at < 0:
             at = len(self.bodies)
         self.bodies.insert(at, body)
@@ -185,7 +184,7 @@ class Database:
                 newIndex = (oldIndex + 1) % shapeCount
                 self.swap(oldIndex, newIndex, parent.shapes)
         
-    def getNewShapeParent(self, shape: ShapeI) -> Container:
+    def getNewShapeParent(self, shape: ShapeI) -> BodyI:
         for parent in self.bodies:
             if shape in parent.shapes:
                 return parent
@@ -222,7 +221,7 @@ class Database:
         newLabel = _getUniqueLabel(label, self.getAllNewShapeLabels(), 'SHAPE')
         return shapeFactory(newLabel, typeID)
 
-    def addNewShape(self, shape:ShapeI, parent:Container, at: int = -1):
+    def addNewShape(self, shape:ShapeI, parent:BodyI, at: int = -1):
         if parent in self.bodies:
             if at < 0:
                 at = len(parent.shapes)

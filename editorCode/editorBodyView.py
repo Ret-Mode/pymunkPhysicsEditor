@@ -10,6 +10,7 @@ from .commandExec import CommandExec
 from .commandExec import ComSetPivot, ComScaleView, ComResizeView, ComMoveCursor, ComMoveView
 from .commandExec import ComStartTransform, ComCancelTransform,ComApplyTransform
 from .drawing import drawHelperPoint, drawBody
+from .lineShader import LineDraw
 
 from .config import toJSON
 
@@ -26,6 +27,7 @@ class EditorBodyView:
         self.hideOthers = False
 
         self.transform = ContinuousTransform()
+        self.shader = LineDraw()
         #self.moveView(-width/2, -height/2)
 
 
@@ -110,19 +112,38 @@ class EditorBodyView:
         database = Database.getInstance()
         self.viewOffset.start()
 
+        buffer.reset()
         buffer.drawScale = self.viewOffset.scale
+
         currentBody = database.getCurrentBody()
         if self.hideOthers and currentBody:
+
+            buffer.addBBox(currentBody.box.center.final, currentBody.box.halfWH.final, True, False)
+            currentBody.bufferData(buffer)
+            buffer.addCenterOfGravity(currentBody.physics.cog.final, True)
+
             drawBody(currentBody, True, False)
         else:
             for body in database.bodies:
                 active = (currentBody == body)
+
+                buffer.addBBox(body.box.center.final, currentBody.box.halfWH.final, active, False)
+                body.bufferData(buffer)
+                buffer.addCenterOfGravity(body.physics.cog.final, True)
+
                 drawBody(body, active, False)
 
         for constraint in database.constraints:
+            constraint.bufferInternals(buffer)
+
             constraint.drawInternals()
 
+        buffer.addHelperPoint(self.pivot.final)
+
         drawHelperPoint(self.pivot.final)
+
+        # self.shader.update(buffer.verts, buffer.colors, buffer.indices)
+        # self.shader.draw()
 
     def undo(self):
         self.clearCurrentOperations()

@@ -66,6 +66,10 @@ class BodyDynamic(BodyI):
     def clone(self, newLabel:str):
         pass
 
+    def bufferData(self, buffer):
+        for shape in self.shapes:
+            shape.bufferData(buffer)
+
 
 class BodyKinematic(BodyI):
     

@@ -1,6 +1,7 @@
 from typing import List
 from ..shapeInternals.editorBodyI import BodyI
 from ..editorTypes import UserSettableFloat
+from ..bufferContainer import BufferContainer
 
 from ..drawing import drawBody
 
@@ -59,6 +60,28 @@ class ConstraintI:
     def drawBodyB(self):
         if self.bodyA and self.bodyB:
             drawBody(self.bodyB, True, False)
+
+    def bufferInternals(self, buffer:BufferContainer):
+        pass
+
+    def bufferInternalA(self, buffer:BufferContainer):
+        pass
+
+    def bufferInternalB(self, buffer:BufferContainer):
+        pass
+
+    def bufferBodies(self, buffer:BufferContainer):
+        if self.bodyA and self.bodyB:
+            self.bodyA.bufferData(buffer)
+            self.bodyB.bufferData(buffer)
+
+    def bufferBodyA(self, buffer:BufferContainer):
+        if self.bodyA and self.bodyB:
+            self.bodyA.bufferData(buffer)
+
+    def bufferBodyB(self, buffer:BufferContainer):
+        if self.bodyA and self.bodyB:
+            self.bodyB.bufferData(buffer)
 
     @staticmethod
     def getTypes() -> List[str]:
