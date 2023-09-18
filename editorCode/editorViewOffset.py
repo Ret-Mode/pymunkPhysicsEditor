@@ -9,6 +9,7 @@ import arcade
 from arcade.context import ArcadeContext
 
 
+# TODO cleanup cursor view
 class Simple2dProjection:
 
     def __init__(self, width: float, height: float):
@@ -85,8 +86,6 @@ class ViewOffset:
 
     def start(self):
         finishDrawing()
-        setDrawingParams(self.scale, self.offsetScaled, self.sizeInPixels, editorButtonSetup['width'])
-        setContext((self.offsetInPixels.x, self.offsetInPixels.y, self.sizeInPixels.x, self.sizeInPixels.y), self.mat)
 
     def coordsInView(self, x:float, y:float):
         return (self.offsetInPixels.x < x < self.offsetInPixels.x + self.sizeInPixels.x) and (self.offsetInPixels.y < y < self.offsetInPixels.y + self.sizeInPixels.y)

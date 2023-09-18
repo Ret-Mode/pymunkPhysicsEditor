@@ -13,6 +13,8 @@ from .commandExec import ComSetRatchetFromCoords, ComSetRotaryMaxFromCoords, Com
 from .commandExec import ComSetSlideMaxFromCoords, ComSetSlideMinFromCoords
 
 from .drawing import drawCursor, drawHelperPoint, drawBody
+from .bufferContainer import BufferContainer
+from .lineShader import LineDraw
 
 from .config import toJSON
 
@@ -61,6 +63,7 @@ class EditorConstraintView:
         self.objectsUnderCursor = []
         self.hideOthers = False
 
+        self.shader = LineDraw()
         #self.moveView(-width/2, -height/2)
 
 
@@ -160,20 +163,67 @@ class EditorConstraintView:
             constraint.updateInternals()
 
     def draw(self):
+        
         constraint:ConstraintI = Database.getInstance().getCurrentConstraint()
 
         if constraint:
-            self.viewAllOffset.start()
-            constraint.drawBodies()
-            constraint.drawInternals()
+            # self.viewAllOffset.start()
+            # constraint.drawBodies()
+            # constraint.drawInternals()
             
-            self.viewBodyAOffset.start()
-            constraint.drawBodyA()
-            constraint.drawInternalA()
+            # self.viewBodyAOffset.start()
+            # constraint.drawBodyA()
+            # constraint.drawInternalA()
 
-            self.viewBodyBOffset.start()
-            constraint.drawBodyB()
-            constraint.drawInternalB()
+            # self.viewBodyBOffset.start()
+            # constraint.drawBodyB()
+            # constraint.drawInternalB()
+
+            buffer = BufferContainer.getInstance()
+            
+            buffer.reset()
+            buffer.drawScale = self.viewAllOffset.scale
+
+            constraint.bufferBodies(buffer)
+            constraint.bufferInternals(buffer)
+
+            self.shader.update(buffer.verts, buffer.colors, buffer.indices)
+            self.shader.setProjection((self.viewAllOffset.offsetInPixels.x, 
+                                       self.viewAllOffset.offsetInPixels.y, 
+                                       self.viewAllOffset.sizeInPixels.x, 
+                                       self.viewAllOffset.sizeInPixels.y), 
+                                       self.viewAllOffset.mat)
+            self.shader.draw()
+            
+
+            buffer.reset()
+            buffer.drawScale = self.viewBodyAOffset.scale
+
+            constraint.bufferBodyA(buffer)
+            constraint.bufferInternalA(buffer)
+
+            self.shader.update(buffer.verts, buffer.colors, buffer.indices)
+            self.shader.setProjection((self.viewBodyAOffset.offsetInPixels.x, 
+                                       self.viewBodyAOffset.offsetInPixels.y, 
+                                       self.viewBodyAOffset.sizeInPixels.x, 
+                                       self.viewBodyAOffset.sizeInPixels.y), 
+                                       self.viewBodyAOffset.mat)
+            self.shader.draw()
+
+            buffer.reset()
+            buffer.drawScale = self.viewBodyBOffset.scale
+
+
+            constraint.bufferBodyB(buffer)
+            constraint.bufferInternalB(buffer)
+
+            self.shader.update(buffer.verts, buffer.colors, buffer.indices)
+            self.shader.setProjection((self.viewBodyBOffset.offsetInPixels.x, 
+                                       self.viewBodyBOffset.offsetInPixels.y, 
+                                       self.viewBodyBOffset.sizeInPixels.x, 
+                                       self.viewBodyBOffset.sizeInPixels.y), 
+                                       self.viewBodyBOffset.mat)
+            self.shader.draw()
 
     def defaultAction(self):
         constraint:ConstraintI = Database.getInstance().getCurrentConstraint()

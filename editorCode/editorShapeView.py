@@ -130,8 +130,6 @@ class EditorShapeView:
         database = Database.getInstance()
         buffer = BufferContainer.getInstance()
 
-        self.viewOffset.start()
-
         buffer.reset()
         buffer.drawScale = self.viewOffset.scale
 
@@ -141,8 +139,7 @@ class EditorShapeView:
                 buffer.addBBox(shape.box.center.final, shape.box.halfWH.final, True, False)
                 shape.bufferData(buffer)
                 buffer.addCenterOfGravity(shape.physics.cog.final, True)
-                
-                #drawShape(shape, True, False)
+
         else:
             parent = database.getCurrentBody()
             if parent:
@@ -152,16 +149,16 @@ class EditorShapeView:
                     buffer.addBBox(shape.box.center.final, shape.box.halfWH.final, active, False)
                     shape.bufferData(buffer)
                     buffer.addCenterOfGravity(shape.physics.cog.final, True)
-                    
-                    #drawShape(shape, shape == currentShape, shape in self.objectsUnderCursor)
 
         buffer.addHelperPoint(self.pivot.local)
 
-        #drawHelperPoint(self.pivot.final)
-
         self.shader.update(buffer.verts, buffer.colors, buffer.indices)
+        self.shader.setProjection((self.viewOffset.offsetInPixels.x, 
+                    self.viewOffset.offsetInPixels.y, 
+                    self.viewOffset.sizeInPixels.x, 
+                    self.viewOffset.sizeInPixels.y), 
+                    self.viewOffset.mat)
         self.shader.draw()
-        #drawHelperPoint(self.pivot.local)
 
     # ######## TODO
     def nextSnappableObject(self):

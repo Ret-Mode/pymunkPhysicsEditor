@@ -110,7 +110,6 @@ class EditorBodyView:
     def draw(self):
         buffer = BufferContainer.getInstance()
         database = Database.getInstance()
-        self.viewOffset.start()
 
         buffer.reset()
         buffer.drawScale = self.viewOffset.scale
@@ -122,7 +121,6 @@ class EditorBodyView:
             currentBody.bufferData(buffer)
             buffer.addCenterOfGravity(currentBody.physics.cog.final, True)
 
-            #drawBody(currentBody, True, False)
         else:
             for body in database.bodies:
                 active = (currentBody == body)
@@ -131,18 +129,18 @@ class EditorBodyView:
                 body.bufferData(buffer)
                 buffer.addCenterOfGravity(body.physics.cog.final, True)
 
-                #drawBody(body, active, False)
-
         for constraint in database.constraints:
             constraint.bufferInternals(buffer)
 
-            #constraint.drawInternals()
-
         buffer.addHelperPoint(self.pivot.local)
 
-        #drawHelperPoint(self.pivot.final)
-
         self.shader.update(buffer.verts, buffer.colors, buffer.indices)
+        self.shader.setProjection((self.viewOffset.offsetInPixels.x, 
+                            self.viewOffset.offsetInPixels.y, 
+                            self.viewOffset.sizeInPixels.x, 
+                            self.viewOffset.sizeInPixels.y), 
+                            self.viewOffset.mat)
+
         self.shader.draw()
 
     def undo(self):

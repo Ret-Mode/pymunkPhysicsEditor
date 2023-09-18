@@ -2,8 +2,10 @@ import array
 from arcade.gl import BufferDescription
 from arcade import ArcadeContext
 import pyglet.gl
+import pyglet
+from pyglet.math import Mat4
 
-from typing import List
+from typing import List, Tuple
 import arcade
 
 class LineDraw:
@@ -17,7 +19,7 @@ class LineDraw:
         return LineDraw._instance
 
     def __init__(self):
-        ctx = arcade.get_window().ctx
+        self.ctx = arcade.get_window().ctx
         vertexShader="""
             #version 330
 
@@ -45,7 +47,7 @@ class LineDraw:
                 gl_FragColor = vec4(fColor.rgb, 1.0);
             }
             """
-        self.program = ctx.program(vertex_shader=vertexShader, fragment_shader=fragmentShader)
+        self.program = self.ctx.program(vertex_shader=vertexShader, fragment_shader=fragmentShader)
 
         verts = array.array('f', [
                         -0.5, -0.5,
@@ -54,22 +56,23 @@ class LineDraw:
                         -0.5,  0.5,
         ])
         
-        self.verts = ctx.buffer(data=verts, usage='static')
+        self.verts = self.ctx.buffer(data=verts, usage='static')
         vertsDescription = BufferDescription(self.verts, '2f', ['inVert'] )
 
         colors = array.array('B', [255, 0, 0, 255, 
                                    0, 255, 0, 255,
                                    0, 0, 255, 255,
                                    255, 255, 255, 255])
-        self.colors = ctx.buffer(data=colors, usage='static')
+        self.colors = self.ctx.buffer(data=colors, usage='static')
         colorsDescription = BufferDescription(self.colors, '4f1', ['inColor'], normalized=['inColor'])
 
         indices = array.array('I', [0,1,2,1])
-        self.indices = ctx.buffer(data=indices, usage='static')
+        self.indices = self.ctx.buffer(data=indices, usage='static')
 
-        self.geometry = ctx.geometry([vertsDescription, colorsDescription], 
+        self.geometry = self.ctx.geometry([vertsDescription, colorsDescription], 
                                      index_buffer=self.indices, 
-                                     mode=ctx.LINES)
+                                     mode=self.ctx.LINES)
+        
         #ctx.enable(pyglet.gl.GL_LINE_SMOOTH)
         #ctx.disable(pyglet.gl.GL_DEPTH_TEST)
 
@@ -90,6 +93,10 @@ class LineDraw:
             self.indices.orphan(size=indicesInBytes)
         self.indices.write(array.array('I', indices))
         self.geometry.num_vertices = len(indices)
+
+    def setProjection(self, viewport: Tuple[float], mat: Mat4):
+        self.ctx.viewport = viewport
+        self.ctx.projection_2d_matrix = mat
 
     def draw(self):
         self.geometry.render(self.program)
