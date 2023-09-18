@@ -12,7 +12,6 @@ from .commandExec import ComSetPhaseFromCoords, ComSetRatioFromCoords, ComSetGro
 from .commandExec import ComSetRatchetFromCoords, ComSetRotaryMaxFromCoords, ComSetRotaryMinFromCoords, ComSetRateFromCoords
 from .commandExec import ComSetSlideMaxFromCoords, ComSetSlideMinFromCoords
 
-from .drawing import drawCursor, drawHelperPoint, drawBody
 from .bufferContainer import BufferContainer
 from .lineShader import LineDraw
 

@@ -1,12 +1,6 @@
-from .editorTypes import V2, Mat, EditorPoint
+from .editorTypes import V2
 from .editorCursor import Cursor
 from pyglet.math import Mat4
-
-from .config import editorButtonSetup
-from .drawing import setDrawingParams, setContext, finishDrawing
-
-import arcade
-from arcade.context import ArcadeContext
 
 
 # TODO cleanup cursor view
@@ -15,7 +9,6 @@ class Simple2dProjection:
     def __init__(self, width: float, height: float):
         self.sizeInPixels: V2 = V2(width, height)
         self.offset: V2 = V2(0.0, 0.0)
-        self.context: ArcadeContext = arcade.get_window().ctx
         self.mat: Mat4 = None
         self.setMatrix(width, height)
     
@@ -29,11 +22,6 @@ class Simple2dProjection:
         self.sizeInPixels.x = x
         self.sizeInPixels.y = y
         self.setMatrix(x, y)
-        
-    def start(self):
-        finishDrawing()
-        setDrawingParams(1.0, self.offset, self.sizeInPixels, editorButtonSetup['width'])
-        setContext((0, 0, self.sizeInPixels.x, self.sizeInPixels.y), self.mat)
         
 
 class ViewOffset:
@@ -83,9 +71,6 @@ class ViewOffset:
 
     def cusorToView(self, cursor: Cursor) -> None:
         cursor.viewCoords.setFromV(cursor.screenCoords).unTV(self.offsetInPixels).sS(self.scale).tV(self.offsetScaled)
-
-    def start(self):
-        finishDrawing()
 
     def coordsInView(self, x:float, y:float):
         return (self.offsetInPixels.x < x < self.offsetInPixels.x + self.sizeInPixels.x) and (self.offsetInPixels.y < y < self.offsetInPixels.y + self.sizeInPixels.y)

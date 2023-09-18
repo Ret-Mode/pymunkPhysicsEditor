@@ -9,7 +9,6 @@ from .bufferContainer import BufferContainer
 from .commandExec import CommandExec
 from .commandExec import ComSetPivot, ComScaleView, ComResizeView, ComMoveCursor, ComMoveView
 from .commandExec import ComStartTransform, ComCancelTransform,ComApplyTransform
-from .drawing import drawHelperPoint, drawBody
 from .lineShader import LineDraw
 
 from .config import toJSON

@@ -1,7 +1,5 @@
 from ..editorTypes import UnboundAngle, OffsetPoint
 from ..bufferContainer import BufferContainer
-from ..drawing import drawAnchor, drawGroove, drawAngleArm, drawSpring, drawAngleRatioArm, drawCapsule, drawPivot
-from ..drawing import drawRatchetA, drawRatchetB, drawPhaseMinMaxA, drawPhaseMinMaxB, drawRateA, drawRateB, drawSlide
 
 from .editorConstraintI import ConstraintI
 
@@ -15,21 +13,6 @@ class DampedRotarySpring(ConstraintI):
         self.restAngle: UnboundAngle = UnboundAngle(0.0)
         self.stiffness: float = 0.5
         self.damping: float = 0.5
-
-    def drawInternals(self):
-        if self.bodyA and self.bodyB:
-            drawAngleArm(self.bodyA.physics.cog.final, 1.0, 0.0)
-            drawAngleArm(self.bodyB.physics.cog.final, 
-                         self.restAngle.cos, self.restAngle.sin)
-
-    def drawInternalA(self):
-        if self.bodyA and self.bodyB:
-            drawAngleArm(self.bodyA.physics.cog.final, 1.0, 0.0)
-    
-    def drawInternalB(self):
-        if self.bodyA and self.bodyB:
-            drawAngleArm(self.bodyB.physics.cog.final, 
-                         self.restAngle.cos, self.restAngle.sin)
 
     def bufferInternals(self, buffer:BufferContainer):
         if self.bodyA and self.bodyB:
@@ -64,20 +47,6 @@ class DampedSpring(ConstraintI):
             self.anchorA.calcOffset(self.bodyA.transform.getMat(), self.bodyA.physics.cog.final)
             self.anchorB.calcOffset(self.bodyB.transform.getMat(), self.bodyB.physics.cog.final)
 
-    def drawInternals(self):
-        if self.bodyA and self.bodyB:
-            drawAnchor(self.anchorA.final)
-            drawAnchor(self.anchorB.final)
-            drawSpring(self.anchorA.final, self.anchorB.final, self.restLength)
-
-    def drawInternalA(self):
-        if self.bodyA and self.bodyB:
-            drawAnchor(self.anchorA.final)
-    
-    def drawInternalB(self):
-        if self.bodyA and self.bodyB:
-            drawAnchor(self.anchorB.final)
-
     def bufferInternals(self, buffer:BufferContainer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorA.final)
@@ -101,25 +70,6 @@ class GearJoint(ConstraintI):
 
         self.phase: UnboundAngle = UnboundAngle(0.0)
         self.ratio: float = 1.0
-
-    def drawInternals(self):
-        if self.bodyA and self.bodyB: 
-            drawAngleArm(self.bodyA.physics.cog.final, 1.0, 0.0)
-            drawAngleArm(self.bodyB.physics.cog.final, 
-                         self.phase.cos, self.phase.sin)
-            drawAngleRatioArm(self.bodyB.physics.cog.final, 
-                              self.phase.cos, self.phase.sin, self.ratio)
-
-    def drawInternalA(self):
-        if self.bodyA and self.bodyB:
-            drawAngleArm(self.bodyA.physics.cog.final, 1.0, 0.0)
-    
-    def drawInternalB(self):
-        if self.bodyA and self.bodyB:
-            drawAngleArm(self.bodyB.physics.cog.final, 
-                         self.phase.cos, self.phase.sin)
-            drawAngleRatioArm(self.bodyB.physics.cog.final, 
-                              self.phase.cos, self.phase.sin, self.ratio)
 
     def bufferInternals(self, buffer:BufferContainer):
         if self.bodyA and self.bodyB:
@@ -159,21 +109,6 @@ class GrooveJoint(ConstraintI):
             self.grooveB.calcOffset(mat, cog) 
             self.anchorB.calcOffset(self.bodyB.transform.getMat(), self.bodyB.physics.cog.final)
 
-    def drawInternals(self):
-        if self.bodyA and self.bodyB:
-            drawGroove(self.grooveA.final, self.grooveB.final)
-            drawAnchor(self.anchorB.final)
-            drawCapsule(self.grooveA.final, self.grooveB.final, self.anchorB.final.distV(self.bodyB.physics.cog.final))
-
-    def drawInternalA(self):
-        if self.bodyA and self.bodyB:
-            drawGroove(self.grooveA.final, self.grooveB.final)
-            drawCapsule(self.grooveA.final, self.grooveB.final, self.anchorB.final.distV(self.bodyB.physics.cog.final))
-    
-    def drawInternalB(self):
-        if self.bodyA and self.bodyB:
-            drawAnchor(self.anchorB.final)
-
     def bufferInternals(self, buffer:BufferContainer):
         if self.bodyA and self.bodyB:
             buffer.addGroove(self.grooveA.final, self.grooveB.final)
@@ -205,20 +140,6 @@ class PinJoint(ConstraintI):
             self.anchorA.calcOffset(self.bodyA.transform.getMat(), self.bodyA.physics.cog.final)
             self.anchorB.calcOffset(self.bodyB.transform.getMat(), self.bodyB.physics.cog.final)
 
-    def drawInternals(self):
-        if self.bodyA and self.bodyB:
-            drawAnchor(self.anchorA.final)
-            drawAnchor(self.anchorB.final)
-            drawGroove(self.anchorA.final, self.anchorB.final)
-
-    def drawInternalA(self):
-        if self.bodyA and self.bodyB:
-            drawAnchor(self.anchorA.final)
-    
-    def drawInternalB(self):
-        if self.bodyA and self.bodyB:
-            drawAnchor(self.anchorB.final)
-
     def bufferInternals(self, buffer:BufferContainer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorA.final)
@@ -248,20 +169,6 @@ class PivotJoint(ConstraintI):
             self.anchorA.calcOffset(self.bodyA.transform.getMat(), self.bodyA.physics.cog.final)
             self.anchorB.calcOffset(self.bodyB.transform.getMat(), self.bodyB.physics.cog.final)
 
-    def drawInternals(self):
-        if self.bodyA and self.bodyB:
-            drawAnchor(self.anchorA.final)
-            drawAnchor(self.anchorB.final)
-            drawPivot(self.anchorA.final, self.anchorB.final)
-
-    def drawInternalA(self):
-        if self.bodyA and self.bodyB:
-            drawAnchor(self.anchorA.final)
-    
-    def drawInternalB(self):
-        if self.bodyA and self.bodyB:
-            drawAnchor(self.anchorB.final)
-
     def bufferInternals(self, buffer:BufferContainer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorA.final)
@@ -285,25 +192,6 @@ class RatchetJoint(ConstraintI):
 
         self.phase: UnboundAngle = UnboundAngle(0.5)
         self.ratchet: UnboundAngle = UnboundAngle(0.5)
-
-    def drawInternals(self):
-        if self.bodyA and self.bodyB: 
-            drawAngleArm(self.bodyA.physics.cog.final, 1.0, 0.0)
-            drawAngleArm(self.bodyB.physics.cog.final, 
-                         self.phase.cos, self.phase.sin)
-            drawRatchetA(self.bodyA.physics.cog.final, self.ratchet)
-            drawRatchetB(self.bodyB.physics.cog.final, self.phase, self.ratchet)
-
-    def drawInternalA(self):
-        if self.bodyA and self.bodyB:
-            drawAngleArm(self.bodyA.physics.cog.final, 1.0, 0.0)
-            drawRatchetA(self.bodyA.physics.cog.final, self.ratchet)
-    
-    def drawInternalB(self):
-        if self.bodyA and self.bodyB:
-            drawAngleArm(self.bodyB.physics.cog.final, 
-                         self.phase.cos, self.phase.sin)
-            drawRatchetB(self.bodyB.physics.cog.final, self.phase, self.ratchet)
 
     def bufferInternals(self, buffer:BufferContainer):
         if self.bodyA and self.bodyB:
@@ -334,19 +222,6 @@ class RotaryLimitJoint(ConstraintI):
         self.min: UnboundAngle = UnboundAngle(0.2)
         self.max: UnboundAngle = UnboundAngle(0.5)
 
-    def drawInternals(self):
-        if self.bodyA and self.bodyB: 
-            drawPhaseMinMaxA(self.bodyA.physics.cog.final, self.min, self.max)
-            drawPhaseMinMaxB(self.bodyB.physics.cog.final, self.min, self.max)
-
-    def drawInternalA(self):
-        if self.bodyA and self.bodyB:
-            drawPhaseMinMaxA(self.bodyA.physics.cog.final, self.min, self.max)
-    
-    def drawInternalB(self):
-        if self.bodyA and self.bodyB:
-            drawPhaseMinMaxB(self.bodyB.physics.cog.final, self.min, self.max)
-
     def bufferInternals(self, buffer:BufferContainer):
         if self.bodyA and self.bodyB:
             buffer.addPhaseMinMaxA(self.bodyA.physics.cog.final, self.min, self.max)
@@ -368,19 +243,6 @@ class SimpleMotor(ConstraintI):
         self.type = ConstraintI.SIMPLEMOTOR
 
         self.rate: UnboundAngle = UnboundAngle(1.0)
-
-    def drawInternals(self):
-        if self.bodyA and self.bodyB: 
-            drawRateA(self.bodyA.physics.cog.final, self.rate)
-            drawRateB(self.bodyB.physics.cog.final, self.rate)
-
-    def drawInternalA(self):
-        if self.bodyA and self.bodyB:
-            drawRateA(self.bodyA.physics.cog.final, self.rate)
-    
-    def drawInternalB(self):
-        if self.bodyA and self.bodyB:
-            drawRateB(self.bodyB.physics.cog.final, self.rate)
 
     def bufferInternals(self, buffer:BufferContainer):
         if self.bodyA and self.bodyB:
@@ -411,20 +273,6 @@ class SlideJoint(ConstraintI):
         if self.bodyA and self.bodyB:
             self.anchorA.calcOffset(self.bodyA.transform.getMat(), self.bodyA.physics.cog.final)
             self.anchorB.calcOffset(self.bodyB.transform.getMat(), self.bodyB.physics.cog.final)
-
-    def drawInternals(self):
-        if self.bodyA and self.bodyB:
-            drawAnchor(self.anchorA.final)
-            drawAnchor(self.anchorB.final)
-            drawSlide(self.anchorA.final, self.anchorB.final, self.min, self.max)
-
-    def drawInternalA(self):
-        if self.bodyA and self.bodyB:
-            drawAnchor(self.anchorA.final)
-    
-    def drawInternalB(self):
-        if self.bodyA and self.bodyB:
-            drawAnchor(self.anchorB.final)
 
     def bufferInternals(self, buffer:BufferContainer):
         if self.bodyA and self.bodyB:

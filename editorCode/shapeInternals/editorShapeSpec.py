@@ -1,8 +1,6 @@
 from ..editorTypes import V2, Mat, Radius, EditorPoint, BoundingBox
 from .editorShapeSpecI import ShapeSpec
 
-from ..drawing import drawPolygon, drawCircle, drawBox, drawRect, drawLineShape
-
 from typing import List, Optional, Tuple
 
 
@@ -22,9 +20,6 @@ class PolygonSpec(ShapeSpec):
                 'radius' : self.radius.final}
         parent['internal'] = this
     
-    def draw(self):
-        drawPolygon(self.points)
-
     def addPoint(self, point:EditorPoint):
         if point not in self.points:
             self.points.append(point)
@@ -67,11 +62,6 @@ class CircleSpec(ShapeSpec):
         this = {'offset' : [center.final.x, center.final.y],
                 'radius' : halfWH.final.length()}
         parent['internal'] = this
-
-    def draw(self):
-        center = self.center
-        halfWH = self.halfWH
-        drawCircle(center.final, halfWH.final, self.drawLines)
 
     def addPoint(self, point:EditorPoint):
         assert False
@@ -131,9 +121,6 @@ class BoxSpec(ShapeSpec):
                             ],
                 'radius' : self.radius.final}
         parent['internal'] = this
-
-    def draw(self):
-        drawBox(self.points)
     
     def addPoint(self, point:EditorPoint):
         assert False
@@ -208,10 +195,6 @@ class RectSpec(ShapeSpec):
                             ],
                 'radius' : self.radius.final}
         parent['internal'] = this
-
-    def draw(self):
-        center = self.points[0]
-        drawRect(self.points)
     
     def addPoint(self, point:EditorPoint):
         assert False
@@ -275,9 +258,6 @@ class LineSpec(ShapeSpec):
         this = {'points' : points,
                 'radius' : self.radius.final}
         parent['internal'] = this
-
-    def draw(self):
-        drawLineShape(self.points)
 
     def addPoint(self, point:EditorPoint):
         if point not in self.points:

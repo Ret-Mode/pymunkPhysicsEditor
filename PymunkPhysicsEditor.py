@@ -23,9 +23,10 @@ from editorCode.guiTimeMeasure import TimeMeasure
 from editorCode.config import globalWindowSetup
 
 from editorCode.database import Database
-from editorCode.commandExec import CommandExec
 from editorCode.editorCursor import Cursor
 from editorCode.editorViewOffset import Simple2dProjection
+from editorCode.bufferContainer import BufferContainer
+from editorCode.lineShader import LineDraw
 
 class EditorView(arcade.View):
 
@@ -50,10 +51,9 @@ class EditorView(arcade.View):
     def __init__(self):
         super().__init__()
 
-        #self.database = Database.getInstance()
-        #self.commands = CommandExec.getInstance()
         self.cursor = Cursor()
-        self.baseView = Simple2dProjection(globalWindowSetup['width'], globalWindowSetup['height'])
+        self.cursorView = Simple2dProjection(globalWindowSetup['width'], globalWindowSetup['height'])
+
         self.manager = arcade.gui.UIManager()
 
         self.buttonPanel = ButtonPanel(self)
@@ -70,6 +70,8 @@ class EditorView(arcade.View):
         self.editorOptionView = EditorOptionView(self.editableWidth, globalWindowSetup['height'], self.cursor)
 
         self.setupModes()
+
+        self.cursorShader = LineDraw()
 
     def setupModes(self):
         EditorView.modes['BODY'] = BodyButtons()
@@ -98,8 +100,21 @@ class EditorView(arcade.View):
         self._getActiveView().update()
 
     def draw_cursor(self):
-        self.baseView.start()
-        self.cursor.draw(self.baseView.sizeInPixels, self.baseView.offset, self.baseView.sizeInPixels.x - self.editableWidth)
+        buffer = BufferContainer.getInstance()
+        buffer.reset()
+        buffer.drawScale = 1.0
+        buffer.addCursor(self.cursor.screenCoords, 
+                         self.cursorView.sizeInPixels, 
+                         self.cursorView.offset, 
+                         self.cursorView.sizeInPixels.x - self.editableWidth)
+        
+        self.cursorShader.update(buffer.verts, buffer.colors, buffer.indices)
+        self.cursorShader.setProjection((0, 0, 
+                    self.cursorView.sizeInPixels.x, 
+                    self.cursorView.sizeInPixels.y), 
+                    self.cursorView.mat)
+        self.cursorShader.draw()
+
 
     def on_draw(self):
         self.clear(arcade.color.BLACK)
@@ -237,7 +252,7 @@ class EditorView(arcade.View):
             self._getActiveView().changeScale(scroll_y)
 
     def on_resize(self, width: int, height: int):
-        self.baseView.resize(width, height)
+        self.cursorView.resize(width, height)
         self.editableWidth = width - self.buttonPanel.widthOfPanel()
         self.editorShapeView.resize(self.editableWidth, height)
         self.editorBodyView.resize(self.editableWidth, height)

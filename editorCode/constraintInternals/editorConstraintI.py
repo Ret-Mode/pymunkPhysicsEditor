@@ -3,8 +3,6 @@ from ..shapeInternals.editorBodyI import BodyI
 from ..editorTypes import UserSettableFloat
 from ..bufferContainer import BufferContainer
 
-from ..drawing import drawBody
-
 class ConstraintI:
 
     NONE = "NONE"
@@ -47,19 +45,6 @@ class ConstraintI:
 
     def drawInternalB(self):
         pass
-
-    def drawBodies(self):
-        if self.bodyA and self.bodyB:
-            drawBody(self.bodyA, True, False)
-            drawBody(self.bodyB, True, False)
-
-    def drawBodyA(self):
-        if self.bodyA and self.bodyB:
-            drawBody(self.bodyA, True, False)
-    
-    def drawBodyB(self):
-        if self.bodyA and self.bodyB:
-            drawBody(self.bodyB, True, False)
 
     def bufferInternals(self, buffer:BufferContainer):
         pass

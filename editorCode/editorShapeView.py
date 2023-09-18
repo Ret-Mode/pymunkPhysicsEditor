@@ -10,8 +10,6 @@ from .database import Database
 
 from .pymunkTester import testShapes
 
-from .drawing import drawCursor, drawHelperPoint, drawShape
-
 from .bufferContainer import BufferContainer
 from .lineShader import LineDraw
 
