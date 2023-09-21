@@ -5,8 +5,8 @@ Physics editor to Pymunk, written in Python, using Arcade library.
 Currently application is in **heavy** development and is actually not usable.
 Missing features (ordered somewhat as they are planned to be developed):
 
-- [ ] One draw call of shapes per view per frame
-- [ ] Corrections of the draw call chain
+- [x] One draw call of shapes per view per frame
+- [x] Corrections of the draw call chain
 - [ ] Adding background grid
 - [ ] Loading textures
 - [ ] Supporting all parameters of pymunk objects
