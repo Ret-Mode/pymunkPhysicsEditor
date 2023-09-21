@@ -458,3 +458,21 @@ class BufferContainer:
         self.colors += 4 * color
         self.indices += [ind, ind +1, ind+2, ind+3]
         self.currentIndex += 4
+
+    def addGrid(self, viewLowerBounds:V2, viewSize:V2):
+        # TODO align to axis
+        meterSizeInPixels:float = 1.0 / self.drawScale
+        armLength = 3.0 * self.drawScale
+        if meterSizeInPixels > 25:
+            xLower = int(viewLowerBounds.x )
+            yStart = int(viewLowerBounds.y )
+            xUpper = xLower + viewSize.x 
+            yUpper = yStart + viewSize.y 
+            while xLower < xUpper:
+                yLower = yStart
+                while yLower < yUpper:
+                    # self.addEdgeXY(xLower - armLength, yLower, xLower + armLength, yLower, (50, 50, 50, 255))
+                    # self.addEdgeXY(xLower, yLower - armLength, xLower , yLower + armLength, (50, 50, 50, 255))
+                    yLower += 1
+
+                xLower += 1
