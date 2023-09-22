@@ -459,20 +459,66 @@ class BufferContainer:
         self.indices += [ind, ind +1, ind+2, ind+3]
         self.currentIndex += 4
 
-    def addGrid(self, viewLowerBounds:V2, viewSize:V2):
-        # TODO align to axis
-        meterSizeInPixels:float = 1.0 / self.drawScale
-        armLength = 3.0 * self.drawScale
-        if meterSizeInPixels > 25:
-            xLower = int(viewLowerBounds.x )
-            yStart = int(viewLowerBounds.y )
-            xUpper = xLower + viewSize.x 
-            yUpper = yStart + viewSize.y 
-            while xLower < xUpper:
-                yLower = yStart
-                while yLower < yUpper:
-                    # self.addEdgeXY(xLower - armLength, yLower, xLower + armLength, yLower, (50, 50, 50, 255))
-                    # self.addEdgeXY(xLower, yLower - armLength, xLower , yLower + armLength, (50, 50, 50, 255))
-                    yLower += 1
+    def addGridLayer(self, minX, minY, maxX, maxY, gridSize, armLength, color):
+        xLower = int(minX / gridSize) * gridSize
+        yStart = int(minY / gridSize) * gridSize
+        xUpper = int(maxX / gridSize) * gridSize
+        yUpper = int(maxY / gridSize) * gridSize
+        if xLower < 0.0:
+            xLower -= gridSize
+        if yStart < 0.0:
+            yStart -= gridSize
+        if xUpper > 0.0:
+            xUpper += gridSize
+        if yUpper + 0.0:
+            yUpper += gridSize
 
-                xLower += 1
+        while xLower <= xUpper:
+            yLower = yStart
+            while yLower <= yUpper:
+                self.addEdgeXY(xLower - armLength, yLower, xLower + armLength, yLower, color)
+                self.addEdgeXY(xLower, yLower - armLength, xLower , yLower + armLength, color)
+                yLower += gridSize
+            xLower += gridSize
+
+    def addGrid(self, viewLowerBounds:V2, viewSize:V2):
+        
+        xBoundsMin = viewLowerBounds.x
+        yBoundsMin = viewLowerBounds.y
+        xBoundsMax = xBoundsMin + viewSize.x
+        yBoundsMax = yBoundsMin + viewSize.y
+
+        gridNormalView = 60.0
+        gridDisappear = 20.0
+        gridColor = 50.0
+        # 10 cm grid
+        gridSize = 0.1
+        gridSizeInPixels:float = gridSize / self.drawScale
+        armLength = 1.0 * self.drawScale
+        if gridSizeInPixels > 20:
+            colorLerp = int( gridColor * max(gridDisappear, min(gridNormalView, gridSizeInPixels)) / (gridNormalView - gridDisappear))
+            self.addGridLayer(xBoundsMin, yBoundsMin, xBoundsMax, yBoundsMax, gridSize, armLength, (colorLerp, colorLerp, colorLerp, 255))
+
+        # 1m grid
+        gridSize = 1.0
+        gridSizeInPixels:float = gridSize / self.drawScale
+        armLength = 3.0 * self.drawScale
+        if gridSizeInPixels > 20:
+            colorLerp = int( gridColor * max(gridDisappear, min(gridNormalView, gridSizeInPixels)) / (gridNormalView - gridDisappear))
+            self.addGridLayer(xBoundsMin, yBoundsMin, xBoundsMax, yBoundsMax, gridSize, armLength, (colorLerp, colorLerp, colorLerp, 255))
+
+        # 10m grid
+        gridSize = 10.0
+        gridSizeInPixels:float = gridSize / self.drawScale
+        armLength = 5.0 * self.drawScale
+        if gridSizeInPixels > 20:
+            colorLerp = int( gridColor * max(gridDisappear, min(gridNormalView, gridSizeInPixels)) / (gridNormalView - gridDisappear))
+            self.addGridLayer(xBoundsMin, yBoundsMin, xBoundsMax, yBoundsMax, gridSize, armLength, (colorLerp, colorLerp, colorLerp, 255))
+
+        # 100m grid
+        gridSize = 100.0
+        gridSizeInPixels:float = gridSize / self.drawScale
+        armLength = 7.0 * self.drawScale
+        if gridSizeInPixels > 20:
+            colorLerp = int( gridColor * max(gridDisappear, min(gridNormalView, gridSizeInPixels)) / (gridNormalView - gridDisappear))
+            self.addGridLayer(xBoundsMin, yBoundsMin, xBoundsMax, yBoundsMax, gridSize, armLength, (colorLerp, colorLerp, colorLerp, 255))
