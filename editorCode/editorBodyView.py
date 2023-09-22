@@ -1,5 +1,5 @@
 
-from .editorViewOffset import ViewOffset
+from .editorCamera import EditorCamera
 from .editorTypes import EditorPoint
 from .editorCursor import Cursor
 from .editorViewTransform import ContinuousTransform
@@ -18,7 +18,7 @@ from .pymunkTester import testBodies
 class EditorBodyView:
 
     def __init__(self, width, height, cursor:Cursor):
-        self.viewOffset = ViewOffset(width, height)
+        self.viewOffset = EditorCamera(width, height)
         self.cursor = cursor
         self.pivot = EditorPoint()
 

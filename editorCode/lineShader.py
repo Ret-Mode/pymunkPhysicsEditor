@@ -94,9 +94,9 @@ class LineDraw:
         self.indices.write(array.array('I', indices))
         self.geometry.num_vertices = len(indices)
 
-    def setProjection(self, viewport: Tuple[float], mat: Mat4):
+    def setProjection(self, viewport: Tuple[float], mat: Tuple[float]):
         self.ctx.viewport = viewport
-        self.ctx.projection_2d_matrix = mat
+        self.ctx.projection_2d_matrix = Mat4(values=mat)
 
     def draw(self):
         self.geometry.render(self.program)

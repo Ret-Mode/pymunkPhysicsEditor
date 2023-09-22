@@ -24,7 +24,7 @@ from editorCode.config import globalWindowSetup
 
 from editorCode.database import Database
 from editorCode.editorCursor import Cursor
-from editorCode.editorViewOffset import Simple2dProjection
+from editorCode.editorCamera import CursorCamera
 from editorCode.bufferContainer import BufferContainer
 from editorCode.lineShader import LineDraw
 
@@ -52,7 +52,7 @@ class EditorView(arcade.View):
         super().__init__()
 
         self.cursor = Cursor()
-        self.cursorView = Simple2dProjection(globalWindowSetup['width'], globalWindowSetup['height'])
+        self.cursorView = CursorCamera(globalWindowSetup['width'], globalWindowSetup['height'])
 
         self.manager = arcade.gui.UIManager()
 

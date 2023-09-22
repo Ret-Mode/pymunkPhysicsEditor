@@ -6,7 +6,7 @@ from .editorTypes import V2, Angle, EditorPoint
 from .editorCursor import Cursor
 from .database import Database
 from .editorViewTransform import ContinuousTransform
-from .editorViewOffset import ViewOffset
+from .editorCamera import EditorCamera
 from .constraintInternals.editorConstraint import DampedRotarySpring, DampedSpring, GearJoint
 from .constraintInternals.editorConstraint import GrooveJoint, PinJoint, PivotJoint, RatchetJoint
 from .constraintInternals.editorConstraint import RotaryLimitJoint, SimpleMotor, SlideJoint
@@ -37,7 +37,7 @@ class CommandUndo(Command):
 
 class ComMoveCursor(Command):
 
-    def __init__(self, view: ViewOffset, cursor: Cursor, x, y):
+    def __init__(self, view: EditorCamera, cursor: Cursor, x, y):
         self.view = view
         self.cursor = cursor
         self.x = x
@@ -53,7 +53,7 @@ class ComMoveCursor(Command):
 
 class ComResizeView(Command):
 
-    def __init__(self, view: ViewOffset, x, y, offsetX = 0, offsetY = 0):
+    def __init__(self, view: EditorCamera, x, y, offsetX = 0, offsetY = 0):
         self.view = view
         self.x = x
         self.y = y
@@ -66,7 +66,7 @@ class ComResizeView(Command):
 
 class ComMoveView(Command):
 
-    def __init__(self, view: ViewOffset, x, y):
+    def __init__(self, view: EditorCamera, x, y):
         self.view = view
         self.x = x
         self.y = y
@@ -77,7 +77,7 @@ class ComMoveView(Command):
 
 class ComScaleView(Command):
 
-    def __init__(self, view: ViewOffset, cursorViewCoords: V2, scale):
+    def __init__(self, view: EditorCamera, cursorViewCoords: V2, scale):
         self.view = view
         self.viewCoords = cursorViewCoords
         self.scale = scale

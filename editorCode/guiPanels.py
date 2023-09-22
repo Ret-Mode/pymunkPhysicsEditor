@@ -579,3 +579,4 @@ class SettableCoordOkButton(arcade.gui.UIBoxLayout):
     
     def getY(self):
         return self.yCoord.text
+    

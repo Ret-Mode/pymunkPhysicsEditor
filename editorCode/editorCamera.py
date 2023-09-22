@@ -1,22 +1,23 @@
 from .editorTypes import V2
 from .editorCursor import Cursor
-from pyglet.math import Mat4
+
+from typing import Tuple
 
 
 # TODO cleanup cursor view
-class Simple2dProjection:
+class CursorCamera:
 
     def __init__(self, width: float, height: float):
         self.sizeInPixels: V2 = V2(width, height)
         self.offset: V2 = V2(0.0, 0.0)
-        self.mat: Mat4 = None
+        self.mat: Tuple[float] = None
         self.setMatrix(width, height)
     
-    def setMatrix(self, realWidth, realHeight):
-        self.mat = Mat4(values=(2.0/(realWidth), 0.0,   0.0, 0.0,
+    def setMatrix(self, realWidth, realHeight) -> None:
+        self.mat = (2.0/(realWidth), 0.0,   0.0, 0.0,
                             0.0, 2.0/(realHeight), 0.0, 0.0,
                             0.0, 0.0, -2.0 / (200.0)           , 0.0,
-                            - (realWidth) / realWidth, - (realHeight) / realHeight, 0.0, 1.0))
+                            - (realWidth) / realWidth, - (realHeight) / realHeight, 0.0, 1.0)
 
     def resize(self, x: int, y: int) -> None:
         self.sizeInPixels.x = x
@@ -24,23 +25,24 @@ class Simple2dProjection:
         self.setMatrix(x, y)
         
 
-class ViewOffset:
+class EditorCamera:
 
     def __init__(self, width: float, height: float, offsetX:float = 0.0, offsetY:float = 0.0) -> None:
         
         self.sizeInPixels: V2 = V2(width, height)
         self.offsetInPixels: V2 = V2(offsetX, offsetY)
         self.sizeScaled: V2 = V2(width, height)
-        self.offsetScaled: V2 = V2(-width/2, -height/2)
-        self.scale: float = 1.0
-        self.mat: Mat4 = None
+        
+        self.scale: float = 2.0 / min(width, height)
+        self.offsetScaled: V2 = V2(-width/2, -height/2).sS(self.scale)
+        self.mat: Tuple[float] = None
         self.setMatrix(width, height)
 
-    def setMatrix(self, realWidth, realHeight) -> Mat4:
-        self.mat = Mat4(values=(2.0/(realWidth), 0.0,   0.0, 0.0,
+    def setMatrix(self, realWidth, realHeight) -> None:
+        self.mat = (2.0/(realWidth), 0.0,   0.0, 0.0,
                             0.0, 2.0/(realHeight), 0.0, 0.0,
                             0.0, 0.0, -2.0 / (200.0)           , 0.0,
-                            - (2.0 * self.offsetScaled.x + realWidth) / realWidth, - (2.0 * self.offsetScaled.y + realHeight) / realHeight, 0.0, 1.0))
+                            - (2.0 * self.offsetScaled.x + realWidth) / realWidth, - (2.0 * self.offsetScaled.y + realHeight) / realHeight, 0.0, 1.0)
 
     def changeScale(self, dy:float, cursorWorld: V2) -> None:
         scaleOld: float = self.scale

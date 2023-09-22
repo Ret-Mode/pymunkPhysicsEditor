@@ -1,4 +1,4 @@
-from .editorViewOffset import ViewOffset
+from .editorCamera import EditorCamera
 from .editorCursor import Cursor
 from .database import Database
 from .commandExec import CommandExec

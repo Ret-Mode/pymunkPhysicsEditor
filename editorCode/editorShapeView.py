@@ -2,7 +2,7 @@ from .editorTypes import EditorPoint
 from .editorCursor import Cursor
 from .editorShapes import Container
 from .shapeInternals.editorShapeI import ShapeI
-from .editorViewOffset import ViewOffset
+from .editorCamera import EditorCamera
 from .commandExec import CommandExec, ComCancelTransform, ComStartTransform, ComNewShapeAddPoint, ComNewShapeNewRadius, ComNewShapeNewWH
 from .commandExec import ComMoveCursor, ComSetPivot, ComResizeView, ComScaleView, ComMoveView, ComApplyTransform
 from .editorViewTransform import ContinuousTransform
@@ -20,7 +20,7 @@ class EditorShapeView:
     modes = ['SHAPE_EDIT_VERTEX', 'ROTATE_CURRENT', 'MOVE_CURRENT']
 
     def __init__(self, width, height, cursor:Cursor):
-        self.viewOffset = ViewOffset(width, height)
+        self.viewOffset = EditorCamera(width, height)
         self.cursor = cursor
         self.pivot = EditorPoint()
 

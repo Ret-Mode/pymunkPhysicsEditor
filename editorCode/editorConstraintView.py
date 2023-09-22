@@ -1,5 +1,5 @@
 
-from .editorViewOffset import ViewOffset
+from .editorCamera import EditorCamera
 from .editorTypes import EditorPoint
 from .editorCursor import Cursor
 from .database import Database
@@ -50,9 +50,9 @@ class EditorConstraintView:
                     }
 
     def __init__(self, width, height, cursor:Cursor):
-        self.viewAllOffset = ViewOffset(width//2, height)
-        self.viewBodyAOffset = ViewOffset(width//2, width//2, width//2, height//2)
-        self.viewBodyBOffset = ViewOffset(width//2, width//2, width//2, 0)
+        self.viewAllOffset = EditorCamera(width//2, height)
+        self.viewBodyAOffset = EditorCamera(width//2, width//2, width//2, height//2)
+        self.viewBodyBOffset = EditorCamera(width//2, width//2, width//2, 0)
         self.cursor = cursor
         self.pivot = EditorPoint()
         self.viewOffset = self.viewAllOffset
