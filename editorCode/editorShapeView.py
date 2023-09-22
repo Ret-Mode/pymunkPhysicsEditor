@@ -131,6 +131,8 @@ class EditorShapeView:
         buffer.reset()
         buffer.drawScale = self.viewOffset.scale
 
+        buffer.addGrid(self.viewOffset.offsetScaled, self.viewOffset.sizeScaled)
+
         if self.hideOthers:
             shape = database.getCurrentShape()
             if shape:

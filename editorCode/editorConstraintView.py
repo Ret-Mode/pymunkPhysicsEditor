@@ -183,6 +183,8 @@ class EditorConstraintView:
             buffer.reset()
             buffer.drawScale = self.viewAllOffset.scale
 
+            buffer.addGrid(self.viewAllOffset.offsetScaled, self.viewAllOffset.sizeScaled)
+
             constraint.bufferBodies(buffer)
             constraint.bufferInternals(buffer)
 
@@ -198,6 +200,8 @@ class EditorConstraintView:
             buffer.reset()
             buffer.drawScale = self.viewBodyAOffset.scale
 
+            buffer.addGrid(self.viewBodyAOffset.offsetScaled, self.viewBodyAOffset.sizeScaled)
+
             constraint.bufferBodyA(buffer)
             constraint.bufferInternalA(buffer)
 
@@ -212,6 +216,7 @@ class EditorConstraintView:
             buffer.reset()
             buffer.drawScale = self.viewBodyBOffset.scale
 
+            buffer.addGrid(self.viewBodyBOffset.offsetScaled, self.viewBodyBOffset.sizeScaled)
 
             constraint.bufferBodyB(buffer)
             constraint.bufferInternalB(buffer)
