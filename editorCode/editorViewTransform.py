@@ -11,8 +11,8 @@ class ContinuousTransform:
     ROTATE: ClassVar[Literal[0]]     = 0
     MOVE: ClassVar[Literal[1]]       = 1
     SCALE: ClassVar[Literal[2]]      = 2
-    ROTATESCALE: ClassVar[Literal[2]] = 3
-    modes: Sequence[Literal[0, 1, 2]] = {ROTATE, MOVE, SCALE, ROTATESCALE}
+    ROTATESCALE: ClassVar[Literal[3]] = 3
+    modes: Sequence[Literal[0, 1, 2, 3]] = {ROTATE, MOVE, SCALE, ROTATESCALE}
 
     def __init__(self):
         self.transform = ContainerTransform()
