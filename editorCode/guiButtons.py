@@ -307,6 +307,10 @@ class Label(arcade.gui.UILabel):
                         height=editorButtonSetup['height'], 
                         style=editorButtonSetup['style'],
                         align=align)
+        
+    def setText(self, text:str):
+        if self.text != text:
+            self.text = text
 
 
 class TextInput(arcade.gui.UIInputText):

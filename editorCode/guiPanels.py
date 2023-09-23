@@ -3,6 +3,8 @@ from arcade.gui.events import UIEvent
 from arcade.gui.surface import Surface
 from arcade import Color
 
+from typing import List, Callable, Tuple, NamedTuple
+
 from .config import massInPixelsToString, massInStringToPixels, densityInPixelsToString, densityInStringToPixels, distanceInPixelsToString, scaleToString, scaleFromString, angleToString, angleFromString, distanceInStringToPixels, areaInStringToPixels, areaInPixelsToString
 from .config import momentInPixelsToString, momentInStringToPixels
 
@@ -13,8 +15,9 @@ from .editorShapes import Container
 from .commandExec import ComSetUserParam, ComResetUserParam, ComSetPivotXY, ComSetPivotRelativeXY, ComSetUserCoords, ComResetUserCoords
 from .commandExec import ComSetContainerPosXY, ComApplyContainerPosXY, ComSetContainerAngle, ComApplyContainerRotate, ComSetContainerScale, ComApplyContainerScale
 from .commandExec import CommandExec
-from typing import List, Callable, Tuple, NamedTuple
+
 from .shapeInternals.editorPhysicsI import PhysicsProp
+from .editorFilesystem import EditorDir
 
 
 class ContainerTransformPanel(arcade.gui.UIBoxLayout):
@@ -579,4 +582,32 @@ class SettableCoordOkButton(arcade.gui.UIBoxLayout):
     
     def getY(self):
         return self.yCoord.text
+    
+
+class TextureSelectPanel(arcade.gui.UIBoxLayout):
+
+    def __init__(self, root:str) -> None:
+        super().__init__(vertical=True)
+        filters = ['.jpg', '.jpeg', '.png', '.bmp']
+        self.dirIntern = EditorDir(root, filters)
+
+        folderLine = arcade.gui.UIBoxLayout(vertical=False)
+        self.currentDir = Label(self.dirIntern.getCurrentDir(),'sevenEightsWidth', 'left')
+
+        upButton = Button('Up', 'eightWidth', self.up)
+
+        folderLine.add(self.currentDir)
+        folderLine.add(upButton)
+
+        self.add(folderLine)
+
+    def up(self):
+        if self.dirIntern.goUp():
+            self.currentDir.setText(self.dirIntern.getCurrentDir())
+
+            # TODO update files
+
+    
+
+
     

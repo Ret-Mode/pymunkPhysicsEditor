@@ -15,6 +15,7 @@ globalWindowSetup = {'width': 800,
                      'vsync': True }
 
 editorButtonSetup = {'width': 240,
+                     'sevenEightsWidth': 210,
                      'twoThirdsWidth': 160,
                      'halfWidth': 120,
                      'fiveTwelvthWidth': 100,
