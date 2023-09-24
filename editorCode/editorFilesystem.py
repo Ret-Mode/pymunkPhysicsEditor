@@ -65,13 +65,19 @@ class EditorDir:
             filePath = str(file)
         return filePath
     
+    def getFileRelativePath(self, name:str) -> str:
+        file = self.currentPath / name
+        filePath = None
+        if file and file.exists() and file.is_file() and file.is_relative_to(self.root):
+            filePath = str(file.relative_to(self.root))
+        return filePath
 
     def goUp(self) -> bool:
         up = self.currentPath.parent
         result = False
         try:
             # limit to root
-            if up.relative_to(self.root):
+            if up.is_relative_to(self.root):
                 self.currentPath = up
                 result = True
         except:

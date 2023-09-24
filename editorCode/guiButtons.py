@@ -76,7 +76,7 @@ class TextButton(arcade.gui.UIFlatButton):
 
 class Button(arcade.gui.UIFlatButton):
 
-    def __init__(self, text: str, width: str = 'width', callback=None) -> None:
+    def __init__(self, text: str, width: str = 'width', callback=Callable[[None], None]) -> None:
         super().__init__(text=text, 
                         width=editorButtonSetup[width], 
                         height=editorButtonSetup['height'], 
@@ -331,12 +331,19 @@ class TexturePreview(arcade.gui.UITextureButton):
 
     def __init__(self, size='width', callback: Callable[[Any], None]=print):
         super().__init__(width=editorButtonSetup[size], height=editorButtonSetup[size])
-
-        self.textureSize = editorButtonSetup[size]
+        self.originalFilePath:str = None
 
     def loadTextureFromPath(self, texturePath:str):
         # if self.texture:
         #     self.texture.image.close()
-        self.texture = load_texture(texturePath, can_cache=False)
-        self.trigger_full_render()
+        texture = load_texture(texturePath, can_cache=False)
+        if texture:
+            self.originalFilePath = texturePath
+            self.texture = texture
+            self.trigger_full_render()
+
+    def getTextureSize(self):
+        if self.texture:
+            return self.texture.size
+        return (0,0)
         
