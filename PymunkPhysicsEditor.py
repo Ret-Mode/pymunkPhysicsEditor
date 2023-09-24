@@ -16,6 +16,7 @@ from editorCode.guiBodyPanels import BodyButtons
 from editorCode.guiShapePanels import ShapeButtons
 from editorCode.guiConstraintPanels import ConstraintButtons
 from editorCode.guiOptionPanels import OptionsButtons
+from editorCode.guiTexturePanels import TextureButtons
 from editorCode.editorBodyView import EditorBodyView
 from editorCode.editorShapeView import EditorShapeView
 from editorCode.editorConstraintView import EditorConstraintView
@@ -83,7 +84,7 @@ class EditorView(arcade.View):
         EditorView.modes['SHAPE'] = ShapeButtons()
         EditorView.modes['CNSTRNT'] = ConstraintButtons()
         EditorView.modes['OPTIONS'] = OptionsButtons()
-        EditorView.modes['TEX'] = OptionsButtons()
+        EditorView.modes['TEX'] = TextureButtons()
 
         # set panels
         EditorView.modes['BODY'].setCommandPipeline(self.editorBodyView)
@@ -285,5 +286,4 @@ def main():
 
 
 if __name__ == "__main__":
-
     main()

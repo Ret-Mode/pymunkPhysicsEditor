@@ -2,7 +2,10 @@ from typing import Optional, List, Callable, Any
 import arcade.gui
 from arcade.gui.events import UIEvent, UIOnClickEvent, UITextEvent, UIKeyPressEvent
 from arcade.gui.surface import Surface
+from arcade.texture import Texture
+from arcade.texture import load_texture
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
+import PIL.Image
 
 from .guiTimeMeasure import TimeMeasure
 from .config import editorButtonSetup
@@ -322,3 +325,18 @@ class TextInput(arcade.gui.UIInputText):
                         width=editorButtonSetup[width], 
                         height=editorButtonSetup['height'])
         self.caret.color = (255,255,255)
+
+
+class TexturePreview(arcade.gui.UITextureButton):
+
+    def __init__(self, size='width', callback: Callable[[Any], None]=print):
+        super().__init__(width=editorButtonSetup[size], height=editorButtonSetup[size])
+
+        self.textureSize = editorButtonSetup[size]
+
+    def loadTextureFromPath(self, texturePath:str):
+        # if self.texture:
+        #     self.texture.image.close()
+        self.texture = load_texture(texturePath, can_cache=False)
+        self.trigger_full_render()
+        

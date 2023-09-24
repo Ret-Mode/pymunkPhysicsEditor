@@ -42,6 +42,30 @@ class EditorDir:
             result = True
         return result
 
+    def getFileBytes(self, name:str) -> bytes:
+        file = self.currentPath / name
+        fileData = None
+        if file and file.exists() and file.is_file():
+            with file.open('rb') as f:
+                fileData = f.read()
+        return fileData
+
+    def getFileText(self, name:str) -> str:
+        file = self.currentPath / name
+        fileData = None
+        if file and file.exists() and file.is_file():
+            with file.open('r') as f:
+                fileData = f.read()
+        return fileData
+    
+    def getFilePath(self, name:str) -> str:
+        file = self.currentPath / name
+        filePath = None
+        if file and file.exists() and file.is_file():
+            filePath = str(file)
+        return filePath
+    
+
     def goUp(self) -> bool:
         up = self.currentPath.parent
         result = False
