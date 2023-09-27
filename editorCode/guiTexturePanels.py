@@ -7,6 +7,7 @@ from .guiButtons import ScrollableLayout, TexturePreview, ScrollableConstant
 from .guiButtons import Button, Label
 from .config import physicsSetup
 from .editorFilesystem import EditorDir
+from .arcadeTextureContainer import ArcadeTexture
 
 
 class SetTextureToChannelPanel(arcade.gui.UIBoxLayout):
@@ -113,7 +114,8 @@ class TextureSelectPanel(arcade.gui.UIBoxLayout):
 
     def assignToChannel(self, toChannel:int):
         # TODO add command when other functionality is ready
-        print(self.preview.originalFilePath, toChannel)
+        # to reconsider moving this into command - file op, what if file is deleted?
+        ArcadeTexture.getInstance().load(self.preview.originalFilePath, toChannel)
 
 
 class MappingsPanel(arcade.gui.UIBoxLayout):

@@ -1,7 +1,6 @@
 import array
 from arcade.gl import BufferDescription
 from arcade import ArcadeContext
-import pyglet.gl
 import pyglet
 from pyglet.math import Mat4
 
