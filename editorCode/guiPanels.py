@@ -8,7 +8,7 @@ from typing import List, Callable, Tuple, NamedTuple
 from .config import massInPixelsToString, massInStringToPixels, densityInPixelsToString, densityInStringToPixels, distanceInPixelsToString, scaleToString, scaleFromString, angleToString, angleFromString, distanceInStringToPixels, areaInStringToPixels, areaInPixelsToString
 from .config import momentInPixelsToString, momentInStringToPixels
 
-from .guiButtons import Button, Label, TextButton, TextInput, editorButtonSetup
+from .guiButtons import Button, Label, TextButton, TextInput, ScrollableCBLabel, editorButtonSetup
 from .guiTimeMeasure import TimeMeasure
 from .editorTypes import V2
 from .editorShapes import Container
@@ -583,3 +583,16 @@ class SettableCoordOkButton(arcade.gui.UIBoxLayout):
     def getY(self):
         return self.yCoord.text
     
+
+class ScrollableCBLabelPanel(arcade.gui.UIBoxLayout):
+
+    def __init__(self, label:str ='--', lrWidth='quartWidth', labelWidth='halfWidth', cbNext:Callable[[None], None]=None, cbPrev:Callable[[None], None] = None) -> None:
+        super().__init__(vertical=False)
+        
+        self.lButton = Button('<', lrWidth, cbPrev)
+        self.label = ScrollableCBLabel(label, labelWidth, cbNext, cbPrev)
+        self.rButton = Button('>', lrWidth, cbNext)
+
+        self.add(self.lButton)
+        self.add(self.label)
+        self.add(self.rButton)

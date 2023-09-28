@@ -5,6 +5,7 @@ from typing import List, Callable, Tuple
 
 from .guiButtons import ScrollableLayout, TexturePreview, ScrollableConstant
 from .guiButtons import Button, Label
+from .guiPanels import ScrollableCBLabelPanel
 from .config import physicsSetup
 from .editorFilesystem import EditorDir
 from .arcadeTextureContainer import ArcadeTexture
@@ -120,8 +121,15 @@ class TextureSelectPanel(arcade.gui.UIBoxLayout):
 
 class MappingsPanel(arcade.gui.UIBoxLayout):
 
-     def __init__(self) -> None:
+    def __init__(self) -> None:
         super().__init__(vertical=True)   
+        self.add(ScrollableCBLabelPanel('--'))
+
+        mappings = ScrollableLayout(max=8, callback=self.loadMapping)
+        self.add(mappings)
+
+    def loadMapping(self, *args):
+        pass
 
 
 class TextureButtons(arcade.gui.UIBoxLayout):
@@ -130,8 +138,8 @@ class TextureButtons(arcade.gui.UIBoxLayout):
         super().__init__(vertical=True)
         
         self.mainButtonLine = arcade.gui.UIBoxLayout(vertical=False)
-        textureButton = Button('FILE', 'halfWidth', self.setTexturePanel)
-        mappingButton = Button('MAPPING', 'halfWidth', self.setMappingPanel)
+        textureButton = Button('FILE', 'halfWidth', self.activateTexturePanel)
+        mappingButton = Button('MAPPING', 'halfWidth', self.activateMappingPanel)
         self.mappingPanel = MappingsPanel()
         self.texturePanel = TextureSelectPanel()
         self.current = self.texturePanel
@@ -141,15 +149,19 @@ class TextureButtons(arcade.gui.UIBoxLayout):
         self.add(self.mainButtonLine)
         self.add(self.current)
 
-    def setTexturePanel(self):
+    def activateTexturePanel(self):
         if self.current != self.texturePanel:
             self.remove(self.current)
             self.current = self.texturePanel
             self.add(self.current)
             
-    def setMappingPanel(self):
+    def activateMappingPanel(self):
         if self.current != self.mappingPanel:
             self.remove(self.current)
             self.current = self.mappingPanel
             self.add(self.current)
-            
+    
+    def on_update(self, dt):
+        retVal = super().on_update(dt)
+        
+        return retVal
