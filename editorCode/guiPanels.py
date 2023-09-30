@@ -8,7 +8,7 @@ from typing import List, Callable, Tuple, NamedTuple
 from .config import massInPixelsToString, massInStringToPixels, densityInPixelsToString, densityInStringToPixels, distanceInPixelsToString, scaleToString, scaleFromString, angleToString, angleFromString, distanceInStringToPixels, areaInStringToPixels, areaInPixelsToString
 from .config import momentInPixelsToString, momentInStringToPixels
 
-from .guiButtons import Button, Label, TextButton, TextInput, ScrollableCBLabel, editorButtonSetup
+from .guiButtons import Button, Label, TextButton, TextInput, ScrollableCBLabel, ScrollableConstant, editorButtonSetup
 from .guiTimeMeasure import TimeMeasure
 from .editorTypes import V2
 from .editorShapes import Container
@@ -584,6 +584,26 @@ class SettableCoordOkButton(arcade.gui.UIBoxLayout):
         return self.yCoord.text
     
 
+class ScrollableConstantPanel(arcade.gui.UIBoxLayout):
+
+    def __init__(self, labels: List[str] = [], lrWidth='quartWidth', labelWidth='halfWidth') -> None:
+        super().__init__(vertical=False)
+        
+        self.label = ScrollableConstant(labels, labelWidth)
+        self.lButton = Button('<', lrWidth, self.label.setNext)
+        self.rButton = Button('>', lrWidth, self.label.setPrev)
+
+        self.add(self.lButton)
+        self.add(self.label)
+        self.add(self.rButton)
+
+    def setLabels(self, labels: List[str]) -> None:
+        self.label.setLabels(labels)
+
+    def getCurrent(self) -> str:
+        return self.label.getCurrent()
+
+
 class ScrollableCBLabelPanel(arcade.gui.UIBoxLayout):
 
     def __init__(self, label:str ='--', lrWidth='quartWidth', labelWidth='halfWidth', cbNext:Callable[[None], None]=None, cbPrev:Callable[[None], None] = None) -> None:
@@ -596,3 +616,17 @@ class ScrollableCBLabelPanel(arcade.gui.UIBoxLayout):
         self.add(self.lButton)
         self.add(self.label)
         self.add(self.rButton)
+
+    def setLabel(self, label:str) -> None:
+        self.label.setLabel(label)
+
+    def getCurrent(self) -> str:
+        return self.label.getCurrent()
+    
+
+class EmptyPanel(arcade.gui.UIBoxLayout):
+
+    def __init__(self):
+        super().__init__(vertical=False)
+        label = Label('--')
+        self.add(label)

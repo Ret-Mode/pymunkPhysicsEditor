@@ -72,7 +72,7 @@ class LineDraw:
                                      index_buffer=self.indices, 
                                      mode=self.ctx.LINES)
         
-        #ctx.enable(pyglet.gl.GL_LINE_SMOOTH)
+        self.ctx.enable(pyglet.gl.GL_LINE_SMOOTH)
         #ctx.disable(pyglet.gl.GL_DEPTH_TEST)
 
     def update(self, verts:List[float], colors:List[int], indices:List[int]):

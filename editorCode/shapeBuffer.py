@@ -6,15 +6,15 @@ from .config import pointConfig
 from .editorTypes import V2, EditorPoint, UnboundAngle
 
 
-class BufferContainer:
+class ShapeBuffer:
 
-    _instance: "BufferContainer" = None
+    _instance: "ShapeBuffer" = None
 
     @staticmethod
-    def getInstance() -> "BufferContainer":
-        if BufferContainer._instance == None:
-            BufferContainer._instance = BufferContainer()
-        return BufferContainer._instance
+    def getInstance() -> "ShapeBuffer":
+        if ShapeBuffer._instance == None:
+            ShapeBuffer._instance = ShapeBuffer()
+        return ShapeBuffer._instance
     
     def __init__(self):
         self.drawScale:float = 1.0
@@ -459,6 +459,8 @@ class BufferContainer:
         self.indices += [ind, ind +1, ind+2, ind+3]
         self.currentIndex += 4
 
+
+    # TODO move to geometry shader
     def addGridLayer(self, minX, minY, maxX, maxY, gridSize, armLength, roundFactor, color):
         xLower = round(minX, roundFactor)
         yStart = round(minY, roundFactor)

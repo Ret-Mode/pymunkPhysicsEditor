@@ -27,7 +27,7 @@ from editorCode.config import globalWindowSetup
 from editorCode.database import Database
 from editorCode.editorCursor import Cursor
 from editorCode.editorCamera import CursorCamera
-from editorCode.bufferContainer import BufferContainer
+from editorCode.shapeBuffer import ShapeBuffer
 from editorCode.lineShader import LineDraw
 
 class EditorView(arcade.View):
@@ -107,7 +107,7 @@ class EditorView(arcade.View):
         self._getActiveView().update()
 
     def draw_cursor(self):
-        buffer = BufferContainer.getInstance()
+        buffer = ShapeBuffer.getInstance()
         buffer.reset()
         buffer.drawScale = 1.0
         buffer.addCursor(self.cursor.screenCoords, 

@@ -4,7 +4,7 @@ from .editorTypes import EditorPoint
 from .editorCursor import Cursor
 from .editorViewTransform import ContinuousTransform
 from .database import Database
-from .bufferContainer import BufferContainer
+from .shapeBuffer import ShapeBuffer
 
 from .commandExec import CommandExec
 from .commandExec import ComSetPivot, ComScaleView, ComResizeView, ComMoveCursor, ComMoveView
@@ -107,7 +107,7 @@ class EditorBodyView:
             constraint.updateInternals()
         
     def draw(self):
-        buffer = BufferContainer.getInstance()
+        buffer = ShapeBuffer.getInstance()
         database = Database.getInstance()
 
         buffer.reset()

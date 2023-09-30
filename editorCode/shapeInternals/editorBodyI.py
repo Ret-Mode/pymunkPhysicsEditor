@@ -1,5 +1,5 @@
 from ..editorTypes import Mat, ContainerTransform, BoundingBox
-from ..bufferContainer import BufferContainer
+from ..shapeBuffer import ShapeBuffer
 from .editorBodyPhysics import BodyPhysics
 from .editorShapeI import ShapeI
 
@@ -37,7 +37,7 @@ class BodyI:
     def clone(self, newLabel:str):
         raise NotImplementedError
     
-    def bufferData(self, buffer:BufferContainer):
+    def bufferData(self, buffer:ShapeBuffer):
         for shape in self.shapes:
             shape.bufferData(buffer)
     

@@ -1,4 +1,4 @@
-from ..bufferContainer import BufferContainer
+from ..shapeBuffer import ShapeBuffer
 from .editorShapeI import ShapeI
 from .editorShapeSpec import PolygonSpec, CircleSpec, BoxSpec, RectSpec, LineSpec
 from .editorShapePhysics import PolygonPhysics, CirclePhysics, BoxPhysics, RectPhysics, LinePhysics
@@ -12,7 +12,7 @@ class Polygon(ShapeI):
         self.internal:PolygonSpec = PolygonSpec()
         self.physics = PolygonPhysics()
     
-    def bufferData(self, buffer:BufferContainer):
+    def bufferData(self, buffer:ShapeBuffer):
         buffer.addPolygon(self.internal.points)
 
 
@@ -24,7 +24,7 @@ class Circle(ShapeI):
         self.internal:CircleSpec = CircleSpec()
         self.physics = CirclePhysics()
 
-    def bufferData(self, buffer:BufferContainer):
+    def bufferData(self, buffer:ShapeBuffer):
         buffer.addCircle(self.internal.center.final, self.internal.halfWH.final,
                          self.internal.drawLines)
 
@@ -37,7 +37,7 @@ class Box(ShapeI):
         self.internal:BoxSpec = BoxSpec()
         self.physics = BoxPhysics()
 
-    def bufferData(self, buffer:BufferContainer):
+    def bufferData(self, buffer:ShapeBuffer):
         buffer.addBox(self.internal.points)
 
 
@@ -49,7 +49,7 @@ class Rect(ShapeI):
         self.internal:RectSpec = RectSpec()
         self.physics = RectPhysics()
         
-    def bufferData(self, buffer:BufferContainer):
+    def bufferData(self, buffer:ShapeBuffer):
         buffer.addRect(self.internal.points)
 
 
@@ -61,5 +61,5 @@ class Line(ShapeI):
         self.internal = LineSpec()
         self.physics = LinePhysics()
 
-    def bufferData(self, buffer:BufferContainer):
+    def bufferData(self, buffer:ShapeBuffer):
         buffer.addLineShape(self.internal.points)

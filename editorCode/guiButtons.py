@@ -285,16 +285,22 @@ class ScrollableConstant(arcade.gui.UIBoxLayout):
     def getCurrent(self) -> str:
         return self.text.text
 
+    def setNext(self):
+        self.current = (self.current - 1 + len(self.labels)) % len(self.labels)
+        self.text.text = self.labels[self.current]
+
+    def setPrev(self):
+        self.current = (self.current + 1 ) % len(self.labels)
+        self.text.text = self.labels[self.current] 
+
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if len(self.labels) > 0:
             if isinstance(event, arcade.gui.events.UIMouseScrollEvent):
                 if self.rect.collide_with_point(event.x, event.y):
                     if event.scroll_y > 0:
-                        self.current = (self.current - 1 + len(self.labels)) % len(self.labels)
-                        self.text.text = self.labels[self.current]
+                        self.setNext()
                     elif event.scroll_y < 0:
-                        self.current = (self.current + 1 ) % len(self.labels)
-                        self.text.text = self.labels[self.current]
+                        self.setPrev()
 
         if super().on_event(event):
             return EVENT_HANDLED
@@ -345,5 +351,5 @@ class TexturePreview(arcade.gui.UITextureButton):
     def getTextureSize(self):
         if self.texture:
             return self.texture.size
-        return (0,0)
+        return None
         

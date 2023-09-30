@@ -1,7 +1,5 @@
 import array
 from arcade.gl import BufferDescription
-from arcade import ArcadeContext
-import pyglet
 from pyglet.math import Mat4
 
 from typing import List, Tuple
@@ -44,9 +42,11 @@ class TextureDraw:
         self.program = self.ctx.program(vertex_shader=vertexShader, fragment_shader=fragmentShader)
 
         verts = array.array('f', [
-                        -0.5, -0.5,
-                        0.5, -0.5,
-                        0.0, 0.5
+                        0, 0,
+                        32.0, 0.0,
+                        0.0, 32.0,
+                        32.0, 32.0,
+
         ])
         
         self.verts = self.ctx.buffer(data=verts)
@@ -54,11 +54,12 @@ class TextureDraw:
 
         uvs = array.array('f', [0.0, 0.0,
                                    1.0, 0.0,
-                                   0.5, 1.0])
+                                   0.0, 1.0,
+                                   1.0, 1.0])
         self.uvs = self.ctx.buffer(data=uvs)
         uvDescription = BufferDescription(self.uvs, '2f', ['inUV'])
 
-        indices = array.array('I', [0,1,2])
+        indices = array.array('I', [0,1,2,1,2,3])
         self.indices = self.ctx.buffer(data=indices)
 
         self.program.set_uniform_safe('currentTexture', 0)
@@ -104,6 +105,10 @@ class TextureDraw:
             self.indices.orphan(size=indicesInBytes)
             self.geometry.num_vertices = len(indices)
         self.indices.write(array.array('I', indices))
+
+    def setProjection(self, viewport: Tuple[float], mat: Tuple[float]):
+        self.ctx.viewport = viewport
+        self.ctx.projection_2d_matrix = Mat4(values=mat)
 
     def draw(self):
         self.geometry.render(self.program)

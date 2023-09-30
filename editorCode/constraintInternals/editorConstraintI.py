@@ -1,7 +1,7 @@
 from typing import List
 from ..shapeInternals.editorBodyI import BodyI
 from ..editorTypes import UserSettableFloat
-from ..bufferContainer import BufferContainer
+from ..shapeBuffer import ShapeBuffer
 
 class ConstraintI:
 
@@ -46,25 +46,25 @@ class ConstraintI:
     def drawInternalB(self):
         pass
 
-    def bufferInternals(self, buffer:BufferContainer):
+    def bufferInternals(self, buffer:ShapeBuffer):
         pass
 
-    def bufferInternalA(self, buffer:BufferContainer):
+    def bufferInternalA(self, buffer:ShapeBuffer):
         pass
 
-    def bufferInternalB(self, buffer:BufferContainer):
+    def bufferInternalB(self, buffer:ShapeBuffer):
         pass
 
-    def bufferBodies(self, buffer:BufferContainer):
+    def bufferBodies(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             self.bodyA.bufferData(buffer)
             self.bodyB.bufferData(buffer)
 
-    def bufferBodyA(self, buffer:BufferContainer):
+    def bufferBodyA(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             self.bodyA.bufferData(buffer)
 
-    def bufferBodyB(self, buffer:BufferContainer):
+    def bufferBodyB(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             self.bodyB.bufferData(buffer)
 

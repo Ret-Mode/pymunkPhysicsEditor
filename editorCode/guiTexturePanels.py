@@ -1,16 +1,15 @@
 import arcade.gui
-from arcade.texture import Texture
 
 from typing import List, Callable, Tuple
 
-from .guiButtons import ScrollableLayout, TexturePreview, ScrollableConstant
+from .guiButtons import ScrollableLayout, TexturePreview
 from .guiButtons import Button, Label
-from .guiPanels import ScrollableCBLabelPanel
+from .guiPanels import ScrollableCBLabelPanel, ScrollableConstantPanel, EmptyPanel
 from .config import physicsSetup
 from .editorFilesystem import EditorDir
 from .arcadeTextureContainer import ArcadeTexture
 
-
+# FILE PANELS
 class SetTextureToChannelPanel(arcade.gui.UIBoxLayout):
     
     def __init__(self, assignTexToChannel:Callable):
@@ -18,7 +17,7 @@ class SetTextureToChannelPanel(arcade.gui.UIBoxLayout):
         self.assignTexToChannel = assignTexToChannel
 
         self.assignButton = Button('Assign to:', 'halfWidth', self.assign)
-        self.channels = ScrollableConstant(list(map(str, [i for i in range(16)])), 'halfWidth')
+        self.channels = ScrollableConstantPanel(list(map(str, [i for i in range(16)])), 'eightWidth', 'quartWidth')
 
         self.add(self.assignButton)
         self.add(self.channels)
@@ -116,21 +115,57 @@ class TextureSelectPanel(arcade.gui.UIBoxLayout):
     def assignToChannel(self, toChannel:int):
         # TODO add command when other functionality is ready
         # to reconsider moving this into command - file op, what if file is deleted?
-        ArcadeTexture.getInstance().load(self.preview.originalFilePath, toChannel)
+        if self.preview.originalFilePath:
+            ArcadeTexture.getInstance().load(self.preview.originalFilePath, toChannel, self.preview.getTextureSize())
+
+# end of FILE PANELS
+
+
+# MAPPING PANELS
+
+class MappingDetailsPanel(arcade.gui.UIBoxLayout):
+
+    def __init__(self) -> None:
+        super().__init__(vertical=True)
 
 
 class MappingsPanel(arcade.gui.UIBoxLayout):
 
     def __init__(self) -> None:
-        super().__init__(vertical=True)   
-        self.add(ScrollableCBLabelPanel('--'))
+        super().__init__(vertical=True)  
+        
+        self.currentChannelLine = ScrollableCBLabelPanel('--', cbNext=self.next, cbPrev=self.prev)
+        self.mappings = ScrollableLayout(max=8, callback=self.loadMapping)
+        self.empty = EmptyPanel()
 
-        mappings = ScrollableLayout(max=8, callback=self.loadMapping)
-        self.add(mappings)
+        self.currentPanel = self.empty
+
+        self.add(self.currentChannelLine)
+        self.add(self.mappings)
+        self.add(self.currentPanel)
+
+    def prev(self):
+        textures = ArcadeTexture.getInstance()
+        textures.setPrev()
+        current = textures.getCurrent()
+        if current is not None:
+            self.currentChannelLine.setLabel(str(current))
+        else:
+            self.currentChannelLine.setLabel('--')
+
+    def next(self):
+        textures = ArcadeTexture.getInstance()
+        textures.setNext()
+        current = textures.getCurrent()
+        if current is not None:
+            self.currentChannelLine.setLabel(str(current))
+        else:
+            self.currentChannelLine.setLabel('--')
 
     def loadMapping(self, *args):
         pass
 
+# end of MAPPING PANELS
 
 class TextureButtons(arcade.gui.UIBoxLayout):
 

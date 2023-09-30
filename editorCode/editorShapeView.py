@@ -10,7 +10,7 @@ from .database import Database
 
 from .pymunkTester import testShapes
 
-from .bufferContainer import BufferContainer
+from .shapeBuffer import ShapeBuffer
 from .lineShader import LineDraw
 
 from .config import toJSON
@@ -126,7 +126,7 @@ class EditorShapeView:
  
     def draw(self):
         database = Database.getInstance()
-        buffer = BufferContainer.getInstance()
+        buffer = ShapeBuffer.getInstance()
 
         buffer.reset()
         buffer.drawScale = self.viewOffset.scale

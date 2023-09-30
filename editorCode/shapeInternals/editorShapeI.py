@@ -1,5 +1,5 @@
 from ..editorTypes import Mat, ContainerTransform, BoundingBox
-from ..bufferContainer import BufferContainer
+from ..shapeBuffer import ShapeBuffer
 from .editorPhysicsI import PhysicsProp
 from .editorShapeSpecI import ShapeSpec
 
@@ -58,7 +58,7 @@ class ShapeI:
         self.internal.getJSONDict(this)
         parent[self.label] = this
 
-    def bufferData(self, buffer:BufferContainer):
+    def bufferData(self, buffer:ShapeBuffer):
         raise NotImplementedError
 
     @staticmethod

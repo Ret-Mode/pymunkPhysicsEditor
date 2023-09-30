@@ -12,7 +12,7 @@ from .commandExec import ComSetPhaseFromCoords, ComSetRatioFromCoords, ComSetGro
 from .commandExec import ComSetRatchetFromCoords, ComSetRotaryMaxFromCoords, ComSetRotaryMinFromCoords, ComSetRateFromCoords
 from .commandExec import ComSetSlideMaxFromCoords, ComSetSlideMinFromCoords
 
-from .bufferContainer import BufferContainer
+from .shapeBuffer import ShapeBuffer
 from .lineShader import LineDraw
 
 from .config import toJSON
@@ -166,19 +166,8 @@ class EditorConstraintView:
         constraint:ConstraintI = Database.getInstance().getCurrentConstraint()
 
         if constraint:
-            # self.viewAllOffset.start()
-            # constraint.drawBodies()
-            # constraint.drawInternals()
-            
-            # self.viewBodyAOffset.start()
-            # constraint.drawBodyA()
-            # constraint.drawInternalA()
 
-            # self.viewBodyBOffset.start()
-            # constraint.drawBodyB()
-            # constraint.drawInternalB()
-
-            buffer = BufferContainer.getInstance()
+            buffer = ShapeBuffer.getInstance()
             
             buffer.reset()
             buffer.drawScale = self.viewAllOffset.scale

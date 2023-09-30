@@ -1,5 +1,5 @@
 from ..editorTypes import UnboundAngle, OffsetPoint
-from ..bufferContainer import BufferContainer
+from ..shapeBuffer import ShapeBuffer
 
 from .editorConstraintI import ConstraintI
 
@@ -14,17 +14,17 @@ class DampedRotarySpring(ConstraintI):
         self.stiffness: float = 0.5
         self.damping: float = 0.5
 
-    def bufferInternals(self, buffer:BufferContainer):
+    def bufferInternals(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAngleArm(self.bodyA.physics.cog.final, 1.0, 0.0)
             buffer.addAngleArm(self.bodyB.physics.cog.final, 
                          self.restAngle.cos, self.restAngle.sin)
 
-    def bufferInternalA(self, buffer:BufferContainer):
+    def bufferInternalA(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAngleArm(self.bodyA.physics.cog.final, 1.0, 0.0)
 
-    def bufferInternalB(self, buffer:BufferContainer):
+    def bufferInternalB(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAngleArm(self.bodyB.physics.cog.final, 
                          self.restAngle.cos, self.restAngle.sin)
@@ -47,17 +47,17 @@ class DampedSpring(ConstraintI):
             self.anchorA.calcOffset(self.bodyA.transform.getMat(), self.bodyA.physics.cog.final)
             self.anchorB.calcOffset(self.bodyB.transform.getMat(), self.bodyB.physics.cog.final)
 
-    def bufferInternals(self, buffer:BufferContainer):
+    def bufferInternals(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorA.final)
             buffer.addAnchor(self.anchorB.final)
             buffer.addSpring(self.anchorA.final, self.anchorB.final, self.restLength)
 
-    def bufferInternalA(self, buffer:BufferContainer):
+    def bufferInternalA(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorA.final)
 
-    def bufferInternalB(self, buffer:BufferContainer):
+    def bufferInternalB(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorB.final)
             
@@ -71,7 +71,7 @@ class GearJoint(ConstraintI):
         self.phase: UnboundAngle = UnboundAngle(0.0)
         self.ratio: float = 1.0
 
-    def bufferInternals(self, buffer:BufferContainer):
+    def bufferInternals(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAngleArm(self.bodyA.physics.cog.final, 1.0, 0.0)
             buffer.addAngleArm(self.bodyB.physics.cog.final, 
@@ -79,11 +79,11 @@ class GearJoint(ConstraintI):
             buffer.addAngleRatioArm(self.bodyB.physics.cog.final, 
                               self.phase.cos, self.phase.sin, self.ratio)
             
-    def bufferInternalA(self, buffer:BufferContainer):
+    def bufferInternalA(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAngleArm(self.bodyA.physics.cog.final, 1.0, 0.0)
 
-    def bufferInternalB(self, buffer:BufferContainer):
+    def bufferInternalB(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAngleArm(self.bodyB.physics.cog.final, 
                          self.phase.cos, self.phase.sin)
@@ -109,18 +109,18 @@ class GrooveJoint(ConstraintI):
             self.grooveB.calcOffset(mat, cog) 
             self.anchorB.calcOffset(self.bodyB.transform.getMat(), self.bodyB.physics.cog.final)
 
-    def bufferInternals(self, buffer:BufferContainer):
+    def bufferInternals(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addGroove(self.grooveA.final, self.grooveB.final)
             buffer.addAnchor(self.anchorB.final)
             buffer.addCapsule(self.grooveA.final, self.grooveB.final, self.anchorB.final.distV(self.bodyB.physics.cog.final))
 
-    def bufferInternalA(self, buffer:BufferContainer):
+    def bufferInternalA(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addGroove(self.grooveA.final, self.grooveB.final)
             buffer.addCapsule(self.grooveA.final, self.grooveB.final, self.anchorB.final.distV(self.bodyB.physics.cog.final))
     
-    def bufferInternalB(self, buffer:BufferContainer):
+    def bufferInternalB(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorB.final)
       
@@ -140,17 +140,17 @@ class PinJoint(ConstraintI):
             self.anchorA.calcOffset(self.bodyA.transform.getMat(), self.bodyA.physics.cog.final)
             self.anchorB.calcOffset(self.bodyB.transform.getMat(), self.bodyB.physics.cog.final)
 
-    def bufferInternals(self, buffer:BufferContainer):
+    def bufferInternals(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorA.final)
             buffer.addAnchor(self.anchorB.final)
             buffer.addGroove(self.anchorA.final, self.anchorB.final)
             
-    def bufferInternalA(self, buffer:BufferContainer):
+    def bufferInternalA(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorA.final)
 
-    def bufferInternalB(self, buffer:BufferContainer):
+    def bufferInternalB(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorB.final)
 
@@ -169,17 +169,17 @@ class PivotJoint(ConstraintI):
             self.anchorA.calcOffset(self.bodyA.transform.getMat(), self.bodyA.physics.cog.final)
             self.anchorB.calcOffset(self.bodyB.transform.getMat(), self.bodyB.physics.cog.final)
 
-    def bufferInternals(self, buffer:BufferContainer):
+    def bufferInternals(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorA.final)
             buffer.addAnchor(self.anchorB.final)
             buffer.addPivot(self.anchorA.final, self.anchorB.final)
             
-    def bufferInternalA(self, buffer:BufferContainer):
+    def bufferInternalA(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorA.final)
 
-    def bufferInternalB(self, buffer:BufferContainer):
+    def bufferInternalB(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorB.final)
 
@@ -193,7 +193,7 @@ class RatchetJoint(ConstraintI):
         self.phase: UnboundAngle = UnboundAngle(0.5)
         self.ratchet: UnboundAngle = UnboundAngle(0.5)
 
-    def bufferInternals(self, buffer:BufferContainer):
+    def bufferInternals(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAngleArm(self.bodyA.physics.cog.final, 1.0, 0.0)
             buffer.addAngleArm(self.bodyB.physics.cog.final, 
@@ -201,12 +201,12 @@ class RatchetJoint(ConstraintI):
             buffer.addRatchetA(self.bodyA.physics.cog.final, self.ratchet)
             buffer.addRatchetB(self.bodyB.physics.cog.final, self.phase, self.ratchet)
             
-    def bufferInternalA(self, buffer:BufferContainer):
+    def bufferInternalA(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAngleArm(self.bodyA.physics.cog.final, 1.0, 0.0)
             buffer.addRatchetA(self.bodyA.physics.cog.final, self.ratchet)
 
-    def bufferInternalB(self, buffer:BufferContainer):
+    def bufferInternalB(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAngleArm(self.bodyB.physics.cog.final, 
                          self.phase.cos, self.phase.sin)
@@ -222,16 +222,16 @@ class RotaryLimitJoint(ConstraintI):
         self.min: UnboundAngle = UnboundAngle(0.2)
         self.max: UnboundAngle = UnboundAngle(0.5)
 
-    def bufferInternals(self, buffer:BufferContainer):
+    def bufferInternals(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addPhaseMinMaxA(self.bodyA.physics.cog.final, self.min, self.max)
             buffer.addPhaseMinMaxB(self.bodyB.physics.cog.final, self.min, self.max)
             
-    def bufferInternalA(self, buffer:BufferContainer):
+    def bufferInternalA(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addPhaseMinMaxA(self.bodyA.physics.cog.final, self.min, self.max)
 
-    def bufferInternalB(self, buffer:BufferContainer):
+    def bufferInternalB(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addPhaseMinMaxB(self.bodyB.physics.cog.final, self.min, self.max)
 
@@ -244,16 +244,16 @@ class SimpleMotor(ConstraintI):
 
         self.rate: UnboundAngle = UnboundAngle(1.0)
 
-    def bufferInternals(self, buffer:BufferContainer):
+    def bufferInternals(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addRateA(self.bodyA.physics.cog.final, self.rate)
             buffer.addRateB(self.bodyB.physics.cog.final, self.rate)
             
-    def bufferInternalA(self, buffer:BufferContainer):
+    def bufferInternalA(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addRateA(self.bodyA.physics.cog.final, self.rate)
 
-    def bufferInternalB(self, buffer:BufferContainer):
+    def bufferInternalB(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addRateB(self.bodyB.physics.cog.final, self.rate)
 
@@ -274,16 +274,16 @@ class SlideJoint(ConstraintI):
             self.anchorA.calcOffset(self.bodyA.transform.getMat(), self.bodyA.physics.cog.final)
             self.anchorB.calcOffset(self.bodyB.transform.getMat(), self.bodyB.physics.cog.final)
 
-    def bufferInternals(self, buffer:BufferContainer):
+    def bufferInternals(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorA.final)
             buffer.addAnchor(self.anchorB.final)
             buffer.addSlide(self.anchorA.final, self.anchorB.final, self.min, self.max)
             
-    def bufferInternalA(self, buffer:BufferContainer):
+    def bufferInternalA(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorA.final)
 
-    def bufferInternalB(self, buffer:BufferContainer):
+    def bufferInternalB(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorB.final)
