@@ -13,6 +13,10 @@ from .pymunkTester import testShapes
 from .shapeBuffer import ShapeBuffer
 from .lineShader import LineDraw
 
+from .arcadeTextureContainer import ArcadeTexture
+from .textureBuffer import TextureBuffer
+from .textureShader import TextureDraw
+
 from .config import toJSON
 
 class EditorShapeView:
@@ -29,8 +33,7 @@ class EditorShapeView:
 
         self.transform = ContinuousTransform()
         self.shader = LineDraw()
-        #self.moveView(-width/2, -height/2)
-
+        self.texShader = TextureDraw()
 
 
     def startMoveTransform(self):
@@ -122,11 +125,34 @@ class EditorShapeView:
                 transform = shape.transform.getMat()
                 shape.updatePos(transform)
                 shape.recalcPhysics()
-                
+        
+        for mapping in database.getAllMappingsOfBody(parent):
+            mapping.updateShapeView()
  
     def draw(self):
         database = Database.getInstance()
         buffer = ShapeBuffer.getInstance()
+
+
+        textures = ArcadeTexture.getInstance()
+        texBuffer = TextureBuffer.getInstance()
+        
+        self.texShader.setProjection((self.viewOffset.offsetInPixels.x, 
+                                self.viewOffset.offsetInPixels.y, 
+                                self.viewOffset.sizeInPixels.x, 
+                                self.viewOffset.sizeInPixels.y), 
+                                self.viewOffset.mat)
+        
+        parent = database.getCurrentBody()
+        for channel in range(16):
+            texBuffer.reset()
+            for mapping in database.getAllMappingsOfBodyAndChannel(parent, channel): 
+                texBuffer.addMapping(mapping)
+            if texBuffer.indices:
+                textures.use(channel, 0)
+                self.texShader.update(texBuffer.verts, texBuffer.uvs, texBuffer.indices)
+                self.texShader.draw()
+
 
         buffer.reset()
         buffer.drawScale = self.viewOffset.scale

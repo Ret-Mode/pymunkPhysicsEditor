@@ -11,6 +11,10 @@ from .commandExec import ComSetPivot, ComScaleView, ComResizeView, ComMoveCursor
 from .commandExec import ComStartTransform, ComCancelTransform,ComApplyTransform
 from .lineShader import LineDraw
 
+from .arcadeTextureContainer import ArcadeTexture
+from .textureBuffer import TextureBuffer
+from .textureShader import TextureDraw
+
 from .config import toJSON
 
 from .pymunkTester import testBodies
@@ -27,6 +31,7 @@ class EditorBodyView:
 
         self.transform = ContinuousTransform()
         self.shader = LineDraw()
+        self.texShader = TextureDraw()
         #self.moveView(-width/2, -height/2)
 
 
@@ -105,15 +110,37 @@ class EditorBodyView:
         for constraint in database.constraints:
             # TODO remove update of bodies from constraint update
             constraint.updateInternals()
+
+        for mapping in database.mappings:
+            mapping.update()
         
     def draw(self):
         buffer = ShapeBuffer.getInstance()
         database = Database.getInstance()
 
+        textures = ArcadeTexture.getInstance()
+        texBuffer = TextureBuffer.getInstance()
+        
+        self.texShader.setProjection((self.viewOffset.offsetInPixels.x, 
+                                self.viewOffset.offsetInPixels.y, 
+                                self.viewOffset.sizeInPixels.x, 
+                                self.viewOffset.sizeInPixels.y), 
+                                self.viewOffset.mat)
+        
+        for channel in range(16):
+            texBuffer.reset()
+            for mapping in database.getAllMappingLabelsOfChannel(channel): 
+                texBuffer.addMapping(database.getMappingByLabel(mapping))
+            if texBuffer.indices:
+                textures.use(channel, 0)
+                self.texShader.update(texBuffer.verts, texBuffer.uvs, texBuffer.indices)
+                self.texShader.draw()
+
         buffer.reset()
         buffer.drawScale = self.viewOffset.scale
 
         buffer.addGrid(self.viewOffset.offsetScaled, self.viewOffset.sizeScaled)
+
 
         currentBody = database.getCurrentBody()
         if self.hideOthers and currentBody:

@@ -352,9 +352,21 @@ class Database:
     def getAllMappingLabels(self):
         return tuple(map(lambda x: x.label, self.mappings))
     
+    def getAllMappings(self):
+        return self.mappings
+    
     def getAllMappingLabelsOfChannel(self, channel:int):
         return tuple(map(lambda x: x.label, filter(lambda x: x.channel == channel, self.mappings)))
+
+    def getAllMappingsOfChannel(self, channel:int):
+        return tuple(filter(lambda x: x.channel == channel, self.mappings))
     
+    def getAllMappingsOfBodyAndChannel(self, body:BodyI, channel:int):
+        return tuple(filter(lambda x: x.channel == channel and x.body == body, self.mappings))
+    
+    def getAllMappingsOfBody(self, body:BodyI):
+        return tuple(filter(lambda x: x.body == body, self.mappings))
+
     def getMappingIndex(self, mapping:TextureMapping):
         if mapping in self.mappings:
             return self.mappings.index(mapping)
@@ -411,7 +423,7 @@ class Database:
             if s.label == label:
                 return s
         return None
-    
+
     def getCurrentMapping(self) -> TextureMapping:
         return self.currentMapping
     

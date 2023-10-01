@@ -43,6 +43,14 @@ class TextureMapping:
                 mappingBaseMat.mulV(point.local, point.final)
                 pass
 
+    def updateShapeView(self):
+        if self.body:
+            mappingBaseMat = self.mappingTransform.getInvMat()
+            mappingBaseMat.mulPre(self.body.transform.getMat())
+            for point in self.textureRect:
+                mappingBaseMat.mulV(point.local, point.final)
+                pass
+
     def getTexPos(self) -> List[float]:
         result = []
         for point in self.textureRect:
