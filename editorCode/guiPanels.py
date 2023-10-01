@@ -626,7 +626,7 @@ class ScrollableCBLabelPanel(arcade.gui.UIBoxLayout):
 
 class EmptyPanel(arcade.gui.UIBoxLayout):
 
-    def __init__(self):
+    def __init__(self, label='--'):
         super().__init__(vertical=False)
-        label = Label('--')
+        label = Label(label)
         self.add(label)

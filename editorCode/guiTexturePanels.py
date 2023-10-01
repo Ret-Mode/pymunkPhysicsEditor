@@ -2,12 +2,15 @@ import arcade.gui
 
 from typing import List, Callable, Tuple
 
+from .database import Database
+from .shapeInternals.editorBodyI import BodyI
 from .guiButtons import ScrollableLayout, TexturePreview
 from .guiButtons import Button, Label
 from .guiPanels import ScrollableCBLabelPanel, ScrollableConstantPanel, EmptyPanel
 from .config import physicsSetup
 from .editorFilesystem import EditorDir
 from .arcadeTextureContainer import ArcadeTexture
+from .textureMapping import TextureMapping
 
 # FILE PANELS
 class SetTextureToChannelPanel(arcade.gui.UIBoxLayout):
@@ -129,41 +132,149 @@ class MappingDetailsPanel(arcade.gui.UIBoxLayout):
         super().__init__(vertical=True)
 
 
+class BodySelectPanel(arcade.gui.UIBoxLayout):
+
+    def __init__(self):
+        super().__init__(vertical=False)
+        label = Label("Body", width='quartWidth', align='left')
+        self.currentBody = ScrollableCBLabelPanel('--', lrWidth='quartWidth', labelWidth='quartWidth', cbNext=self.next, cbPrev=self.prev)
+        self.currentMapping:TextureMapping = None
+        self.add(label)
+        self.add(self.currentBody)
+
+    def next(self):
+        database = Database.getInstance()
+        if self.currentMapping:
+            current = self.currentMapping.body.label if self.currentMapping.body else '--'
+        labels = database.getAllBodyLabels()
+        if current in labels:
+            indexOfBody = labels.index(current)
+            label = labels[(indexOfBody + 1)%len(labels)]
+        elif labels:
+            label = labels[0]
+        else:
+            label = '--'
+        body = database.getBodyByLabel(label)
+        if body:
+            self.currentMapping.setBody(body)
+
+    def prev(self):
+        database = Database.getInstance()
+        if self.currentMapping:
+            current = self.currentMapping.body.label if self.currentMapping.body else '--'
+        labels = database.getAllBodyLabels()
+        if current in labels:
+            indexOfBody = labels.index(current)
+            label = labels[(indexOfBody + 1 + len(labels))%len(labels)]
+        elif labels:
+            label = labels[-1]
+        else:
+            label = '--'
+        body = database.getBodyByLabel(label)
+        if body:
+            self.currentMapping.setBody(body)
+
+    def updateDetails(self):
+        pass
+
+    def on_update(self, dt):
+        retVal = super().on_update(dt)
+        mapping = Database.getInstance().getCurrentMapping()
+        if self.currentMapping != mapping:
+            self.currentMapping = mapping
+            self.updateDetails()
+        if self.currentMapping and self.currentMapping.body:
+            self.currentBody.setLabel(self.currentMapping.body.label)
+        else:
+            self.currentBody.setLabel('--')
+
+        return retVal
+
+
 class MappingsPanel(arcade.gui.UIBoxLayout):
 
     def __init__(self) -> None:
         super().__init__(vertical=True)  
         
-        self.currentChannelLine = ScrollableCBLabelPanel('--', cbNext=self.next, cbPrev=self.prev)
+        upperLine = arcade.gui.UIBoxLayout(vertical = False)
+        addButton = Button('Add', 'quartWidth', self.addMapping)
+        self.currentChannelLine = ScrollableCBLabelPanel('--', lrWidth='quartWidth', labelWidth='quartWidth', cbNext=self.next, cbPrev=self.prev)
+        self.currentChannelPath = Label('--', align='left')
         self.mappings = ScrollableLayout(max=8, callback=self.loadMapping)
-        self.empty = EmptyPanel()
+
+        self.mappingDetails = BodySelectPanel()
+        self.empty = EmptyPanel('Select mapping')
 
         self.currentPanel = self.empty
 
-        self.add(self.currentChannelLine)
+        upperLine.add(addButton)
+        upperLine.add(self.currentChannelLine)
+
+        self.add(upperLine)
+        self.add(self.currentChannelPath)
         self.add(self.mappings)
         self.add(self.currentPanel)
+
+    def addMapping(self):
+        textures = ArcadeTexture.getInstance()
+        current = textures.getCurrent()
+        if current is not None:
+            database = Database.getInstance()
+            mapping = database.createMapping(current, textures.getSize(current))
+            database.addMapping(mapping)
+            #textures.addMapping(mapping)
+            self.mappings.setLabels(database.getAllMappingLabelsOfChannel(current))
 
     def prev(self):
         textures = ArcadeTexture.getInstance()
         textures.setPrev()
         current = textures.getCurrent()
         if current is not None:
+            database = Database.getInstance()
             self.currentChannelLine.setLabel(str(current))
+            self.currentChannelPath.setText(textures.getCurrentPath())
+            self.mappings.setLabels(database.getAllMappingLabelsOfChannel(current))
         else:
             self.currentChannelLine.setLabel('--')
+            self.currentChannelPath.setText('--')
+            self.mappings.setLabels([])
 
     def next(self):
         textures = ArcadeTexture.getInstance()
         textures.setNext()
         current = textures.getCurrent()
         if current is not None:
+            database = Database.getInstance()
             self.currentChannelLine.setLabel(str(current))
+            self.currentChannelPath.setText(textures.getCurrentPath())
+            self.mappings.setLabels(database.getAllMappingLabelsOfChannel(current))
         else:
             self.currentChannelLine.setLabel('--')
+            self.currentChannelPath.setText('--')
+            self.mappings.setLabels([])
 
-    def loadMapping(self, *args):
-        pass
+    def loadMapping(self, label):
+        textures = ArcadeTexture.getInstance()
+        currentChannel = textures.getCurrent()
+        if currentChannel is not None:
+            database = Database.getInstance()
+            database.setCurrentMappingByLabel(label)
+            mapping = database.getCurrentMapping()
+            if mapping:
+                if self.currentPanel == self.empty:
+                    self.remove(self.currentPanel)
+                    self.currentPanel = self.mappingDetails
+                    self.add(self.currentPanel)
+            else:
+                if self.currentPanel == self.mappingDetails:
+                    self.remove(self.currentPanel)
+                    self.currentPanel = self.empty
+                    self.add(self.currentPanel)
+        else:
+            if self.currentPanel == self.mappingDetails:
+                self.remove(self.currentPanel)
+                self.currentPanel = self.empty
+                self.add(self.currentPanel)
 
 # end of MAPPING PANELS
 

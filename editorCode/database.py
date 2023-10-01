@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Tuple
 from .shapeInternals.editorShapeI import ShapeI
 from .shapeInternals.editorBodyI import BodyI
 from .constraintInternals.editorConstraintI import ConstraintI
 from .constraintInternals.constraintFactory import constraintFactory
 from .shapeInternals.shapeFactory import shapeFactory
 from .shapeInternals.bodyFactory import bodyFactory
-
+from .textureMapping import TextureMapping
 
 def _getUniqueLabel(label:str, listOfLabels: List[str], default:str = 'NEW'):
     if label == '':
@@ -39,9 +39,12 @@ class Database:
         self.bodies: List[BodyI] = []
         self.shapeList: List[ShapeI] = []
         self.constraints: List[ConstraintI] = []
+        self.mappings: List[TextureMapping] = []
         self.currentBody: BodyI = None
         self.currentShape: ShapeI = None
         self.currentConstraint: ConstraintI = None
+        self.currentMapping: TextureMapping = None
+        self.currentMappingChannel: int = -1
 
 
     # TODO 
@@ -331,3 +334,113 @@ class Database:
                 elif body == constraint.bodyB:
                     result.append((constraint, False))
         return result
+    
+
+    # TEXTURE management
+
+    def createMapping(self, channel:int, textureSize:Tuple[int]):
+        label = f'MAP_{channel}'
+        newLabel = _getUniqueLabel(label, self.getAllMappingLabels(), f'MAP_{channel}')
+        return TextureMapping(newLabel, channel, textureSize)
+
+    def addMapping(self, mapping:TextureMapping, at: int = -1):
+        if at < 0:
+            at = len(self.mappings)
+        self.mappings.insert(at, mapping)
+        return mapping
+    
+    def getAllMappingLabels(self):
+        return tuple(map(lambda x: x.label, self.mappings))
+    
+    def getAllMappingLabelsOfChannel(self, channel:int):
+        return tuple(map(lambda x: x.label, filter(lambda x: x.channel == channel, self.mappings)))
+    
+    def getMappingIndex(self, mapping:TextureMapping):
+        if mapping in self.mappings:
+            return self.mappings.index(mapping)
+        return -1
+
+    def deleteMapping(self, label):
+        mapping = self.getMappingByLabel(label)
+        if mapping:
+            self.mappings.remove(mapping)
+        return mapping
+    
+    def getNextMapping(self, mapping:TextureMapping):
+        index = self.getMappingIndex(mapping)
+        if len(self.mappings) > 1:
+            newIndex = (len(self.mappings) + index - 1) % len(self.mappings)
+            return self.mappings[newIndex]
+        else:
+            return None
+
+    def getNextMappingOfChannel(self, mapping:TextureMapping, channel:int):
+        mappings = self.getAllMappingLabelsOfChannel(channel)
+        if mapping in mappings:
+            ind = mappings.index(mapping)
+        if len(mappings) > 1:
+            newIndex = (len(mappings) + ind - 1) % len(mappings)
+            return mappings[newIndex]
+        else:
+            return None
+        
+    def getNextMappingLabel(self, mapping:TextureMapping):
+        index = self.getMappingIndex(mapping)
+        if len(self.mappings) > 1:
+            newIndex = (len(self.mappings) + index - 1) % len(self.mappings)
+            return self.mappings[newIndex].label
+        else:
+            return None
+
+    def getNextMappingLabelOfChannel(self, mapping:TextureMapping, channel:int):
+        mappings = self.getAllMappingLabelsOfChannel(channel)
+        if mapping in mappings:
+            ind = mappings.index(mapping)
+        if len(mappings) > 1:
+            newIndex = (len(mappings) + ind - 1) % len(mappings)
+            return self.getMappingByLabel(mappings[newIndex])
+        else:
+            return None
+
+    def renameMapping(self, mapping:TextureMapping, label):
+        newLabel = _getUniqueLabel(label, self.getAllMappingLabels(), f'MAP_{mapping.channel}')
+        mapping.label = newLabel
+
+    def getMappingByLabel(self, label:str):
+        for s in self.mappings:
+            if s.label == label:
+                return s
+        return None
+    
+    def getCurrentMapping(self) -> TextureMapping:
+        return self.currentMapping
+    
+    def getCurrentMappingChannel(self) -> int:
+        return self.currentMappingChannel
+    
+    def setCurrentMappingByLabel(self, label:str):
+        mapping = self.getMappingByLabel(label)
+        if mapping:
+            if self.currentMapping != mapping:
+                self.currentMapping = mapping
+                self.currentMappingChannel = mapping.channel
+        else:
+            self.currentMapping = None
+            self.currentMappingChannel = None
+
+    def setAnyMappingAsCurrent(self):
+        if self.mappings:
+            self.setCurrentMappingByLabel(self.mappings[-1].label)
+            self.currentMappingChannel = self.mappings[-1].channel
+        else:
+            self.currentMapping = None
+            self.currentMappingChannel = None
+
+    def setAnyMappingFromChannelAsCurrent(self, channel:int):
+        mappings = self.getAllMappingLabelsOfChannel(channel)
+        if mappings:
+            self.setCurrentMappingByLabel(mappings[-1].label)
+            self.currentMappingChannel = channel
+        else:
+            self.currentMapping = None
+            self.currentMappingChannel = None

@@ -402,6 +402,17 @@ class ShapeBuffer:
                 self.addPoint(nextPoint.final, pointConfig['inactivePointColor'], pointConfig['pointHalfWH'] * self.drawScale)
                 point = nextPoint.final
 
+    def addTextureOutline(self, points: List[EditorPoint]):
+        color = pointConfig['inactivePointColor']
+        self.addEdge(points[0].final, points[1].final, color)
+        self.addEdge(points[1].final, points[3].final, color)
+        self.addEdge(points[3].final, points[2].final, color)
+        self.addEdge(points[2].final, points[0].final, color)
+        
+        self.addPoint(points[0].final, pointConfig['inactivePointColor'], pointConfig['pointHalfWH'] * self.drawScale)
+        self.addPoint(points[1].final, pointConfig['inactivePointColor'], pointConfig['pointHalfWH'] * self.drawScale)
+        self.addPoint(points[2].final, pointConfig['inactivePointColor'], pointConfig['pointHalfWH'] * self.drawScale)
+        self.addPoint(points[3].final, pointConfig['inactivePointColor'], pointConfig['pointHalfWH'] * self.drawScale)
 
     def addPolygon(self, points: List[EditorPoint]):
         color = pointConfig['inactivePointColor']
