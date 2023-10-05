@@ -111,7 +111,7 @@ class GridDraw:
         self.program.set_uniform_safe('WindowBlock', 0)
 
         self.geometry = self.ctx.geometry([vertsDescription],
-                                     mode=ctx.POINTS, 
+                                     mode=self.ctx.POINTS, 
                                      index_buffer=self.indices)
         #ctx.disable(pyglet.gl.GL_DEPTH_TEST)
 
