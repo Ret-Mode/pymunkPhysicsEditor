@@ -1,10 +1,10 @@
-import array
+
+import arcade
 from arcade.gl import BufferDescription
 from pyglet.math import Mat4
 
+import array
 from typing import List, Tuple
-import arcade
-
 
 class TextureDraw:
 
