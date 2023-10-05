@@ -46,7 +46,7 @@ class TextureMapping:
     def updateShapeView(self):
         if self.body:
             mappingBaseMat = self.mappingTransform.getInvMat()
-            mappingBaseMat.mulPre(self.body.transform.getMat())
+            #mappingBaseMat.mulPre(self.body.transform.getMat())
             for point in self.textureRect:
                 mappingBaseMat.mulV(point.local, point.final)
                 pass

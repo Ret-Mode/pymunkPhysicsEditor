@@ -8,7 +8,8 @@ class TextureContainerI:
 
     @staticmethod
     def getInstance() -> "TextureContainerI":
-        raise NotImplementedError
+        assert TextureContainerI._instance is not None
+        return TextureContainerI._instance
 
     def loadTexture(self, path:str) -> any:
         raise NotImplementedError
