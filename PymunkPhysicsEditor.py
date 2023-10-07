@@ -10,6 +10,7 @@ import pickle
 
 from editorCode.editorOptionView import EditorOptionView
 
+from editorCode.arcadeInit import arcadeInit
 
 from editorCode.guiPanels import ButtonPanel, TopButtons
 from editorCode.guiBodyPanels import BodyButtons
@@ -29,6 +30,7 @@ from editorCode.editorCursor import Cursor
 from editorCode.editorCamera import CursorCamera
 from editorCode.shapeBuffer import ShapeBuffer
 from editorCode.lineShader import LineDraw
+from editorCode.glContext import GLContextI
 
 class EditorView(arcade.View):
 
@@ -79,6 +81,9 @@ class EditorView(arcade.View):
 
         self.cursorShader = LineDraw()
 
+        # initialize arcade specific code
+        arcadeInit()
+
     def setupModes(self):
         EditorView.modes['BODY'] = BodyButtons()
         EditorView.modes['SHAPE'] = ShapeButtons()
@@ -115,11 +120,10 @@ class EditorView(arcade.View):
                          self.cursorView.offset, 
                          self.cursorView.sizeInPixels.x - self.editableWidth)
         
+        context = GLContextI.getInstance()
+        context.setProjectionAndViewportFromCamera(self.cursorView)
+
         self.cursorShader.update(buffer.verts, buffer.colors, buffer.indices)
-        self.cursorShader.setProjection((0, 0, 
-                    self.cursorView.sizeInPixels.x, 
-                    self.cursorView.sizeInPixels.y), 
-                    self.cursorView.mat)
         self.cursorShader.draw()
 
 

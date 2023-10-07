@@ -13,9 +13,11 @@ from .pymunkTester import testShapes
 from .shapeBuffer import ShapeBuffer
 from .lineShader import LineDraw
 
-from .arcadeTextureContainer import ArcadeTexture
+from .textureContainerI import TextureContainerI
 from .textureBuffer import TextureBuffer
 from .textureShader import TextureDraw
+from .gridShader import GridDraw
+from .glContext import GLContextI
 
 from .config import toJSON
 
@@ -34,6 +36,7 @@ class EditorShapeView:
         self.transform = ContinuousTransform()
         self.shader = LineDraw()
         self.texShader = TextureDraw()
+        self.gridShader = GridDraw()
 
 
     def startMoveTransform(self):
@@ -134,14 +137,13 @@ class EditorShapeView:
         buffer = ShapeBuffer.getInstance()
 
 
-        textures = ArcadeTexture.getInstance()
+        textures = TextureContainerI.getInstance()
         texBuffer = TextureBuffer.getInstance()
         
-        self.texShader.setProjection((self.viewOffset.offsetInPixels.x, 
-                                self.viewOffset.offsetInPixels.y, 
-                                self.viewOffset.sizeInPixels.x, 
-                                self.viewOffset.sizeInPixels.y), 
-                                self.viewOffset.mat)
+        context = GLContextI.getInstance()
+        context.setProjectionAndViewportFromCamera(self.viewOffset)
+
+        self.gridShader.drawGrid(self.viewOffset)
         
         parent = database.getCurrentBody()
         for channel in range(16):
@@ -156,8 +158,6 @@ class EditorShapeView:
 
         buffer.reset()
         buffer.drawScale = self.viewOffset.scale
-
-        buffer.addGrid(self.viewOffset.offsetScaled, self.viewOffset.sizeScaled)
 
         if self.hideOthers:
             shape = database.getCurrentShape()
@@ -179,11 +179,7 @@ class EditorShapeView:
         buffer.addHelperPoint(self.pivot.local)
 
         self.shader.update(buffer.verts, buffer.colors, buffer.indices)
-        self.shader.setProjection((self.viewOffset.offsetInPixels.x, 
-                    self.viewOffset.offsetInPixels.y, 
-                    self.viewOffset.sizeInPixels.x, 
-                    self.viewOffset.sizeInPixels.y), 
-                    self.viewOffset.mat)
+
         self.shader.draw()
 
     # ######## TODO

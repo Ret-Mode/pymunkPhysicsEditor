@@ -8,12 +8,15 @@ from .shapeBuffer import ShapeBuffer
 from .textureBuffer import TextureBuffer
 from .textureShader import TextureDraw
 from .lineShader import LineDraw
+from .gridShader import GridDraw
+from .glContext import GLContextI
+
 from .database import Database
 
 from .commandExec import CommandExec
 from .commandExec import ComResizeView, ComMoveCursor, ComMoveView, ComScaleView
 
-from .arcadeTextureContainer import ArcadeTexture
+from .textureContainerI import TextureContainerI
 
 class EditorTextureView:
 
@@ -24,6 +27,7 @@ class EditorTextureView:
         self.pivot = EditorPoint()
 
         self.texShader = TextureDraw()
+        self.gridShader = GridDraw()
         self.bodyShader = LineDraw()
         self.transform = ContinuousTransform()
 
@@ -64,7 +68,7 @@ class EditorTextureView:
     def draw(self):
         database = Database.getInstance()
         buffer = ShapeBuffer.getInstance()
-        textures = ArcadeTexture.getInstance()
+        textures = TextureContainerI.getInstance()
         currentTexture = textures.getCurrent()
         texBuffer = TextureBuffer.getInstance()
 
@@ -72,7 +76,10 @@ class EditorTextureView:
         buffer.reset()
         buffer.drawScale = self.viewOffset.scale
 
-        buffer.addGrid(self.viewOffset.offsetScaled, self.viewOffset.sizeScaled)
+        context = GLContextI.getInstance()
+        context.setProjectionAndViewportFromCamera(self.viewOffset)
+
+        self.gridShader.drawGrid(self.viewOffset)
 
         mapping = database.getCurrentMapping()
 
@@ -82,11 +89,6 @@ class EditorTextureView:
             texBuffer.addMapping(mapping)
             textures.use(mapping.channel, 0)
             self.texShader.update(texBuffer.verts, texBuffer.uvs, texBuffer.indices)
-            self.texShader.setProjection((self.viewOffset.offsetInPixels.x, 
-                                        self.viewOffset.offsetInPixels.y, 
-                                        self.viewOffset.sizeInPixels.x, 
-                                        self.viewOffset.sizeInPixels.y), 
-                                        self.viewOffset.mat)
             self.texShader.draw()
 
             currentBody = mapping.body
@@ -96,30 +98,22 @@ class EditorTextureView:
             buffer.addCenterOfGravity(currentBody.physics.cog.final, True)
 
         self.bodyShader.update(buffer.verts, buffer.colors, buffer.indices)
-        self.bodyShader.setProjection((self.viewOffset.offsetInPixels.x, 
-                            self.viewOffset.offsetInPixels.y, 
-                            self.viewOffset.sizeInPixels.x, 
-                            self.viewOffset.sizeInPixels.y), 
-                            self.viewOffset.mat)
 
         self.bodyShader.draw()
         
 
         # draw texture channel
 
+        context = GLContextI.getInstance()
+        context.setProjectionAndViewportFromCamera(self.textureView)
+
+        self.gridShader.drawGrid(self.textureView)
 
         if currentTexture is not None:
             buffer.reset()
             buffer.drawScale = self.textureView.scale
 
-            buffer.addGrid(self.textureView.offsetScaled, self.textureView.sizeScaled)
-
             self.bodyShader.update(buffer.verts, buffer.colors, buffer.indices)
-            self.bodyShader.setProjection((self.textureView.offsetInPixels.x, 
-                                self.textureView.offsetInPixels.y, 
-                                self.textureView.sizeInPixels.x, 
-                                self.textureView.sizeInPixels.y), 
-                                self.textureView.mat)
 
             self.bodyShader.draw()
 
@@ -133,9 +127,4 @@ class EditorTextureView:
 
             textures.use(currentTexture, 0)
             self.texShader.update(texBuffer.verts, texBuffer.uvs, texBuffer.indices)
-            self.texShader.setProjection((self.textureView.offsetInPixels.x, 
-                                        self.textureView.offsetInPixels.y, 
-                                        self.textureView.sizeInPixels.x, 
-                                        self.textureView.sizeInPixels.y), 
-                                        self.textureView.mat)
             self.texShader.draw()

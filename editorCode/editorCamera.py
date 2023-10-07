@@ -11,7 +11,9 @@ class CursorCamera:
         self.sizeInPixels: V2 = V2(width, height)
         self.offset: V2 = V2(0.0, 0.0)
         self.mat: Tuple[float] = None
+        self.viewport: Tuple[float] = None
         self.setMatrix(width, height)
+        self.setViewport()
     
     def setMatrix(self, realWidth, realHeight) -> None:
         self.mat = (2.0/(realWidth), 0.0,   0.0, 0.0,
@@ -19,10 +21,17 @@ class CursorCamera:
                             0.0, 0.0, -2.0 / (200.0)           , 0.0,
                             - (realWidth) / realWidth, - (realHeight) / realHeight, 0.0, 1.0)
 
+    def setViewport(self):
+        self.viewport = (0.0, 
+                         0.0, 
+                         self.sizeInPixels.x, 
+                         self.sizeInPixels.y)
+
     def resize(self, x: int, y: int) -> None:
         self.sizeInPixels.x = x
         self.sizeInPixels.y = y
         self.setMatrix(x, y)
+        self.setViewport()
         
 
 class EditorCamera:
@@ -32,11 +41,19 @@ class EditorCamera:
         self.sizeInPixels: V2 = V2(width, height)
         self.offsetInPixels: V2 = V2(offsetX, offsetY)
         self.sizeScaled: V2 = V2(width, height)
-        
         self.scale: float = 2.0 / min(width, height)
         self.offsetScaled: V2 = V2(-width/2, -height/2).sS(self.scale)
         self.mat: Tuple[float] = None
+        self.viewport: Tuple[float] = None
+        
         self.setMatrix(width, height)
+        self.setViewport()
+
+    def setViewport(self):
+        self.viewport = (self.offsetInPixels.x, 
+                         self.offsetInPixels.y, 
+                         self.sizeInPixels.x, 
+                         self.sizeInPixels.y)
 
     def setMatrix(self, realWidth, realHeight) -> None:
         self.mat = (2.0/(realWidth), 0.0,   0.0, 0.0,
@@ -55,6 +72,7 @@ class EditorCamera:
             self.offsetScaled.unTV(cursorWorld).unSS(scaleOld).sS(self.scale).tV(cursorWorld)
             self.sizeScaled.setFromV(self.sizeInPixels).sS(self.scale)
         self.setMatrix(self.sizeScaled.x, self.sizeScaled.y)
+        self.setViewport()
 
     def resize(self, x: int, y: int,  offsetX:float = 0.0, offsetY:float = 0.0) -> None:
         dx: float = self.scale * (self.sizeInPixels.x - x) / 2.0
@@ -66,10 +84,12 @@ class EditorCamera:
         self.offsetInPixels.y = offsetY
         self.sizeScaled.setFromV(self.sizeInPixels).sS(self.scale)
         self.setMatrix(self.sizeScaled.x, self.sizeScaled.y)
+        self.setViewport()
 
     def move(self, dx:float, dy:float) -> None:
         self.offsetScaled.tD(dx * self.scale, dy * self.scale)
         self.setMatrix(self.sizeScaled.x, self.sizeScaled.y)
+        self.setViewport()
 
     def cusorToView(self, cursor: Cursor) -> None:
         cursor.viewCoords.setFromV(cursor.screenCoords).unTV(self.offsetInPixels).sS(self.scale).tV(self.offsetScaled)

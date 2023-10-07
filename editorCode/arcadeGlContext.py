@@ -1,9 +1,10 @@
 import arcade
 from pyglet.math import Mat4
 
-from typing import Tuple
+from typing import Union
 
 from .glContext import GLContextI
+from .editorCamera import EditorCamera, CursorCamera
 
 class ArcadeGLContext(GLContextI):
 
@@ -16,8 +17,6 @@ class ArcadeGLContext(GLContextI):
     def __init__(self):
         self.ctx = arcade.get_window().ctx
 
-    def setProjection(self, projection:Tuple[float]):  
-        self.ctx.projection_2d_matrix = Mat4(values=projection)
-    
-    def setViewport(self, viewport: Tuple[float]):
-        self.ctx.viewport = viewport
+    def setProjectionAndViewportFromCamera(self, camera:Union[CursorCamera, EditorCamera]):
+        self.ctx.projection_2d_matrix = Mat4(values=camera.mat)
+        self.ctx.viewport = camera.viewport

@@ -9,7 +9,7 @@ from .guiButtons import Button, Label
 from .guiPanels import ScrollableCBLabelPanel, ScrollableConstantPanel, EmptyPanel
 from .config import physicsSetup
 from .editorFilesystem import EditorDir
-from .arcadeTextureContainer import ArcadeTexture
+from .textureContainerI import TextureContainerI
 from .textureMapping import TextureMapping
 
 # FILE PANELS
@@ -119,7 +119,7 @@ class TextureSelectPanel(arcade.gui.UIBoxLayout):
         # TODO add command when other functionality is ready
         # to reconsider moving this into command - file op, what if file is deleted?
         if self.preview.originalFilePath:
-            ArcadeTexture.getInstance().load(self.preview.originalFilePath, toChannel, self.preview.getTextureSize())
+            TextureContainerI.getInstance().load(self.preview.originalFilePath, toChannel, self.preview.getTextureSize())
 
 # end of FILE PANELS
 
@@ -216,7 +216,7 @@ class MappingsPanel(arcade.gui.UIBoxLayout):
         self.add(self.currentPanel)
 
     def addMapping(self):
-        textures = ArcadeTexture.getInstance()
+        textures = TextureContainerI.getInstance()
         current = textures.getCurrent()
         if current is not None:
             database = Database.getInstance()
@@ -226,7 +226,7 @@ class MappingsPanel(arcade.gui.UIBoxLayout):
             self.mappings.setLabels(database.getAllMappingLabelsOfChannel(current))
 
     def prev(self):
-        textures = ArcadeTexture.getInstance()
+        textures = TextureContainerI.getInstance()
         textures.setPrev()
         current = textures.getCurrent()
         if current is not None:
@@ -240,7 +240,7 @@ class MappingsPanel(arcade.gui.UIBoxLayout):
             self.mappings.setLabels([])
 
     def next(self):
-        textures = ArcadeTexture.getInstance()
+        textures = TextureContainerI.getInstance()
         textures.setNext()
         current = textures.getCurrent()
         if current is not None:
@@ -254,7 +254,7 @@ class MappingsPanel(arcade.gui.UIBoxLayout):
             self.mappings.setLabels([])
 
     def loadMapping(self, label):
-        textures = ArcadeTexture.getInstance()
+        textures = TextureContainerI.getInstance()
         currentChannel = textures.getCurrent()
         if currentChannel is not None:
             database = Database.getInstance()

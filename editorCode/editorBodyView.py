@@ -11,9 +11,11 @@ from .commandExec import ComSetPivot, ComScaleView, ComResizeView, ComMoveCursor
 from .commandExec import ComStartTransform, ComCancelTransform,ComApplyTransform
 from .lineShader import LineDraw
 
-from .arcadeTextureContainer import ArcadeTexture
+from .textureContainerI import TextureContainerI
 from .textureBuffer import TextureBuffer
 from .textureShader import TextureDraw
+from .gridShader import GridDraw
+from .glContext import GLContextI
 
 from .config import toJSON
 
@@ -32,6 +34,7 @@ class EditorBodyView:
         self.transform = ContinuousTransform()
         self.shader = LineDraw()
         self.texShader = TextureDraw()
+        self.gridShader = GridDraw()
         #self.moveView(-width/2, -height/2)
 
 
@@ -117,16 +120,14 @@ class EditorBodyView:
     def draw(self):
         buffer = ShapeBuffer.getInstance()
         database = Database.getInstance()
-
-        textures = ArcadeTexture.getInstance()
+        textures = TextureContainerI.getInstance()
         texBuffer = TextureBuffer.getInstance()
         
-        self.texShader.setProjection((self.viewOffset.offsetInPixels.x, 
-                                self.viewOffset.offsetInPixels.y, 
-                                self.viewOffset.sizeInPixels.x, 
-                                self.viewOffset.sizeInPixels.y), 
-                                self.viewOffset.mat)
-        
+        context = GLContextI.getInstance()
+        context.setProjectionAndViewportFromCamera(self.viewOffset)
+
+        self.gridShader.drawGrid(self.viewOffset)
+
         for channel in range(16):
             texBuffer.reset()
             for mapping in database.getAllMappingLabelsOfChannel(channel): 
@@ -138,9 +139,6 @@ class EditorBodyView:
 
         buffer.reset()
         buffer.drawScale = self.viewOffset.scale
-
-        buffer.addGrid(self.viewOffset.offsetScaled, self.viewOffset.sizeScaled)
-
 
         currentBody = database.getCurrentBody()
         if self.hideOthers and currentBody:
@@ -163,11 +161,6 @@ class EditorBodyView:
         buffer.addHelperPoint(self.pivot.local)
 
         self.shader.update(buffer.verts, buffer.colors, buffer.indices)
-        self.shader.setProjection((self.viewOffset.offsetInPixels.x, 
-                            self.viewOffset.offsetInPixels.y, 
-                            self.viewOffset.sizeInPixels.x, 
-                            self.viewOffset.sizeInPixels.y), 
-                            self.viewOffset.mat)
 
         self.shader.draw()
 

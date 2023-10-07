@@ -14,6 +14,8 @@ from .commandExec import ComSetSlideMaxFromCoords, ComSetSlideMinFromCoords
 
 from .shapeBuffer import ShapeBuffer
 from .lineShader import LineDraw
+from .gridShader import GridDraw
+from .glContext import GLContextI
 
 from .config import toJSON
 
@@ -63,6 +65,7 @@ class EditorConstraintView:
         self.hideOthers = False
 
         self.shader = LineDraw()
+        self.gridShader = GridDraw()
         #self.moveView(-width/2, -height/2)
 
 
@@ -167,55 +170,50 @@ class EditorConstraintView:
 
         if constraint:
 
+            context = GLContextI.getInstance()
             buffer = ShapeBuffer.getInstance()
+            context.setProjectionAndViewportFromCamera(self.viewAllOffset)
+
+            self.gridShader.drawGrid(self.viewAllOffset)
+
+            
             
             buffer.reset()
             buffer.drawScale = self.viewAllOffset.scale
-
-            buffer.addGrid(self.viewAllOffset.offsetScaled, self.viewAllOffset.sizeScaled)
 
             constraint.bufferBodies(buffer)
             constraint.bufferInternals(buffer)
 
             self.shader.update(buffer.verts, buffer.colors, buffer.indices)
-            self.shader.setProjection((self.viewAllOffset.offsetInPixels.x, 
-                                       self.viewAllOffset.offsetInPixels.y, 
-                                       self.viewAllOffset.sizeInPixels.x, 
-                                       self.viewAllOffset.sizeInPixels.y), 
-                                       self.viewAllOffset.mat)
+
             self.shader.draw()
             
 
             buffer.reset()
             buffer.drawScale = self.viewBodyAOffset.scale
 
-            buffer.addGrid(self.viewBodyAOffset.offsetScaled, self.viewBodyAOffset.sizeScaled)
+            context.setProjectionAndViewportFromCamera(self.viewBodyAOffset)
+
+            self.gridShader.drawGrid(self.viewBodyAOffset)
 
             constraint.bufferBodyA(buffer)
             constraint.bufferInternalA(buffer)
 
             self.shader.update(buffer.verts, buffer.colors, buffer.indices)
-            self.shader.setProjection((self.viewBodyAOffset.offsetInPixels.x, 
-                                       self.viewBodyAOffset.offsetInPixels.y, 
-                                       self.viewBodyAOffset.sizeInPixels.x, 
-                                       self.viewBodyAOffset.sizeInPixels.y), 
-                                       self.viewBodyAOffset.mat)
+
             self.shader.draw()
 
             buffer.reset()
             buffer.drawScale = self.viewBodyBOffset.scale
 
-            buffer.addGrid(self.viewBodyBOffset.offsetScaled, self.viewBodyBOffset.sizeScaled)
+            context.setProjectionAndViewportFromCamera(self.viewBodyBOffset)
+            self.gridShader.drawGrid(self.viewBodyBOffset)
 
             constraint.bufferBodyB(buffer)
             constraint.bufferInternalB(buffer)
 
             self.shader.update(buffer.verts, buffer.colors, buffer.indices)
-            self.shader.setProjection((self.viewBodyBOffset.offsetInPixels.x, 
-                                       self.viewBodyBOffset.offsetInPixels.y, 
-                                       self.viewBodyBOffset.sizeInPixels.x, 
-                                       self.viewBodyBOffset.sizeInPixels.y), 
-                                       self.viewBodyBOffset.mat)
+
             self.shader.draw()
 
     def defaultAction(self):

@@ -1,4 +1,5 @@
-from typing import Tuple
+from typing import Union
+from .editorCamera import EditorCamera, CursorCamera
 
 class GLContextI:
 
@@ -9,8 +10,5 @@ class GLContextI:
         assert GLContextI._instance is not None
         return GLContextI._instance
 
-    def setProjection(self, projection:Tuple[float]):
-        raise NotImplementedError
-    
-    def setViewport(self, viewport: Tuple[float]):
+    def setProjectionAndViewportFromCamera(self, camera:Union[CursorCamera, EditorCamera]):
         raise NotImplementedError

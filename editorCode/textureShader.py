@@ -106,9 +106,5 @@ class TextureDraw:
             self.geometry.num_vertices = len(indices)
         self.indices.write(array.array('I', indices))
 
-    def setProjection(self, viewport: Tuple[float], mat: Tuple[float]):
-        self.ctx.viewport = viewport
-        self.ctx.projection_2d_matrix = Mat4(values=mat)
-
     def draw(self):
         self.geometry.render(self.program)
