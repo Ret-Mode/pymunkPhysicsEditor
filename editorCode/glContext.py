@@ -12,3 +12,6 @@ class GLContextI:
 
     def setProjectionAndViewportFromCamera(self, camera:Union[CursorCamera, EditorCamera]):
         raise NotImplementedError
+
+    def getFramebufferSize(self):
+        raise NotImplementedError

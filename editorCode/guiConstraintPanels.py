@@ -10,6 +10,7 @@ from .commandExec import ComDelConstraint, ComConstraintClone, ComShiftConstrain
 from .commandExec import ComSetRestLength, ComSetAnchorA, ComSetAnchorB, ComSetPhase, ComSetRatio, ComSetGrooveA, ComSetGrooveB, ComSetRatchet
 from .commandExec import ComSetRotaryMin, ComSetRotaryMax, ComSetRate, ComSetSlideMin, ComSetSlideMax, ComConstraintSwapBodies
 from .database import Database
+from .editorState import EditorState
 
 from .config import angleToString, angleFromString, floatToString, floatFromString
 
@@ -43,35 +44,35 @@ class ConstraintBodiesSelector(arcade.gui.UIBoxLayout):
         return labels
 
     def nextConstraintA(self):
-        current = Database.getInstance().getCurrentConstraint()
+        current = EditorState.getInstance().getCurrentConstraint()
         if current:
             elems = self._possibleConstraintBodies(current, current.bodyA, current.bodyB)
             if elems:
                 CommandExec.addCommand(ComConstraintSetNewBodyA(current, elems[-1]))
 
     def prevConstraintA(self):
-        current = Database.getInstance().getCurrentConstraint()
+        current = EditorState.getInstance().getCurrentConstraint()
         if current:
             elems = self._possibleConstraintBodies(current, current.bodyA, current.bodyB)
             if elems:
                 CommandExec.addCommand(ComConstraintSetNewBodyA(current, elems[0]))
 
     def nextConstraintB(self):
-        current = Database.getInstance().getCurrentConstraint()
+        current = EditorState.getInstance().getCurrentConstraint()
         if current:
             elems = self._possibleConstraintBodies(current, current.bodyB, current.bodyA)
             if elems:
                 CommandExec.addCommand(ComConstraintSetNewBodyB(current, elems[-1]))
 
     def prevConstraintB(self):
-        current = Database.getInstance().getCurrentConstraint()
+        current = EditorState.getInstance().getCurrentConstraint()
         if current:
             elems = self._possibleConstraintBodies(current, current.bodyB, current.bodyA)
             if elems:
                 CommandExec.addCommand(ComConstraintSetNewBodyB(current, elems[0]))
 
     def swapCB(self):
-        current = Database.getInstance().getCurrentConstraint()
+        current = EditorState.getInstance().getCurrentConstraint()
         if current:
             CommandExec.addCommand(ComConstraintSwapBodies(current))
 
@@ -620,13 +621,12 @@ class ConstraintButtons(arcade.gui.UIBoxLayout):
     def on_update(self, dt):
         retVal = super().on_update(dt)
 
-        database = Database.getInstance()
         # update list of constraints
-        labels: List[str] = database.getAllConstraintLabels()
+        labels: List[str] = Database.getInstance().getAllConstraintLabels()
         self.updateListOfLabels(labels, self.constraintList)
 
         # select active constraint
-        current = database.getCurrentConstraint()
+        current = EditorState.getInstance().getCurrentConstraint()
         
         # if constraint was changed then update entries
         if current and self.current != current:

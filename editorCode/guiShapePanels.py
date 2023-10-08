@@ -10,6 +10,7 @@ from .shapeInternals.editorShape import Polygon
 from .commandExec import ComNewShapeClone,  ComSetNewShapeAsCurrent, ComShiftNewShapeUp, ComShiftNewShapeDown
 from .commandExec import ComRenameNewShape, ComSelectNewParentBody, ComAddNewShape, ComDelNewShape, CommandExec
 from .database import Database
+from .editorState import EditorState
 
 class NoneShapePanel(arcade.gui.UIBoxLayout):
 
@@ -143,12 +144,13 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
         retVal = super().on_update(dt)
 
         database = Database.getInstance()
+        state = EditorState.getInstance()
         # update list of bodies
         bodyLabels: List[str] = database.getAllBodyLabels()
         self.updateListOfLabels(bodyLabels, self.bodyList)
         
         # select active body
-        parent = database.getCurrentBody()
+        parent = state.getCurrentBody()
 
         if parent:
             # update entry
@@ -158,7 +160,7 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
             self.updateListOfLabels(labels, self.shapeList)
 
             # select active shape
-            currentShape = database.getCurrentShape()
+            currentShape = state.getCurrentShape()
             
             # if shape was changed then update entries
             if currentShape and self.current != currentShape:
@@ -187,7 +189,7 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
                     break
 
     def bodySelect(self, label:str) -> None:
-        currentParent = Database.getInstance().getCurrentBody()
+        currentParent = EditorState.getInstance().getCurrentBody()
         if not currentParent or currentParent.label != label:
             CommandExec.addCommand(ComSelectNewParentBody(label))
 
@@ -195,16 +197,15 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
         CommandExec.addCommand(ComSetNewShapeAsCurrent(label))
 
     def add_btn(self) -> None:
-        parent = Database.getInstance().getCurrentBody()
+        parent = EditorState.getInstance().getCurrentBody()
         if parent:
             label: str = self.labelLine.getVal()
             CommandExec.addCommand(ComAddNewShape(label, self.shapeType.getCurrent()))
 
     def del_btn(self) -> None:
-        database = Database.getInstance()
-        parent = database.getCurrentBody()
+        parent = EditorState.getInstance().getCurrentBody()
         label: str = self.labelLine.getVal()
-        if parent and label in database.getAllNewShapeLabelsForBody(parent.label):
+        if parent and label in Database.getInstance().getAllNewShapeLabelsForBody(parent.label):
             CommandExec.addCommand(ComDelNewShape(label))
 
     def up_btn_cb(self) -> None:

@@ -11,6 +11,7 @@ from .commandExec import ComAddBody, ComDelBody, ComSetContainerPosXY, ComApplyC
 from .commandExec import ComShiftBodyUp, ComShiftBodyDown, ComSetBodyAsCurrent, ComBodyClone
 from .commandExec import CommandExec, ComRenameBody, ComSetLastBodyAsCurrent
 from .database import Database
+from .editorState import EditorState
 
 class BodyButtons(arcade.gui.UIBoxLayout):
 
@@ -56,15 +57,13 @@ class BodyButtons(arcade.gui.UIBoxLayout):
 
     def on_update(self, dt):
         retVal = super().on_update(dt)
-        
-        database = Database.getInstance()
 
         # get all bodies
-        labels: List[str] = database.getAllBodyLabels()
+        labels: List[str] = Database.getInstance().getAllBodyLabels()
         # update list of bodies
         self.updateListOfLabels(labels, self.bodyList)
         # if current body changed
-        current = database.getCurrentBody()
+        current = EditorState.getInstance().getCurrentBody()
         if current and self.current != current:
             self.current = current
             

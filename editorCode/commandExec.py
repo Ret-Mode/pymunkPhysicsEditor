@@ -5,6 +5,7 @@ from .constraintInternals.editorConstraintI import ConstraintI
 from .editorTypes import V2, Angle, EditorPoint
 from .editorCursor import Cursor
 from .database import Database
+from .editorState import EditorState
 from .editorViewTransform import ContinuousTransform
 from .editorCamera import EditorCamera
 from .constraintInternals.editorConstraint import DampedRotarySpring, DampedSpring, GearJoint
@@ -113,10 +114,10 @@ class ComShiftBodyDown(Command):
 class ComSetLastBodyAsCurrent(Command):
 
     def __init__(self):
-        self.database = Database.getInstance()
+        self.state = EditorState.getInstance()
 
     def execute(self):
-        self.database.setAnyBodyAsCurrent()
+        self.state.setAnyBodyAsCurrent()
 
 
 class ComBodyClone(CommandUndo):
@@ -169,16 +170,17 @@ class ComRenameBody(CommandUndo):
 class ComAddBody(CommandUndo):
 
     def __init__(self, label: str, typeID:str = 'DYNAMIC'):
+        self.state = EditorState.getInstance()
         self.database = Database.getInstance()
         self.object = self.database.createBody(label, typeID)
-        self.prevCurrent = self.database.getCurrentBody()
+        self.prevCurrent = self.state.getCurrentBody()
 
     def execute(self):
         self.database.addBody(self.object)
-        self.database.setCurrentBodyByLabel(self.object.label)
+        self.state.setCurrentBodyByLabel(self.object.label)
 
     def undo(self):
-        self.database.setCurrentBodyByLabel(self.prevCurrent.label if self.prevCurrent else None)
+        self.state.setCurrentBodyByLabel(self.prevCurrent.label if self.prevCurrent else None)
         self.database.deleteBody(self.object.label)
 
 
@@ -187,6 +189,7 @@ class ComDelBody(CommandUndo):
 
     def __init__(self, label: str):
         self.database = Database.getInstance()
+        self.state = EditorState.getInstance()
         self.object = self.database.getBodyByLabel(label)
         self.objIndex = -1
         self.deletedShapes: List[ShapeI] = []
@@ -203,7 +206,7 @@ class ComDelBody(CommandUndo):
                 self.deletedShapes.append(shape)
                 self.database.deleteNewShape(shape.label)
             self.database.deleteBody(self.object.label)
-            self.database.setAnyBodyAsCurrent()
+            self.state.setAnyBodyAsCurrent()
         
 
     def undo(self):
@@ -211,22 +214,22 @@ class ComDelBody(CommandUndo):
             self.database.addBody(self.object, self.objIndex)
             for shape in self.deletedShapes:
                 self.database.addNewShape(shape, self.object)
-            self.database.setCurrentBodyByLabel(self.object.label)
+            self.state.setCurrentBodyByLabel(self.object.label)
             # TODO add this body to constraints
 
 
 class ComSetBodyAsCurrent(CommandUndo):
 
     def __init__(self, label: str):
-        self.database = Database.getInstance()
+        self.state = EditorState.getInstance()
         self.label = label
-        self.prev = self.database.getCurrentBody()
+        self.prev = self.state.getCurrentBody()
 
     def execute(self):
-        self.database.setCurrentBodyByLabel(self.label)
+        self.state.setCurrentBodyByLabel(self.label)
 
     def undo(self):
-        self.database.setCurrentBodyByLabel(self.prev.label if self.prev else None)
+        self.state.setCurrentBodyByLabel(self.prev.label if self.prev else None)
 
 
 # END OF BODY functions
@@ -236,7 +239,8 @@ class ComShiftNewShapeUp(Command):
 
     def __init__(self):
         self.database = Database.getInstance()
-        self.shape = self.database.getCurrentShape()
+        self.state = EditorState.getInstance()
+        self.shape = self.state.getCurrentShape()
 
     def execute(self):
         if self.shape:
@@ -247,7 +251,8 @@ class ComShiftNewShapeDown(Command):
 
     def __init__(self):
         self.database = Database.getInstance()
-        self.shape = self.database.getCurrentShape()
+        self.state = EditorState.getInstance()
+        self.shape = self.state.getCurrentShape()
 
     def execute(self):
         if self.shape:
@@ -258,7 +263,8 @@ class ComRenameNewShape(CommandUndo):
 
     def __init__(self, newName:str):
         self.database = Database.getInstance()
-        self.shape = self.database.getCurrentShape()
+        self.state = EditorState.getInstance()
+        self.shape = self.state.getCurrentShape()
         self.newName = newName
         self.oldName = self.shape.label if self.shape else None
     
@@ -275,45 +281,47 @@ class ComSelectNewParentBody(CommandUndo):
 
     def __init__(self, label: str):
         self.database = Database.getInstance()
+        self.state = EditorState.getInstance()
         self.newBodyLabel = label
-        oldBody = self.database.getCurrentBody()
-        oldShape = self.database.getCurrentShape()
+        oldBody = self.state.getCurrentBody()
+        oldShape = self.state.getCurrentShape()
         self.oldBodyLabel = oldBody.label if oldBody else None
         self.oldShapeLabel = oldShape.label if oldShape else None
         
 
     def execute(self):
         if self.newBodyLabel:
-            self.database.setCurrentBodyByLabel(self.newBodyLabel)
+            self.state.setCurrentBodyByLabel(self.newBodyLabel)
 
     def undo(self):
         if self.oldBodyLabel:
-            self.database.setCurrentBodyByLabel(self.oldBodyLabel)
+            self.state.setCurrentBodyByLabel(self.oldBodyLabel)
             if self.oldShapeLabel:
-                self.database.setCurrentShapeByLabel(self.oldShapeLabel)
+                self.state.setCurrentShapeByLabel(self.oldShapeLabel)
             
 
 
 class ComSetNewShapeAsCurrent(CommandUndo):
 
     def __init__(self, label: str):
-        self.database = Database.getInstance()
+        self.state = EditorState.getInstance()
         self.newShapeLabel = label
-        oldShape = self.database.getCurrentShape()
+        oldShape = self.state.getCurrentShape()
         self.oldShapeLabel = oldShape.label if oldShape else None
 
     def execute(self):
-        self.database.setCurrentShapeByLabel(self.newShapeLabel)
+        self.state.setCurrentShapeByLabel(self.newShapeLabel)
 
     def undo(self):
-        self.database.setCurrentShapeByLabel(self.oldShapeLabel)
+        self.state.setCurrentShapeByLabel(self.oldShapeLabel)
 
 
 class ComNewShapeClone(CommandUndo):
 
     def __init__(self, shape:ShapeI):
-        self.shape = shape
         self.database = Database.getInstance()
+        self.state = EditorState.getInstance()
+        self.shape = shape
         self.body = self.database.getNewShapeParent(shape)
         self.newShape = None
 
@@ -340,41 +348,44 @@ class ComNewShapeClone(CommandUndo):
 class ComAddNewShape(CommandUndo):
 
     def __init__(self, label:str, typeID:str):
+        self.state = EditorState.getInstance()
         self.database = Database.getInstance()
         self.shape = self.database.createNewShape(label, typeID)
-        self.prevShape = self.database.getCurrentShape()
+        self.prevShape = self.state.getCurrentShape()
         self.body = None
 
     def execute(self):
-        self.body = self.database.getCurrentBody()
+        self.body = self.state.getCurrentBody()
         if self.body:
             self.database.addNewShape(self.shape, self.body)
-            self.database.setCurrentShapeByLabel(self.shape.label)
+            self.state.setCurrentShapeByLabel(self.shape.label)
 
     def undo(self):
         if self.body:
             if self.prevShape:
-                self.database.setCurrentShapeByLabel(self.prevShape.label)
+                self.state.setCurrentShapeByLabel(self.prevShape.label)
             else:
-                self.database.setCurrentShapeByLabel(None)
+                self.state.setCurrentShapeByLabel(None)
             self.database.deleteNewShape(self.shape.label)
 
 
 class ComDelNewShape(CommandUndo):
 
     def __init__(self, label):
-        self.label = label
         self.database = Database.getInstance()
+        self.state = EditorState.getInstance()
+        self.label = label
+        
         self.shape = self.database.getNewShapeByLabel(label)
         self.parent = self.database.getNewShapeParent(self.shape)
 
     def execute(self):
         self.database.deleteNewShape(self.label)
-        self.database.setAnyShapeAsCurrent()
+        self.state.setAnyShapeAsCurrent()
 
     def undo(self):
         self.database.addNewShape(self.shape, self.parent)
-        self.database.setCurrentShapeByLabel(self.shape.label)
+        self.state.setCurrentShapeByLabel(self.shape.label)
 
 
 class ComNewShapeAddPoint(CommandUndo):
@@ -498,10 +509,10 @@ class ComShiftConstraintDown(Command):
 class ComSetLastConstraintAsCurrent(Command):
 
     def __init__(self):
-        self.database = Database.getInstance()
+        self.state = EditorState.getInstance()
 
     def execute(self):
-        self.database.setAnyConstraintAsCurrent()
+        self.state.setAnyConstraintAsCurrent()
 
 
 class ComConstraintClone(CommandUndo):
@@ -539,15 +550,16 @@ class ComAddConstraint(CommandUndo):
 
     def __init__(self, label: str, typeID:str):
         self.database = Database.getInstance()
+        self.state = EditorState.getInstance()
         self.object = self.database.createConstraint(label, typeID)
-        self.prevCurrent = self.database.getCurrentConstraint()
+        self.prevCurrent = self.state.getCurrentConstraint()
 
     def execute(self):
         self.database.addConstraint(self.object)
-        self.database.setCurrentConstraintByLabel(self.object.label)
+        self.state.setCurrentConstraintByLabel(self.object.label)
 
     def undo(self):
-        self.database.setCurrentConstraintByLabel(self.prevCurrent.label if self.prevCurrent else None)
+        self.state.setCurrentConstraintByLabel(self.prevCurrent.label if self.prevCurrent else None)
         self.database.deleteConstraint(self.object.label)
 
 
@@ -556,6 +568,7 @@ class ComDelConstraint(CommandUndo):
 
     def __init__(self, label: str):
         self.database = Database.getInstance()
+        self.state = EditorState.getInstance()
         self.object = self.database.getConstraintByLabel(label)
         self.objIndex = -1
 
@@ -563,27 +576,27 @@ class ComDelConstraint(CommandUndo):
         if self.object:
             self.objIndex = self.database.getConstraintIndex(self.object)
             self.database.deleteConstraint(self.object.label)
-            self.database.setAnyConstraintAsCurrent()
+            self.state.setAnyConstraintAsCurrent()
         
 
     def undo(self):
         if self.object:
             self.database.addConstraint(self.object, self.objIndex)
-            self.database.setCurrentConstraintByLabel(self.object.label)
+            self.state.setCurrentConstraintByLabel(self.object.label)
 
 
 class ComSetConstraintAsCurrent(CommandUndo):
 
     def __init__(self, label: str):
-        self.database = Database.getInstance()
+        self.state = EditorState.getInstance()
         self.label = label
-        self.prev = self.database.getCurrentConstraint()
+        self.prev = self.state.getCurrentConstraint()
 
     def execute(self):
-        self.database.setCurrentConstraintByLabel(self.label)
+        self.state.setCurrentConstraintByLabel(self.label)
 
     def undo(self):
-        self.database.setCurrentConstraintByLabel(self.prev.label if self.prev else None)
+        self.state.setCurrentConstraintByLabel(self.prev.label if self.prev else None)
 
 
 # END OF Constraint functions

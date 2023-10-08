@@ -12,7 +12,7 @@ from .gridShader import GridDraw
 from .glContext import GLContextI
 
 from .database import Database
-
+from .editorState import EditorState
 from .commandExec import CommandExec
 from .commandExec import ComResizeView, ComMoveCursor, ComMoveView, ComScaleView
 
@@ -59,14 +59,14 @@ class EditorTextureView:
 
     def update(self):
         CommandExec.process()
-        database = Database.getInstance()
-        mapping = database.getCurrentMapping()
+        state = EditorState.getInstance()
+        mapping = state.getCurrentMapping()
         if mapping and mapping.body:
             mapping.update()
 
 
     def draw(self):
-        database = Database.getInstance()
+        state = EditorState.getInstance()
         buffer = ShapeBuffer.getInstance()
         textures = TextureContainerI.getInstance()
         currentTexture = textures.getCurrent()
@@ -81,7 +81,7 @@ class EditorTextureView:
 
         self.gridShader.drawGrid(self.viewOffset)
 
-        mapping = database.getCurrentMapping()
+        mapping = state.getCurrentMapping()
 
         if mapping and mapping.body:
             

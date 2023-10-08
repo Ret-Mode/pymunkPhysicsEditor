@@ -11,6 +11,7 @@ from .config import physicsSetup
 from .editorFilesystem import EditorDir
 from .textureContainerI import TextureContainerI
 from .textureMapping import TextureMapping
+from .editorState import EditorState
 
 # FILE PANELS
 class SetTextureToChannelPanel(arcade.gui.UIBoxLayout):
@@ -179,7 +180,7 @@ class BodySelectPanel(arcade.gui.UIBoxLayout):
 
     def on_update(self, dt):
         retVal = super().on_update(dt)
-        mapping = Database.getInstance().getCurrentMapping()
+        mapping = EditorState.getInstance().getCurrentMapping()
         if self.currentMapping != mapping:
             self.currentMapping = mapping
             self.updateDetails()
@@ -258,8 +259,9 @@ class MappingsPanel(arcade.gui.UIBoxLayout):
         currentChannel = textures.getCurrent()
         if currentChannel is not None:
             database = Database.getInstance()
-            database.setCurrentMappingByLabel(label)
-            mapping = database.getCurrentMapping()
+            state = EditorState.getInstance()
+            state.setCurrentMappingByLabel(label)
+            mapping = state.getCurrentMapping()
             if mapping:
                 if self.currentPanel == self.empty:
                     self.remove(self.currentPanel)

@@ -4,6 +4,7 @@ from .editorTypes import EditorPoint
 from .editorCursor import Cursor
 from .editorViewTransform import ContinuousTransform
 from .database import Database
+from .editorState import EditorState
 from .shapeBuffer import ShapeBuffer
 
 from .commandExec import CommandExec
@@ -39,22 +40,22 @@ class EditorBodyView:
 
 
     def startMoveTransform(self):
-        body = Database.getInstance().getCurrentBody()
+        body = EditorState.getInstance().getCurrentBody()
         if body:
             CommandExec.addCommand(ComStartTransform(self.transform, body, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.MOVE))
 
     def startRotateTransform(self):
-        body = Database.getInstance().getCurrentBody()
+        body = EditorState.getInstance().getCurrentBody()
         if body:
             CommandExec.addCommand(ComStartTransform(self.transform, body, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.ROTATE))
 
     def startScaleTransform(self):
-        body = Database.getInstance().getCurrentBody()
+        body = EditorState.getInstance().getCurrentBody()
         if body:
             CommandExec.addCommand(ComStartTransform(self.transform, body, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.SCALE))
 
     def startRotateScaleTransform(self):
-        body = Database.getInstance().getCurrentBody()
+        body = EditorState.getInstance().getCurrentBody()
         if body:
             CommandExec.addCommand(ComStartTransform(self.transform, body, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.ROTATESCALE))
 
@@ -66,7 +67,7 @@ class EditorBodyView:
 
 
     def pymunkTest(self):
-        body = Database.getInstance().getCurrentBody()
+        body = EditorState.getInstance().getCurrentBody()
         if body:
             tmp = {}
             body.getJSONDict(tmp)
@@ -120,6 +121,7 @@ class EditorBodyView:
     def draw(self):
         buffer = ShapeBuffer.getInstance()
         database = Database.getInstance()
+        state = EditorState.getInstance()
         textures = TextureContainerI.getInstance()
         texBuffer = TextureBuffer.getInstance()
         
@@ -140,7 +142,7 @@ class EditorBodyView:
         buffer.reset()
         buffer.drawScale = self.viewOffset.scale
 
-        currentBody = database.getCurrentBody()
+        currentBody = state.getCurrentBody()
         if self.hideOthers and currentBody:
 
             buffer.addBBox(currentBody.box.center.final, currentBody.box.halfWH.final, True, False)

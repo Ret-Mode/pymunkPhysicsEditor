@@ -3,6 +3,7 @@ from .editorCamera import EditorCamera
 from .editorTypes import EditorPoint
 from .editorCursor import Cursor
 from .database import Database
+from .editorState import EditorState
 from .constraintInternals.editorConstraintI import ConstraintI
 
 from .commandExec import CommandExec
@@ -70,7 +71,7 @@ class EditorConstraintView:
 
 
     def pymunkTest(self):
-        body = Database.getInstance().getCurrentBody()
+        body = EditorState.getInstance().getCurrentBody()
         if body:
             tmp = {}
             body.getJSONDict(tmp)
@@ -106,7 +107,7 @@ class EditorConstraintView:
         self.hideOthers = not self.hideOthers
 
     def setConstraintEditMode(self, mode:str):
-        constraint:ConstraintI = Database.getInstance().getCurrentConstraint()
+        constraint:ConstraintI = EditorState.getInstance().getCurrentConstraint()
         if constraint:
             if mode == EditorConstraintView.ANCHORA and \
                 constraint.type == ConstraintI.DAMPEDSPRING:
@@ -126,7 +127,7 @@ class EditorConstraintView:
         return None
 
     def nextMode(self):
-        constraint:ConstraintI = Database.getInstance().getCurrentConstraint()
+        constraint:ConstraintI = EditorState.getInstance().getCurrentConstraint()
 
         if constraint:
             cType = constraint.type
@@ -139,7 +140,7 @@ class EditorConstraintView:
                 pass
 
     def prevMode(self):
-        constraint:ConstraintI = Database.getInstance().getCurrentConstraint()
+        constraint:ConstraintI = EditorState.getInstance().getCurrentConstraint()
 
         if constraint:
             cType = constraint.type
@@ -155,7 +156,7 @@ class EditorConstraintView:
         CommandExec.process()
         self._selectView()
 
-        constraint:ConstraintI = Database.getInstance().getCurrentConstraint()
+        constraint:ConstraintI = EditorState.getInstance().getCurrentConstraint()
         
         if constraint:
             if self.mode not in EditorConstraintView.allowedModes[constraint.type]:
@@ -166,7 +167,7 @@ class EditorConstraintView:
 
     def draw(self):
         
-        constraint:ConstraintI = Database.getInstance().getCurrentConstraint()
+        constraint:ConstraintI = EditorState.getInstance().getCurrentConstraint()
 
         if constraint:
 
@@ -217,7 +218,7 @@ class EditorConstraintView:
             self.shader.draw()
 
     def defaultAction(self):
-        constraint:ConstraintI = Database.getInstance().getCurrentConstraint()
+        constraint:ConstraintI = EditorState.getInstance().getCurrentConstraint()
 
         if constraint and constraint.bodyA and constraint.bodyB:
             view = self._selectView()

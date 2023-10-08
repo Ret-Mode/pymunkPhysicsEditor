@@ -7,6 +7,7 @@ from .commandExec import CommandExec, ComCancelTransform, ComStartTransform, Com
 from .commandExec import ComMoveCursor, ComSetPivot, ComResizeView, ComScaleView, ComMoveView, ComApplyTransform
 from .editorViewTransform import ContinuousTransform
 from .database import Database
+from .editorState import EditorState
 
 from .pymunkTester import testShapes
 
@@ -40,22 +41,22 @@ class EditorShapeView:
 
 
     def startMoveTransform(self):
-        shape = Database.getInstance().getCurrentShape()
+        shape = EditorState.getInstance().getCurrentShape()
         if shape:
             CommandExec.addCommand(ComStartTransform(self.transform, shape, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.MOVE))
 
     def startRotateTransform(self):
-        shape = Database.getInstance().getCurrentShape()
+        shape = EditorState.getInstance().getCurrentShape()
         if shape:
             CommandExec.addCommand(ComStartTransform(self.transform, shape, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.ROTATE))
 
     def startScaleTransform(self):
-        shape = Database.getInstance().getCurrentShape()
+        shape = EditorState.getInstance().getCurrentShape()
         if shape:
             CommandExec.addCommand(ComStartTransform(self.transform, shape, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.SCALE))
 
     def startRotateScaleTransform(self):
-        shape = Database.getInstance().getCurrentShape()
+        shape = EditorState.getInstance().getCurrentShape()
         if shape:
             CommandExec.addCommand(ComStartTransform(self.transform, shape, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.ROTATESCALE))
 
@@ -67,7 +68,7 @@ class EditorShapeView:
     
 
     def pymunkTest(self):
-        shape = Database.getInstance().getCurrentShape()
+        shape = EditorState.getInstance().getCurrentShape()
         if shape:
             tmp = {}
             shape.getJSONDict(tmp)
@@ -75,7 +76,7 @@ class EditorShapeView:
 
 
     def defaultAction(self):
-        shape = Database.getInstance().getCurrentShape()
+        shape = EditorState.getInstance().getCurrentShape()
         if shape:
             if shape.type == ShapeI.POLYGON:
                 CommandExec.addCommand(ComNewShapeAddPoint(self.cursor.viewCoords, shape))
@@ -122,7 +123,7 @@ class EditorShapeView:
             self.transform.update(self.cursor.viewCoords)
 
         database = Database.getInstance()
-        parent = database.getCurrentBody()
+        parent = EditorState.getInstance().getCurrentBody()
         if parent:
             for shape in database.getAllNewShapesOfBody(parent.label):
                 transform = shape.transform.getMat()
@@ -134,6 +135,7 @@ class EditorShapeView:
  
     def draw(self):
         database = Database.getInstance()
+        state = EditorState.getInstance()
         buffer = ShapeBuffer.getInstance()
 
 
@@ -145,7 +147,7 @@ class EditorShapeView:
 
         self.gridShader.drawGrid(self.viewOffset)
         
-        parent = database.getCurrentBody()
+        parent = state.getCurrentBody()
         for channel in range(16):
             texBuffer.reset()
             for mapping in database.getAllMappingsOfBodyAndChannel(parent, channel): 
@@ -160,16 +162,16 @@ class EditorShapeView:
         buffer.drawScale = self.viewOffset.scale
 
         if self.hideOthers:
-            shape = database.getCurrentShape()
+            shape = state.getCurrentShape()
             if shape:
                 buffer.addBBox(shape.box.center.final, shape.box.halfWH.final, True, False)
                 shape.bufferData(buffer)
                 buffer.addCenterOfGravity(shape.physics.cog.final, True)
 
         else:
-            parent = database.getCurrentBody()
+            parent = state.getCurrentBody()
             if parent:
-                currentShape = database.getCurrentShape()
+                currentShape = state.getCurrentShape()
                 for shape in parent.shapes:
                     active = (currentShape == shape)
                     buffer.addBBox(shape.box.center.final, shape.box.halfWH.final, active, False)

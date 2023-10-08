@@ -2,10 +2,11 @@ from typing import List, Tuple
 from .shapeInternals.editorShapeI import ShapeI
 from .shapeInternals.editorBodyI import BodyI
 from .constraintInternals.editorConstraintI import ConstraintI
+from .textureMapping import TextureMapping
 from .constraintInternals.constraintFactory import constraintFactory
 from .shapeInternals.shapeFactory import shapeFactory
 from .shapeInternals.bodyFactory import bodyFactory
-from .textureMapping import TextureMapping
+
 
 def _getUniqueLabel(label:str, listOfLabels: List[str], default:str = 'NEW'):
     if label == '':
@@ -51,49 +52,6 @@ class Database:
     # get common functionality to utility functions
 
     # BODY management
-
-    def setCurrentBodyByLabel(self, label:str):
-        body = self.getBodyByLabel(label)
-        if body:
-            if self.currentBody != body:
-                self.currentBody = body
-                if body.shapes:
-                    self.currentShape = body.shapes[-1]
-                    return
-                else:
-                    self.currentShape = None
-                    return
-        else:
-            if self.currentBody not in self.bodies:
-                self.currentBody = None
-                self.currentShape = None
-
-    def setAnyBodyAsCurrent(self):
-        if self.bodies:
-            self.setCurrentBodyByLabel(self.bodies[-1].label)
-        else:
-            self.currentBody = None
-            self.currentShape = None
-
-    def setAnyShapeAsCurrent(self):
-        currentBody = self.getCurrentBody()
-        if currentBody:
-            shapes = self.getAllNewShapesOfBody(currentBody.label)
-            if shapes:
-                self.setCurrentShapeByLabel(shapes[-1].label)
-                return
-        self.setCurrentShapeByLabel(None)
-
-    def setCurrentShapeByLabel(self, label:str):
-        shape = self.getNewShapeByLabel(label)
-        if shape and self.currentShape != shape:
-            self.currentShape = shape
-
-    def getCurrentBody(self) -> BodyI:
-        return self.currentBody
-    
-    def getCurrentShape(self) -> ShapeI:
-        return self.currentShape
 
     def swap(self, index1: int, index2: int, array:List):
         body = array[index1]
@@ -247,24 +205,6 @@ class Database:
 
     # CONSTRAINT management
 
-    def setCurrentConstraintByLabel(self, label:str):
-        entity = self.getConstraintByLabel(label)
-        if entity:
-            if self.currentConstraint != entity:
-                self.currentConstraint = entity
-        else:
-            if self.currentConstraint not in self.constraints:
-                self.currentConstraint = None
-
-    def setAnyConstraintAsCurrent(self):
-        if self.constraints:
-            self.setCurrentConstraintByLabel(self.constraints[-1].label)
-        else:
-            self.currentConstraint = None
-
-    def getCurrentConstraint(self) -> ConstraintI:
-        return self.currentConstraint
-
     def shiftConstraintUp(self, constraint):
         if len(self.constraints) > 1:
             index = self.getConstraintIndex(constraint)
@@ -339,8 +279,8 @@ class Database:
     # TEXTURE management
 
     def createMapping(self, channel:int, textureSize:Tuple[int]):
-        label = f'MAP_{channel}'
-        newLabel = _getUniqueLabel(label, self.getAllMappingLabels(), f'MAP_{channel}')
+        label = f'MAP:{channel}'
+        newLabel = _getUniqueLabel(label, self.getAllMappingLabels(), f'MAP:{channel}')
         return TextureMapping(newLabel, channel, textureSize)
 
     def addMapping(self, mapping:TextureMapping, at: int = -1):
@@ -423,36 +363,3 @@ class Database:
             if s.label == label:
                 return s
         return None
-
-    def getCurrentMapping(self) -> TextureMapping:
-        return self.currentMapping
-    
-    def getCurrentMappingChannel(self) -> int:
-        return self.currentMappingChannel
-    
-    def setCurrentMappingByLabel(self, label:str):
-        mapping = self.getMappingByLabel(label)
-        if mapping:
-            if self.currentMapping != mapping:
-                self.currentMapping = mapping
-                self.currentMappingChannel = mapping.channel
-        else:
-            self.currentMapping = None
-            self.currentMappingChannel = None
-
-    def setAnyMappingAsCurrent(self):
-        if self.mappings:
-            self.setCurrentMappingByLabel(self.mappings[-1].label)
-            self.currentMappingChannel = self.mappings[-1].channel
-        else:
-            self.currentMapping = None
-            self.currentMappingChannel = None
-
-    def setAnyMappingFromChannelAsCurrent(self, channel:int):
-        mappings = self.getAllMappingLabelsOfChannel(channel)
-        if mappings:
-            self.setCurrentMappingByLabel(mappings[-1].label)
-            self.currentMappingChannel = channel
-        else:
-            self.currentMapping = None
-            self.currentMappingChannel = None
