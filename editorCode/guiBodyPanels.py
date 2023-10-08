@@ -26,7 +26,7 @@ class BodyButtons(arcade.gui.UIBoxLayout):
         
         self.rows[1].add(self.bodyType)
 
-        self.rows[2].add(Button(text="ADD", width='thirdWidth', callback=self.add_btn_cb))
+        self.rows[2].add(Button(text="FIT", width='thirdWidth', callback=self.fit_cb))
 
         self.rows[2].add(Button(text="DEL", width='thirdWidth', callback=self.del_btn_cb))
         
@@ -100,6 +100,11 @@ class BodyButtons(arcade.gui.UIBoxLayout):
 
     def select(self, label:str) -> None:
         CommandExec.addCommand(ComSetBodyAsCurrent(label))
+
+    def fit_cb(self):
+        current:BodyI = EditorState.getInstance().getCurrentBody()
+        if current:
+            self.view.viewOffset.fitToBox(current.box)
 
     def add_btn_cb(self) -> None:
         label: str = self.labelLine.getVal()

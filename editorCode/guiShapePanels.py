@@ -92,7 +92,7 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
 
         self.rows[3].add(Label(text="--SHAPE--", align='center'))
         
-        self.rows[4].add(Button(text="ADD", width='thirdWidth', callback=self.add_btn))
+        self.rows[4].add(Button(text="FIT", width='thirdWidth', callback=self.fit_cb))
 
         self.rows[4].add(Button(text="DEL", width='thirdWidth', callback=self.del_btn))
         
@@ -192,6 +192,11 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
 
     def select(self, label:str) -> None:
         CommandExec.addCommand(ComSetNewShapeAsCurrent(label))
+
+    def fit_cb(self):
+        current:ShapeI = EditorState.getInstance().getCurrentShape()
+        if current:
+            self.view.viewOffset.fitToBox(current.box)
 
     def add_btn(self) -> None:
         parent = EditorState.getInstance().getCurrentBody()
