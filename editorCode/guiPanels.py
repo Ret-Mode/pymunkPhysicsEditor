@@ -630,3 +630,21 @@ class EmptyPanel(arcade.gui.UIBoxLayout):
         super().__init__(vertical=False)
         label = Label(label)
         self.add(label)
+
+
+class AddNewPanel(arcade.gui.UIBoxLayout):
+
+    def __init__(self, entries: List[str], addCallback:Callable[[None], None]):
+        super().__init__(vertical = False)
+        self.addButton: Button = Button("ADD", 'thirdWidth', self.addCB)
+        self.selectableType: ScrollableConstantPanel = ScrollableConstantPanel(entries, 'tvelveWidth', 'halfWidth')
+        self._cb = addCallback
+        self.add(self.addButton)
+        self.add(self.selectableType)
+
+    def getCurrent(self) -> str:
+        return self.selectableType.getCurrent()
+
+    def addCB(self) -> None:
+        if self._cb:
+            self._cb()

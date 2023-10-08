@@ -3,7 +3,7 @@ from typing import List, Optional
 import arcade.gui
 
 from .guiButtons import Button, Label, TextButton, ScrollableLayout, ScrollableSelector, ScrollableConstant, editorButtonSetup
-from .guiPanels import ShapePhysicsPanel, SettableOkResetButton, ContainerTransformPanel
+from .guiPanels import ShapePhysicsPanel, SettableOkResetButton, ContainerTransformPanel, AddNewPanel
 from .editorShapeView import EditorShapeView
 from .shapeInternals.editorShapeI import ShapeI
 from .shapeInternals.editorShape import Polygon
@@ -77,7 +77,7 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
 
     def __init__(self) -> None:
         super().__init__(vertical = True)
-        self.rows: List[arcade.gui.UIBoxLayout] = [self.add(arcade.gui.UIBoxLayout(vertical=False)) for i in range(12)]
+        self.rows: List[arcade.gui.UIBoxLayout] = [self.add(arcade.gui.UIBoxLayout(vertical=False)) for i in range(11)]
 
         self.rows[0].add(Label(text="--PARENT--", align='center'))
         
@@ -85,49 +85,46 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
 
         self.rows[1].add(self.bodyList)
 
-
-        self.rows[2].add(Label(text="--NEW SHAPE TYPE--", align='center'))
-
-        self.shapeType: ScrollableConstant = ScrollableConstant(ShapeI.getTypes())
+        self.shapeType: AddNewPanel = AddNewPanel(ShapeI.getTypes(), addCallback=self.add_btn)
         
-        self.rows[3].add(self.shapeType)
+        self.rows[2].add(self.shapeType)
 
 
-        self.rows[4].add(Label(text="--SHAPE--", align='center'))
+        self.rows[3].add(Label(text="--SHAPE--", align='center'))
         
-        self.rows[5].add(Button(text="ADD", width='thirdWidth', callback=self.add_btn))
+        self.rows[4].add(Button(text="ADD", width='thirdWidth', callback=self.add_btn))
 
-        self.rows[5].add(Button(text="DEL", width='thirdWidth', callback=self.del_btn))
+        self.rows[4].add(Button(text="DEL", width='thirdWidth', callback=self.del_btn))
         
-        self.rows[5].add(Button(text="UP", width='thirdWidth', callback=self.up_btn_cb))
+        self.rows[4].add(Button(text="UP", width='thirdWidth', callback=self.up_btn_cb))
         
-        self.rows[6].add(Button(text="SH/HID", width='thirdWidth', callback=self.swap_cb))
+        self.rows[5].add(Button(text="SH/HID", width='thirdWidth', callback=self.swap_cb))
 
-        self.rows[6].add(Button(text="CLONE", width='thirdWidth', callback=self.clone_cb))
+        self.rows[5].add(Button(text="CLONE", width='thirdWidth', callback=self.clone_cb))
         
-        self.rows[6].add(Button(text="DOWN", width='thirdWidth', callback=self.down_btn_cb))
+        self.rows[5].add(Button(text="DOWN", width='thirdWidth', callback=self.down_btn_cb))
         
         
 
         self.shapeList: ScrollableLayout = ScrollableLayout(8, self.select)
 
-        self.rows[7].add(self.shapeList)
+        self.rows[6].add(self.shapeList)
 
         self.labelLine = SettableOkResetButton('Label', 'SHAPE', self.rename, self.resetDetails)
 
-        self.rows[8].add(self.labelLine)
+        self.rows[7].add(self.labelLine)
 
         self.currentDetails: ShapePhysicsPanel = ShapePhysicsPanel(label='--PHYSICS PROP--', newName='SHAPE')
 
-        self.rows[9].add(self.currentDetails)
+        self.rows[8].add(self.currentDetails)
 
         self.transform: ContainerTransformPanel = ContainerTransformPanel()
 
-        self.rows[10].add(self.transform)
+        self.rows[9].add(self.transform)
 
         self.shapeProp: DetailsPanel = DetailsPanel()
         
-        self.rows[11].add(self.shapeProp)
+        self.rows[10].add(self.shapeProp)
 
         self.view: EditorShapeView = None
 

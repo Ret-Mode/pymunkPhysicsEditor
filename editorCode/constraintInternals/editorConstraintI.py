@@ -6,16 +6,16 @@ from ..shapeBuffer import ShapeBuffer
 class ConstraintI:
 
     NONE = "NONE"
-    DAMPEDROTARYSPRING = "DAMPEDROTARYSPRING"
-    DAMPEDSPRING = "DAMPEDSPRING"
-    GEARJOINT = "GEARJOINT"
-    GROOVEJOINT = "GROOVEJOINT"
-    PINJOINT = "PINJOINT"
-    PIVOTJOINT = "PIVOTJOINT"
-    RATCHETJOINT = "RATCHETJOINT"
-    ROTARYLIMITJOINT = "ROTARYLIMITJOINT"
-    SIMPLEMOTOR = "SIMPLEMOTOR"
-    SLIDEJOINT = "SLIDEJOINT"
+    DAMPEDROTARYSPRING = "Rotary Spring"
+    DAMPEDSPRING = "Damped Spring"
+    GEARJOINT = "Gear"
+    GROOVEJOINT = "Groove"
+    PINJOINT = "Pin"
+    PIVOTJOINT = "Pivot"
+    RATCHETJOINT = "Ratchet"
+    ROTARYLIMITJOINT = "Rotary Limit"
+    SIMPLEMOTOR = "Motor"
+    SLIDEJOINT = "Slide"
 
     def __init__(self, label:str):
         self.label: str = label

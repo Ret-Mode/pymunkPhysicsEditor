@@ -9,9 +9,9 @@ from typing import List
 class BodyI:
 
     NONE = "NONE"
-    DYNAMIC = "DYNAMIC"
-    KINEMATIC = "KINEMATIC"
-    STATIC = "STATIC"
+    DYNAMIC = "Dynamic"
+    KINEMATIC = "Kinematic"
+    STATIC = "Static"
     
     def __init__(self, label:str):
         
@@ -24,6 +24,10 @@ class BodyI:
         self.shapes: List[ShapeI] = []
 
         self.physics : BodyPhysics
+
+    @staticmethod
+    def getTypes() -> List[str]:
+        return [BodyI.DYNAMIC, BodyI.KINEMATIC, BodyI.STATIC]
 
     def updatePos(self, transform:Mat):
         raise NotImplementedError

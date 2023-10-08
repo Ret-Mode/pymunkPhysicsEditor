@@ -9,11 +9,11 @@ from typing import List
 class ShapeI:
 
     NONE = "NONE"
-    POLYGON = "POLYGON"
-    CIRCLE = "CIRCLE"
-    BOX = "BOX"
-    RECT = "RECT"
-    LINE = "LINE"
+    POLYGON = "Polygon"
+    CIRCLE = "Circle"
+    BOX = "Box"
+    RECT = "Rect"
+    LINE = "Line"
 
 
     def __init__(self, label:str):

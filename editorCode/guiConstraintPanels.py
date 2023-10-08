@@ -3,7 +3,7 @@ from typing import List, Optional, Callable, Union
 import arcade.gui
 
 from .guiButtons import Button, Label, TextButton, ScrollableLayout, ScrollableCBLabel, ScrollableConstant, editorButtonSetup
-from .guiPanels import SettableOkResetButton, SettableCoordButton, SettableOkButton, SettableCoordOkButton
+from .guiPanels import SettableOkResetButton, AddNewPanel, SettableOkButton, SettableCoordOkButton, ScrollableConstantPanel
 from .editorConstraintView import EditorConstraintView
 from .commandExec import CommandExec, ComRenameConstraint, ComSetConstraintAsCurrent, ComAddConstraint, ComConstraintSetNewBodyA, ComConstraintSetNewBodyB
 from .commandExec import ComDelConstraint, ComConstraintClone, ComShiftConstraintDown, ComShiftConstraintUp, ComSetRestAngle, ComSetStiffness, ComSetDamping
@@ -549,25 +549,6 @@ class DetailsPanel(arcade.gui.UIBoxLayout):
 
     def prevViewMode(self):
         self.view.prevMode()
-
-
-
-class AddNewPanel(arcade.gui.UIBoxLayout):
-
-    def __init__(self, entries: List[str], addCallback:Callable[[None], None]):
-        super().__init__(vertical = False)
-        self.addButton: Button = Button("ADD", 'thirdWidth', self.addCB)
-        self.cnstrntType: ScrollableConstant = ScrollableConstant(entries, width='twoThirdsWidth')
-        self._cb = addCallback
-        self.add(self.addButton)
-        self.add(self.cnstrntType)
-
-    def getCurrent(self) -> str:
-        return self.cnstrntType.getCurrent()
-
-    def addCB(self) -> None:
-        if self._cb:
-            self._cb()
 
 
 class ConstraintButtons(arcade.gui.UIBoxLayout):

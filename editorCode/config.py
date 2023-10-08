@@ -16,6 +16,7 @@ globalWindowSetup = {'width': 800,
 
 editorButtonSetup = {'width': 240,
                      'sevenEightsWidth': 210,
+                     'fiveSixthWidth': 200,
                      'twoThirdsWidth': 160,
                      'halfWidth': 120,
                      'fiveTwelvthWidth': 100,
@@ -24,6 +25,7 @@ editorButtonSetup = {'width': 240,
                      'sixthWidth': 40,
                      'eightWidth': 30,
                      'tvelveWidth': 20,
+                     'sixteenthWidth': 15,
                      'height': 20,
                      'style': {"font_size": 10} }
 

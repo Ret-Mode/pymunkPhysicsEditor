@@ -17,6 +17,7 @@ class ArcadeGLContext(GLContextI):
     def __init__(self):
         self.ctx = arcade.get_window().ctx
         print('Opengl context:', self.ctx.info.VENDOR, self.ctx.info.MAJOR_VERSION ,self.ctx.info.MINOR_VERSION)
+        print('Renderer:', self.ctx.info.RENDERER)
         print('Texture image units:', self.ctx.info.MAX_TEXTURE_IMAGE_UNITS)
         print('Framebuffer size:', self.getFramebufferSize())
 
