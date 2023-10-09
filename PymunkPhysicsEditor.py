@@ -1,10 +1,7 @@
 from typing import Optional
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
-import time
 import arcade
-import PIL.Image
-import io
 import arcade.gui
 import pickle
 

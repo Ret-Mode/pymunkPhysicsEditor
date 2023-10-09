@@ -425,7 +425,6 @@ class OffsetPoint:
     def calcOffset(self, mat:Mat, center:V2):
         mat.mulRSV(self.offset, self.local)
         self.final.setFromV(self.local).tV(center)
-        #mat.mulRSV(self.local, self.final).tV(center)
     
 
 class BoundingBox:

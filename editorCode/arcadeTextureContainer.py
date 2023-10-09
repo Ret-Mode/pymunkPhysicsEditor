@@ -4,7 +4,6 @@ from arcade.gl.texture import Texture
 from typing import List, Tuple
 
 from .textureContainerI import TextureContainerI
-from .textureMapping import TextureMapping
 
 
 class ArcadeTexture(TextureContainerI):
@@ -22,6 +21,9 @@ class ArcadeTexture(TextureContainerI):
     def loadTexture(self, path:str) -> Texture:
         return self.ctx.load_texture(path)
 
+    def deleteTexture(self, texture:Texture):
+        texture.delete()
+    
     def use(self, textureIndex:int, onChannel:int):
         if 0 <= textureIndex < self.elems:
             texture:Texture = self.textures[textureIndex]

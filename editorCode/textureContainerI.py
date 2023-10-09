@@ -11,6 +11,9 @@ class TextureContainerI:
         assert TextureContainerI._instance is not None
         return TextureContainerI._instance
 
+    def deleteTexture(self, texture):
+        raise NotImplementedError
+    
     def loadTexture(self, path:str) -> any:
         raise NotImplementedError
 
@@ -29,7 +32,7 @@ class TextureContainerI:
             texture = self.loadTexture(path)
             if texture:
                 if self.textures[textureIndex] is not None:
-                    self.textures[textureIndex].delete()
+                    self.deleteTexture(self.textures[textureIndex])
                 self.paths[textureIndex] = path
                 self.textures[textureIndex] = texture
                 self.sizes[textureIndex] = size

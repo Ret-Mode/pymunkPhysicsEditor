@@ -40,7 +40,7 @@ class BodyI:
 
     def clone(self, newLabel:str):
         raise NotImplementedError
-    
+
     def bufferData(self, buffer:ShapeBuffer):
         for shape in self.shapes:
             shape.bufferData(buffer)

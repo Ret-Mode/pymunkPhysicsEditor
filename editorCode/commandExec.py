@@ -700,8 +700,10 @@ class ComSetAnchorA(CommandUndo):
     def __init__(self, constraint:Union[DampedRotarySpring, DampedSpring, GrooveJoint, PinJoint, PivotJoint, SlideJoint],
                   x:float, y:float):
         self.entity = constraint
-        self.newXValue = x
-        self.newYValue = y
+        mat = self.entity.bodyA.transform.getInvMat()
+        newX, newY = mat.mulRSXY(x, y)
+        self.newXValue = newX
+        self.newYValue = newY
         self.oldXValue = constraint.anchorA.offset.x
         self.oldYValue = constraint.anchorA.offset.y
 
@@ -742,8 +744,10 @@ class ComSetAnchorB(CommandUndo):
     def __init__(self, constraint:Union[DampedRotarySpring, DampedSpring, PinJoint, PivotJoint, SlideJoint],
                   x:float, y:float):
         self.entity = constraint
-        self.newXValue = x
-        self.newYValue = y
+        mat = self.entity.bodyA.transform.getInvMat()
+        newX, newY = mat.mulRSXY(x, y)
+        self.newXValue = newX
+        self.newYValue = newY
         self.oldXValue = constraint.anchorB.offset.x
         self.oldYValue = constraint.anchorB.offset.y
 
@@ -887,8 +891,10 @@ class ComSetGrooveA(CommandUndo):
 
     def __init__(self, constraint:GrooveJoint, x:float, y:float):
         self.entity = constraint
-        self.newXValue = x
-        self.newYValue = y
+        mat = self.entity.bodyA.transform.getInvMat()
+        newX, newY = mat.mulRSXY(x, y)
+        self.newXValue = newX
+        self.newYValue = newY
         self.oldXValue = constraint.grooveA.offset.x
         self.oldYValue = constraint.grooveA.offset.y
 
@@ -928,8 +934,10 @@ class ComSetGrooveB(CommandUndo):
 
     def __init__(self, constraint:GrooveJoint, x:float, y:float):
         self.entity = constraint
-        self.newXValue = x
-        self.newYValue = y
+        mat = self.entity.bodyA.transform.getInvMat()
+        newX, newY = mat.mulRSXY(x, y)
+        self.newXValue = newX
+        self.newYValue = newY
         self.oldXValue = constraint.grooveB.offset.x
         self.oldYValue = constraint.grooveB.offset.y
 

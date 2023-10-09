@@ -193,8 +193,8 @@ class DampedSpringSpecPanel(arcade.gui.UIBoxLayout):
         self.restLine.setNewVal(floatToString(self.current.restLength, '0.0'))
         self.stiffnessLine.setNewVal(floatToString(self.current.stiffness, '0.0'))
         self.dampingLine.setNewVal(floatToString(self.current.damping, '0.0'))
-        self.anchorALine.setNewVal(floatToString(self.current.anchorA.offset.x, '0.0'), floatToString(self.current.anchorA.offset.y, '0.0'))
-        self.anchorBLine.setNewVal(floatToString(self.current.anchorB.offset.x, '0.0'), floatToString(self.current.anchorB.offset.y, '0.0'))
+        self.anchorALine.setNewVal(floatToString(self.current.anchorA.local.x, '0.0'), floatToString(self.current.anchorA.local.y, '0.0'))
+        self.anchorBLine.setNewVal(floatToString(self.current.anchorB.local.x, '0.0'), floatToString(self.current.anchorB.local.y, '0.0'))
 
 
 class GearJointSpecPanel(arcade.gui.UIBoxLayout):
@@ -263,9 +263,9 @@ class GrooveJointSpecPanel(arcade.gui.UIBoxLayout):
     def refresh(self, constraint:GrooveJoint):
         if self.current != constraint:
             self.current = constraint
-        self.grooveALine.setNewVal(floatToString(self.current.grooveA.offset.x, '0.0'), floatToString(self.current.grooveA.offset.y, '0.0'))
-        self.grooveBLine.setNewVal(floatToString(self.current.grooveB.offset.x, '0.0'), floatToString(self.current.grooveB.offset.y, '0.0'))
-        self.anchorBLine.setNewVal(floatToString(self.current.anchorB.offset.x, '0.0'), floatToString(self.current.anchorB.offset.y, '0.0'))
+        self.grooveALine.setNewVal(floatToString(self.current.grooveA.local.x, '0.0'), floatToString(self.current.grooveA.local.y, '0.0'))
+        self.grooveBLine.setNewVal(floatToString(self.current.grooveB.local.x, '0.0'), floatToString(self.current.grooveB.local.y, '0.0'))
+        self.anchorBLine.setNewVal(floatToString(self.current.anchorB.local.x, '0.0'), floatToString(self.current.anchorB.local.y, '0.0'))
 
 
 class PinJointSpecPanel(arcade.gui.UIBoxLayout):
@@ -297,8 +297,8 @@ class PinJointSpecPanel(arcade.gui.UIBoxLayout):
     def refresh(self, constraint:PinJoint):
         if self.current != constraint:
             self.current = constraint
-            self.anchorALine.setNewVal(floatToString(self.current.anchorA.offset.x, '0.0'), floatToString(self.current.anchorA.offset.y, '0.0'))
-            self.anchorBLine.setNewVal(floatToString(self.current.anchorB.offset.x, '0.0'), floatToString(self.current.anchorB.offset.y, '0.0'))
+            self.anchorALine.setNewVal(floatToString(self.current.anchorA.local.x, '0.0'), floatToString(self.current.anchorA.local.y, '0.0'))
+            self.anchorBLine.setNewVal(floatToString(self.current.anchorB.local.x, '0.0'), floatToString(self.current.anchorB.local.y, '0.0'))
 
 
 class PivotJointSpecPanel(arcade.gui.UIBoxLayout):
@@ -336,8 +336,8 @@ class PivotJointSpecPanel(arcade.gui.UIBoxLayout):
     def refresh(self, constraint:PivotJoint):
         if self.current != constraint:
             self.current = constraint
-        self.anchorALine.setNewVal(floatToString(self.current.anchorA.offset.x, '0.0'), floatToString(self.current.anchorA.offset.y, '0.0'))
-        self.anchorBLine.setNewVal(floatToString(self.current.anchorB.offset.x, '0.0'), floatToString(self.current.anchorB.offset.y, '0.0'))
+        self.anchorALine.setNewVal(floatToString(self.current.anchorA.local.x, '0.0'), floatToString(self.current.anchorA.local.y, '0.0'))
+        self.anchorBLine.setNewVal(floatToString(self.current.anchorB.local.x, '0.0'), floatToString(self.current.anchorB.local.y, '0.0'))
 
 
 class RatchetJointSpecPanel(arcade.gui.UIBoxLayout):
@@ -465,6 +465,8 @@ class SlideJointSpecPanel(arcade.gui.UIBoxLayout):
     def refresh(self, constraint:SlideJoint):
         if self.current != constraint:
             self.current = constraint
+        self.anchorALine.setNewVal(floatToString(self.current.anchorA.local.x, '0.0'), floatToString(self.current.anchorA.local.y, '0.0'))
+        self.anchorBLine.setNewVal(floatToString(self.current.anchorB.local.x, '0.0'), floatToString(self.current.anchorB.local.y, '0.0'))
         self.minLine.setNewVal(floatToString(self.current.min, '0.0'))
         self.maxLine.setNewVal(floatToString(self.current.max, '0.0'))
 

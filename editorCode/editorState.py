@@ -55,6 +55,9 @@ class EditorState:
         self.setCurrentShapeByLabel(None)
 
     def getCurrentBody(self) -> BodyI:
+        if self.currentBody:
+            return self.currentBody
+        self.setAnyBodyAsCurrent()
         return self.currentBody
     
     def setCurrentShapeByLabel(self, label:str):
@@ -63,6 +66,9 @@ class EditorState:
             self.currentShape = shape
 
     def getCurrentShape(self) -> ShapeI:
+        if self.currentShape:
+            return self.currentShape
+        self.setAnyShapeAsCurrent()
         return self.currentShape
     
     def setCurrentConstraintByLabel(self, label:str):
