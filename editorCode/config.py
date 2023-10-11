@@ -50,7 +50,9 @@ pointConfig = {'pointHalfWH':  3,
                'anchorHalfWH': 3.0,
                'anchorColor': (100,100,200, 255),
                'cogHalfWH': 3.0,
-               'cogColor': (200,100,100, 255)}
+               'cogColor': (200,100,100, 255),
+               'transformArmLength': physicsSetup['pixelPerMeter'],
+               'transformColor': (150,200,150, 255)}
 
 
 def toJSON(data: dict) -> str:

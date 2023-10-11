@@ -3,7 +3,7 @@ import math
 from typing import List
 
 from .config import pointConfig
-from .editorTypes import V2, EditorPoint, UnboundAngle
+from .editorTypes import V2, EditorPoint, UnboundAngle, ContainerTransform
 
 
 class ShapeBuffer:
@@ -469,3 +469,14 @@ class ShapeBuffer:
         self.colors += 4 * color
         self.indices += [ind, ind +1, ind+2, ind+3]
         self.currentIndex += 4
+
+    def addTransform(self, transform:ContainerTransform):
+        mat = transform.getMat()
+        center = (0.0, 0.0)
+        arm = (1.0, 0.0)
+        centerFinal = mat.mulXY(center[0], center[1])
+        armFinal = mat.mulXY(arm[0], arm[1])
+        self.addEdgeXY(centerFinal[0], centerFinal[1], armFinal[0], armFinal[1], pointConfig['transformColor'])
+        self.addPointXY(centerFinal[0], centerFinal[1], pointConfig['transformColor'], pointConfig['pointHalfWH'] * self.drawScale)
+        self.addPointXY(armFinal[0], armFinal[1], pointConfig['transformColor'], pointConfig['pointHalfWH'] * self.drawScale)
+

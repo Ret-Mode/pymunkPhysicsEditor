@@ -78,9 +78,14 @@ class TextureContainerI:
         if 0 <= self.current <= self.elems:
             return self.paths[self.current]
         return None
+    
+    def getPath(self, textureIndex:int) -> str:
+        if 0 <= textureIndex <= self.elems:
+            return self.paths[textureIndex]
+        return None
 
-    def getSize(self, textureIndex) -> Tuple[int]:
-        if 0 <= self.current <= self.elems:
+    def getSize(self, textureIndex:int) -> Tuple[int]:
+        if 0 <= textureIndex <= self.elems:
             return self.sizes[textureIndex]
         return None
             

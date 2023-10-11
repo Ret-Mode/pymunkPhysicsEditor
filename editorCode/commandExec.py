@@ -1,7 +1,9 @@
 from typing import List, Literal, Union
 from .editorShapes import Container
 from .shapeInternals.editorShapeI import ShapeI
+from .shapeInternals.editorBodyI import BodyI
 from .constraintInternals.editorConstraintI import ConstraintI
+from .textureMapping import TextureMapping
 from .editorTypes import V2, Angle, EditorPoint
 from .editorCursor import Cursor
 from .database import Database
@@ -277,28 +279,50 @@ class ComRenameNewShape(CommandUndo):
             self.database.renameNewShape(self.shape, self.oldName)
 
 
-class ComSelectNewParentBody(CommandUndo):
+class ComSelectNextBody(CommandUndo):
 
-    def __init__(self, label: str):
-        self.database = Database.getInstance()
+    def __init__(self):
         self.state = EditorState.getInstance()
-        self.newBodyLabel = label
-        oldBody = self.state.getCurrentBody()
-        oldShape = self.state.getCurrentShape()
-        self.oldBodyLabel = oldBody.label if oldBody else None
-        self.oldShapeLabel = oldShape.label if oldShape else None
-        
+        self.oldBody = self.state.getCurrentBody()
+        self.oldShape = self.state.getCurrentShape()
+        self.newBody:BodyI = None
+        self.newShape:ShapeI = None
+        self.executed:bool = False
 
     def execute(self):
-        if self.newBodyLabel:
-            self.state.setCurrentBodyByLabel(self.newBodyLabel)
+        if not self.executed:
+            self.state.setNextBodyAsCurrent()
+            self.newBody = self.state.getCurrentBody()
+            self.newShape = self.state.getCurrentShape()
+            self.executed = True
+        else:
+            self.state.setCurrentBodyAndShape(self.newBody, self.newShape)
 
     def undo(self):
-        if self.oldBodyLabel:
-            self.state.setCurrentBodyByLabel(self.oldBodyLabel)
-            if self.oldShapeLabel:
-                self.state.setCurrentShapeByLabel(self.oldShapeLabel)
-            
+        self.state.setCurrentBodyAndShape(self.oldBody, self.oldShape)
+
+
+class ComSelectPrevBody(CommandUndo):
+
+    def __init__(self):
+        self.state = EditorState.getInstance()
+        self.oldBody = self.state.getCurrentBody()
+        self.oldShape = self.state.getCurrentShape()
+        self.newBody:BodyI = None
+        self.newShape:ShapeI = None
+        self.executed:bool = False
+
+    def execute(self):
+        if not self.executed:
+            self.state.setPrevBodyAsCurrent()
+            self.newBody = self.state.getCurrentBody()
+            self.newShape = self.state.getCurrentShape()
+            self.executed = True
+        else:
+            self.state.setCurrentBodyAndShape(self.newBody, self.newShape)
+
+    def undo(self):
+        self.state.setCurrentBodyAndShape(self.oldBody, self.oldShape)
 
 
 class ComSetNewShapeAsCurrent(CommandUndo):
@@ -1441,7 +1465,7 @@ class ComCancelTransform(Command):
 
 class ComStartTransform(CommandUndo):
 
-    def __init__(self, transform: ContinuousTransform, obj: ShapeI, startPoint: V2, pivot: V2, mode: Literal[0,1,2,3]):
+    def __init__(self, transform: ContinuousTransform, obj: Union[BodyI, ShapeI, TextureMapping], startPoint: V2, pivot: V2, mode: Literal[0,1,2,3]):
         self.transform = transform
         
         self.newObj = obj

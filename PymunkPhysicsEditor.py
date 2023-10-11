@@ -190,6 +190,16 @@ class EditorView(arcade.View):
             elif key == ord('y'):
                 view.redo()
 
+        elif self.currentMode == 'TEX':
+            if key == ord('m'):
+                view.startMoveTransform()
+            elif key == ord('r'):
+                view.startRotateTransform()
+            elif key == ord('s'):
+                view.startScaleTransform()
+            elif key == ord('q'):
+                view.startRotateScaleTransform()
+
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
         pass
@@ -232,6 +242,16 @@ class EditorView(arcade.View):
 
             elif self.currentMode == 'CNSTRNT':
                 view.defaultAction()
+
+            elif self.currentMode == 'TEX':
+                if button == arcade.MOUSE_BUTTON_RIGHT:
+                    if view.transform.active:
+                        view.cancelTransform()
+                    else:
+                        view.setHelperPoint()
+                else:
+                    if view.transform.active:
+                        view.applyTransform()
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
        #if x < self.editableWidth:

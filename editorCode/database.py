@@ -41,12 +41,6 @@ class Database:
         self.shapeList: List[ShapeI] = []
         self.constraints: List[ConstraintI] = []
         self.mappings: List[TextureMapping] = []
-        self.currentBody: BodyI = None
-        self.currentShape: ShapeI = None
-        self.currentConstraint: ConstraintI = None
-        self.currentMapping: TextureMapping = None
-        self.currentMappingChannel: int = -1
-
 
     # TODO 
     # get common functionality to utility functions

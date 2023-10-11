@@ -14,7 +14,8 @@ from .glContext import GLContextI
 from .database import Database
 from .editorState import EditorState
 from .commandExec import CommandExec
-from .commandExec import ComResizeView, ComMoveCursor, ComMoveView, ComScaleView
+from .commandExec import ComResizeView, ComMoveCursor, ComMoveView, ComScaleView, ComSetPivot
+from .commandExec import ComStartTransform, ComCancelTransform,ComApplyTransform
 
 from .textureContainerI import TextureContainerI
 
@@ -31,13 +32,17 @@ class EditorTextureView:
         self.bodyShader = LineDraw()
         self.transform = ContinuousTransform()
 
+
     def _selectView(self):
         if self.viewOffset.coordsInView(self.cursor.screenCoords.x, self.cursor.screenCoords.y):
                 return self.viewOffset
         elif self.textureView.coordsInView(self.cursor.screenCoords.x, self.cursor.screenCoords.y):
                 return self.textureView
         return None
-    
+
+    def setHelperPoint(self):
+        CommandExec.addCommand(ComSetPivot(self.pivot.local, self.cursor.viewCoords))
+
     def resize(self, x:float, y:float):
         CommandExec.addCommand(ComResizeView(self.viewOffset, x//2, y))
         CommandExec.addCommand(ComResizeView(self.textureView, x//2, y, x//2))
@@ -57,9 +62,43 @@ class EditorTextureView:
         CommandExec.addCommand(ComMoveCursor(view, self.cursor, x, y))
 
 
+
+    def startMoveTransform(self):
+        entity = EditorState.getInstance().getCurrentMapping()
+        if entity:
+            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.MOVE))
+
+    def startRotateTransform(self):
+        entity = EditorState.getInstance().getCurrentMapping()
+        if entity:
+            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.ROTATE))
+
+    def startScaleTransform(self):
+        entity = EditorState.getInstance().getCurrentMapping()
+        if entity:
+            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.SCALE))
+
+    def startRotateScaleTransform(self):
+        entity = EditorState.getInstance().getCurrentMapping()
+        if entity:
+            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.ROTATESCALE))
+
+    def cancelTransform(self):
+        CommandExec.addCommand(ComCancelTransform(self.transform))
+
+    def applyTransform(self):
+        CommandExec.addCommand(ComApplyTransform(self.transform))
+
+
+
+
     def update(self):
         CommandExec.process()
         state = EditorState.getInstance()
+
+        if self.transform.active:
+            self.transform.update(self.cursor.viewCoords)
+        
         mapping = state.getCurrentMapping()
         if mapping and mapping.body:
             mapping.update()
@@ -73,9 +112,6 @@ class EditorTextureView:
         texBuffer = TextureBuffer.getInstance()
 
         # draw mappings
-        buffer.reset()
-        buffer.drawScale = self.viewOffset.scale
-
         context = GLContextI.getInstance()
         context.setProjectionAndViewportFromCamera(self.viewOffset)
 
@@ -83,6 +119,9 @@ class EditorTextureView:
 
         mapping = state.getCurrentMapping()
 
+        buffer.reset()
+        buffer.drawScale = self.viewOffset.scale
+        
         if mapping and mapping.body:
             
             texBuffer.reset()
@@ -91,17 +130,17 @@ class EditorTextureView:
             self.texShader.update(texBuffer.verts, texBuffer.uvs, texBuffer.indices)
             self.texShader.draw()
 
+
             currentBody = mapping.body
             buffer.addBBox(currentBody.box.center.final, currentBody.box.halfWH.final, True, False)
             currentBody.bufferData(buffer)
-            buffer.addTextureOutline(mapping.textureRect)
+            buffer.addTextureOutline(mapping.mappingRect)
             buffer.addCenterOfGravity(currentBody.physics.cog.final, True)
 
-        self.bodyShader.update(buffer.verts, buffer.colors, buffer.indices)
-
-        self.bodyShader.draw()
         
-
+        buffer.addHelperPoint(self.pivot.local)
+        self.bodyShader.update(buffer.verts, buffer.colors, buffer.indices)
+        self.bodyShader.draw()
         # draw texture channel
 
         context = GLContextI.getInstance()
@@ -110,17 +149,9 @@ class EditorTextureView:
         self.gridShader.drawGrid(self.textureView)
 
         if currentTexture is not None:
-            buffer.reset()
-            buffer.drawScale = self.textureView.scale
-
-            self.bodyShader.update(buffer.verts, buffer.colors, buffer.indices)
-
-            self.bodyShader.draw()
-
 
             texBuffer.reset()
-            
-            
+
             width, height = textures.getSize(currentTexture)
             
             texBuffer.addBaseQuad(width, height)
@@ -128,3 +159,10 @@ class EditorTextureView:
             textures.use(currentTexture, 0)
             self.texShader.update(texBuffer.verts, texBuffer.uvs, texBuffer.indices)
             self.texShader.draw()
+
+            if mapping:
+                buffer.reset()
+                buffer.drawScale = self.textureView.scale
+                buffer.addTransform(mapping.transform)
+                self.bodyShader.update(buffer.verts, buffer.colors, buffer.indices)
+                self.bodyShader.draw()

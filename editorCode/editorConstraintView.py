@@ -58,7 +58,6 @@ class EditorConstraintView:
         self.viewBodyBOffset = EditorCamera(width//2, width//2, width//2, 0)
         self.cursor = cursor
         self.pivot = EditorPoint()
-        self.viewOffset = self.viewAllOffset
 
         self.mode = EditorConstraintView.DEFAULT
 

@@ -3,6 +3,7 @@ import arcade.gui
 from typing import List, Callable, Tuple
 
 from .database import Database
+from .editorState import EditorState
 from .shapeInternals.editorBodyI import BodyI
 from .guiButtons import ScrollableLayout, TexturePreview
 from .guiButtons import Button, Label
@@ -17,23 +18,34 @@ from .editorState import EditorState
 class SetTextureToChannelPanel(arcade.gui.UIBoxLayout):
     
     def __init__(self, assignTexToChannel:Callable):
-        super().__init__(vertical=False)
+        super().__init__(vertical=True)
+        row = arcade.gui.UIBoxLayout(vertical=False)
         self.assignTexToChannel = assignTexToChannel
-
         self.assignButton = Button('Assign to:', 'halfWidth', self.assign)
         self.channels = ScrollableConstantPanel(list(map(str, [i for i in range(16)])), 'eightWidth', 'quartWidth')
-
-        self.add(self.assignButton)
-        self.add(self.channels)
+        currentlyAssigned = Label('Currently assigned to this channel:', align='left')
+        self.currentPath = Label('...nothing ', align='right')
+        row.add(self.assignButton)
+        row.add(self.channels)
+        self.add(row)
+        self.add(currentlyAssigned)
+        self.add(self.currentPath)
 
     def assign(self):
-        currentChannel:int = -1
-        try:
-            currentChannel = int(self.channels.getCurrent())
-        except:
-            pass
+        currentChannel = int(self.channels.getCurrent())
         if currentChannel >= 0 and currentChannel <= 15:
             self.assignTexToChannel(currentChannel)
+
+    def on_update(self, dt):
+        retVal = super().on_update(dt)
+        currentChannel = int(self.channels.getCurrent())
+        container = TextureContainerI.getInstance()
+        path = container.getPath(currentChannel)
+        if path:
+            self.currentPath.setText(path)
+        else:
+            self.currentPath.setText('...nothing ')
+        return retVal
 
 
 class TextureSizeIntPanel(arcade.gui.UIBoxLayout):
@@ -104,8 +116,8 @@ class TextureSelectPanel(arcade.gui.UIBoxLayout):
         self.rows: List[arcade.gui.UIBoxLayout] = [self.add(arcade.gui.UIBoxLayout(vertical=False)) for i in range(4)]
         self.textureListPanel = TextureListPanel('.', textureClicked=self.loadPreview)
         self.sizePanel = TextureSizeIntPanel()
-        self.preview = TexturePreview()
         self.assignChannel = SetTextureToChannelPanel(self.assignToChannel)
+        self.preview = TexturePreview()
 
         self.rows[0].add(self.textureListPanel)
         self.rows[1].add(self.sizePanel)
@@ -120,7 +132,12 @@ class TextureSelectPanel(arcade.gui.UIBoxLayout):
         # TODO add command when other functionality is ready
         # to reconsider moving this into command - file op, what if file is deleted?
         if self.preview.originalFilePath:
-            TextureContainerI.getInstance().load(self.preview.originalFilePath, toChannel, self.preview.getTextureSize())
+            size = self.preview.getTextureSize()
+            container = TextureContainerI.getInstance()
+            container.load(self.preview.originalFilePath, toChannel, size)
+            database = Database.getInstance()
+            for mapping in database.getAllMappingsOfChannel(toChannel):
+                mapping.initialize(size)
 
 # end of FILE PANELS
 
@@ -258,7 +275,6 @@ class MappingsPanel(arcade.gui.UIBoxLayout):
         textures = TextureContainerI.getInstance()
         currentChannel = textures.getCurrent()
         if currentChannel is not None:
-            database = Database.getInstance()
             state = EditorState.getInstance()
             state.setCurrentMappingByLabel(label)
             mapping = state.getCurrentMapping()

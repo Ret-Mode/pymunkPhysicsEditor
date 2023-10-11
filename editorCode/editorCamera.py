@@ -110,3 +110,27 @@ class EditorCamera:
 
         self.setMatrix(self.sizeScaled.x, self.sizeScaled.y)
         self.setViewport()
+
+    def fitToBoxes(self, boxes:Tuple[BoundingBox, ...]):
+        box = boxes[0]
+        minX = box.center.final.x - box.halfWH.final.x
+        minY = box.center.final.y - box.halfWH.final.y
+        maxX = box.center.final.x + box.halfWH.final.x
+        maxY = box.center.final.y + box.halfWH.final.y
+        for box in boxes[1:]:
+            minX = min(box.center.final.x - box.halfWH.final.x, minX)
+            minY = min(box.center.final.y - box.halfWH.final.y, minY)
+            maxX = max(box.center.final.x + box.halfWH.final.x, maxX)
+            maxY = max(box.center.final.y + box.halfWH.final.y, maxY)
+        boxWidth = (maxX - minX) 
+        boxHeight = (maxY - minY) 
+        scale = max(boxWidth * 1.05 / self.viewportSize.x, boxHeight * 1.05 / self.viewportSize.y, self.scaleLimit)
+        self.scale = scale
+        self.sizeScaled.setFromV(self.viewportSize).sS(self.scale)
+
+        dx:float = minX + (boxWidth - self.sizeScaled.x)/2.0 
+        dy:float = minY + (boxHeight - self.sizeScaled.y)/2.0
+        self.offsetScaled.setFromXY(dx, dy)
+
+        self.setMatrix(self.sizeScaled.x, self.sizeScaled.y)
+        self.setViewport()

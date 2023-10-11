@@ -22,6 +22,13 @@ class EditorState:
         self.currentMappingChannel: int = -1
         self.database:Database = Database.getInstance()
 
+    def setCurrentBodyAndShape(self, body:BodyI, shape:ShapeI):
+        if shape is not None and body is not None:
+            # sanity check
+            assert shape in body.shapes
+        self.currentBody = body
+        self.currentShape = shape
+
     def setCurrentBodyByLabel(self, label:str):
         body = self.database.getBodyByLabel(label)
         if body:
@@ -38,6 +45,30 @@ class EditorState:
                 self.currentBody = None
                 self.currentShape = None
 
+    def setNextBodyAsCurrent(self) -> None:
+        bodies = self.database.bodies
+        if not bodies:
+            self.currentBody = None
+            self.currentShape = None
+            return
+        amount = len(bodies)
+        if amount == 1 or (self.currentBody not in bodies):
+            self.setCurrentBodyByLabel(bodies[0].label)
+            return
+        self.setCurrentBodyByLabel(bodies[(bodies.index(self.currentBody) + 1) % amount].label)
+
+    def setPrevBodyAsCurrent(self) -> None:
+        bodies = self.database.bodies
+        if not bodies:
+            self.currentBody = None
+            self.currentShape = None
+            return
+        amount = len(bodies)
+        if amount == 1 or (self.currentBody not in bodies):
+            self.setCurrentBodyByLabel(bodies[-1].label)
+            return
+        self.setCurrentBodyByLabel(bodies[(bodies.index(self.currentBody) - 1 + amount) % amount].label)
+
     def setAnyBodyAsCurrent(self):
         if self.database.bodies:
             self.setCurrentBodyByLabel(self.database.bodies[-1].label)
@@ -45,6 +76,12 @@ class EditorState:
             self.currentBody = None
             self.currentShape = None
 
+    def getCurrentBody(self) -> BodyI:
+        if self.currentBody:
+            return self.currentBody
+        self.setAnyBodyAsCurrent()
+        return self.currentBody
+    
     def setAnyShapeAsCurrent(self):
         currentBody = self.getCurrentBody()
         if currentBody:
@@ -54,12 +91,6 @@ class EditorState:
                 return
         self.setCurrentShapeByLabel(None)
 
-    def getCurrentBody(self) -> BodyI:
-        if self.currentBody:
-            return self.currentBody
-        self.setAnyBodyAsCurrent()
-        return self.currentBody
-    
     def setCurrentShapeByLabel(self, label:str):
         shape = self.database.getNewShapeByLabel(label)
         if shape and self.currentShape != shape:
@@ -88,7 +119,7 @@ class EditorState:
 
     def getCurrentConstraint(self) -> ConstraintI:
         return self.currentConstraint
-        
+    
     def getCurrentMapping(self) -> TextureMapping:
         return self.currentMapping
     

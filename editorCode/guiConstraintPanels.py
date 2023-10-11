@@ -567,7 +567,7 @@ class ConstraintButtons(arcade.gui.UIBoxLayout):
 
         self.rows[2].add(Label(text="--CNSTRNT--", align='center'))
         
-        self.rows[3].add(Button(text="ADD", width='thirdWidth', callback=self.add_btn))
+        self.rows[3].add(Button(text="FIT", width='thirdWidth', callback=self.fit_cb))
 
         self.rows[3].add(Button(text="DEL", width='thirdWidth', callback=self.del_btn))
         
@@ -635,6 +635,16 @@ class ConstraintButtons(arcade.gui.UIBoxLayout):
 
     def select(self, label:str) -> None:
         CommandExec.addCommand(ComSetConstraintAsCurrent(label))
+
+    def fit_cb(self):
+        current:ConstraintI = EditorState.getInstance().getCurrentConstraint()
+        if current:
+            bA = current.bodyA
+            bB = current.bodyB
+            if bA and bB:
+                self.view.viewBodyAOffset.fitToBox(bA.box)
+                self.view.viewBodyBOffset.fitToBox(bB.box)
+                self.view.viewAllOffset.fitToBoxes((bA.box, bB.box))
 
     def add_btn(self) -> None:
         label: str = self.labelLine.getVal()
