@@ -152,18 +152,16 @@ class EditorTextureView:
         if currentTexture is not None:
 
             texBuffer.reset()
-
             width, height = textures.getSize(currentTexture)
-            
             texBuffer.addBaseQuad(width, height)
-
             textures.use(currentTexture, 0)
             self.texShader.update(texBuffer.verts, texBuffer.uvs, texBuffer.indices)
             self.texShader.draw()
 
-            if mapping:
-                buffer.reset()
-                buffer.drawScale = self.textureView.scale
-                buffer.addTransform(mapping.transform)
-                self.bodyShader.update(buffer.verts, buffer.colors, buffer.indices)
-                self.bodyShader.draw()
+        buffer.reset()
+        buffer.drawScale = self.textureView.scale
+        if mapping and mapping.body:
+            buffer.addTransform(mapping.transform)
+        buffer.addHelperPoint(self.pivot.local)
+        self.bodyShader.update(buffer.verts, buffer.colors, buffer.indices)
+        self.bodyShader.draw()
