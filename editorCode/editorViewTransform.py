@@ -12,12 +12,16 @@ class ContinuousTransform:
     MOVE: ClassVar[Literal[1]]       = 1
     SCALE: ClassVar[Literal[2]]      = 2
     ROTATESCALE: ClassVar[Literal[3]] = 3
-    modes: Sequence[Literal[0, 1, 2, 3]] = {ROTATE, MOVE, SCALE, ROTATESCALE}
+    INVROTATE: ClassVar[Literal[0]]     = 4
+    INVMOVE: ClassVar[Literal[1]]       = 5
+    INVSCALE: ClassVar[Literal[2]]      = 6
+    INVROTATESCALE: ClassVar[Literal[3]] = 7
+    modes: Sequence[Literal[0, 1, 2, 3]] = {ROTATE, MOVE, SCALE, ROTATESCALE, INVROTATE, INVMOVE, INVSCALE, INVROTATESCALE}
 
     def __init__(self):
         self.transform = ContainerTransform()
         self.mouseParam = MousePivotParams()
-        self.mode: Literal[0, 1, 2] = ContinuousTransform.MOVE
+        self.mode: Literal[0, 1, 2, 3, 4, 5, 6, 7] = ContinuousTransform.MOVE
         self.active: bool        = False
         self.obj: Union[ShapeI, BodyI] = None
 
@@ -57,3 +61,12 @@ class ContinuousTransform:
         if self.mode == ContinuousTransform.ROTATESCALE:
             self.obj.transform.rotate(self.mouseParam.dA, self.mouseParam.pivot)
             self.obj.transform.scale(self.mouseParam.dS, self.mouseParam.pivot)
+        if self.mode == ContinuousTransform.INVROTATE:
+            self.obj.transform.invRotate(self.mouseParam.dA, self.mouseParam.pivot)
+        if self.mode == ContinuousTransform.INVMOVE:
+            self.obj.transform.invMove(self.mouseParam.dEnd)
+        if self.mode == ContinuousTransform.INVSCALE:
+            self.obj.transform.invScale(self.mouseParam.dS, self.mouseParam.pivot)
+        if self.mode == ContinuousTransform.INVROTATESCALE:
+            self.obj.transform.invRotate(self.mouseParam.dA, self.mouseParam.pivot)
+            self.obj.transform.invScale(self.mouseParam.dS, self.mouseParam.pivot)

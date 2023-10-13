@@ -383,6 +383,22 @@ class ContainerTransform:
         self.objectScale *=  scale
         self.objectAnchor.unTV(pivot).sS(scale).tV(pivot)
 
+    def invRotate(self, angle: Angle, pivot: V2):
+        self.objectAngle.sub(angle.angle)
+        self.objectAnchor.unTV(pivot).unRA(angle).tV(pivot)
+
+    def invRotateScale(self, angle: Angle, scale:float, pivot: V2):
+        self.objectAngle.sub(angle.angle)
+        self.objectScale /=  scale
+        self.objectAnchor.unTV(pivot).unRA(angle).unSS(scale).tV(pivot)
+
+    def invMove(self, dV:V2) -> None:
+        self.objectAnchor.unTV(dV)
+
+    def invScale(self, scale:float, pivot:V2) -> None:
+        self.objectScale /=  scale
+        self.objectAnchor.unTV(pivot).unSS(scale).tV(pivot)
+
     def getMat(self) -> Mat:
         return self.mat.setFromAAS(self.objectAnchor, self.objectAngle, self.objectScale)
     

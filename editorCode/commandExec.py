@@ -1465,7 +1465,7 @@ class ComCancelTransform(Command):
 
 class ComStartTransform(CommandUndo):
 
-    def __init__(self, transform: ContinuousTransform, obj: Union[BodyI, ShapeI, TextureMapping], startPoint: V2, pivot: V2, mode: Literal[0,1,2,3]):
+    def __init__(self, transform: ContinuousTransform, obj: Union[BodyI, ShapeI, TextureMapping], startPoint: V2, pivot: V2, mode: Literal[0,1,2,3,4,5,6,7]):
         self.transform = transform
         
         self.newObj = obj

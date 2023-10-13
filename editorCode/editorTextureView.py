@@ -65,23 +65,32 @@ class EditorTextureView:
 
     def startMoveTransform(self):
         entity = EditorState.getInstance().getCurrentMapping()
+        view = self._selectView()
         if entity:
-            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.MOVE))
+            mode = ContinuousTransform.MOVE if view == self.textureView else ContinuousTransform.INVMOVE
+            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, mode))
 
     def startRotateTransform(self):
         entity = EditorState.getInstance().getCurrentMapping()
+        view = self._selectView()
         if entity:
-            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.ROTATE))
+            mode = ContinuousTransform.ROTATE if view == self.textureView else ContinuousTransform.INVROTATE
+            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, mode))
 
     def startScaleTransform(self):
         entity = EditorState.getInstance().getCurrentMapping()
+        view = self._selectView()
         if entity:
-            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.SCALE))
+            mode = ContinuousTransform.SCALE if view == self.textureView else ContinuousTransform.INVSCALE
+            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, mode))
+            
 
     def startRotateScaleTransform(self):
         entity = EditorState.getInstance().getCurrentMapping()
+        view = self._selectView()
         if entity:
-            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.ROTATESCALE))
+            mode = ContinuousTransform.ROTATESCALE if view == self.textureView else ContinuousTransform.INVROTATESCALE
+            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, mode))
 
     def cancelTransform(self):
         CommandExec.addCommand(ComCancelTransform(self.transform))
