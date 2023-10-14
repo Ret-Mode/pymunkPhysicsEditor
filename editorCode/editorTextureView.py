@@ -118,7 +118,8 @@ class EditorTextureView:
         state = EditorState.getInstance()
         buffer = ShapeBuffer.getInstance()
         textures = TextureContainerI.getInstance()
-        currentTexture = textures.getCurrent()
+        currentChannel = state.getCurrentMappingChannel()
+        currentTexture = textures.getTexture(currentChannel)
         texBuffer = TextureBuffer.getInstance()
 
         # draw mappings
@@ -162,9 +163,9 @@ class EditorTextureView:
         if currentTexture is not None:
 
             texBuffer.reset()
-            width, height = textures.getSize(currentTexture)
+            width, height = textures.getSize(currentChannel)
             texBuffer.addBaseQuad(width, height)
-            textures.use(currentTexture, 0)
+            textures.use(currentChannel, 0)
             self.texShader.update(texBuffer.verts, texBuffer.uvs, texBuffer.indices)
             self.texShader.draw()
 

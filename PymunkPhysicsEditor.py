@@ -23,6 +23,7 @@ from editorCode.guiTimeMeasure import TimeMeasure
 from editorCode.config import globalWindowSetup
 
 from editorCode.database import Database
+from editorCode.editorState import EditorState
 from editorCode.editorCursor import Cursor
 from editorCode.editorCamera import CursorCamera
 from editorCode.shapeBuffer import ShapeBuffer
@@ -143,9 +144,6 @@ class EditorView(arcade.View):
                 Database._instance.bodies = database.bodies
                 Database._instance.shapeList = database.shapeList
                 Database._instance.constraints = database.constraints
-                Database._instance.currentBody = database.currentBody
-                Database._instance.currentConstraint = database.currentConstraint
-                Database._instance.currentShape = database.currentShape
 
         view = self._getActiveView()
         if self.currentMode == 'BODY':

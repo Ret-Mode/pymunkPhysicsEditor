@@ -19,7 +19,7 @@ class EditorState:
         self.currentShape: ShapeI = None
         self.currentConstraint: ConstraintI = None
         self.currentMapping: TextureMapping = None
-        self.currentMappingChannel: int = -1
+        self.currentMappingChannel: int = 0
         self.database:Database = Database.getInstance()
 
     def setCurrentBodyAndShape(self, body:BodyI, shape:ShapeI):
@@ -120,12 +120,23 @@ class EditorState:
     def getCurrentConstraint(self) -> ConstraintI:
         return self.currentConstraint
     
+
     def getCurrentMapping(self) -> TextureMapping:
         return self.currentMapping
     
     def getCurrentMappingChannel(self) -> int:
         return self.currentMappingChannel
     
+    def setCurrentMappingChannel(self, channel:int) -> None:
+        if self.currentMappingChannel != channel:
+            self.currentMappingChannel = channel
+        if mappings := self.database.getAllMappingsOfChannel(channel):
+            if self.currentMapping not in self.database.getAllMappingsOfChannel(channel):
+                self.currentMapping = mappings[0]
+        else:
+            self.currentMapping = None
+
+
     def setCurrentMappingByLabel(self, label:str):
         mapping = self.database.getMappingByLabel(label)
         if mapping:
@@ -134,7 +145,6 @@ class EditorState:
                 self.currentMappingChannel = mapping.channel
         else:
             self.currentMapping = None
-            self.currentMappingChannel = None
 
     def setAnyMappingAsCurrent(self):
         if self.database.mappings:
@@ -142,7 +152,6 @@ class EditorState:
             self.currentMappingChannel = self.database.mappings[-1].channel
         else:
             self.currentMapping = None
-            self.currentMappingChannel = None
 
     def setAnyMappingFromChannelAsCurrent(self, channel:int):
         mappings = self.database.getAllMappingLabelsOfChannel(channel)
@@ -151,4 +160,3 @@ class EditorState:
             self.currentMappingChannel = channel
         else:
             self.currentMapping = None
-            self.currentMappingChannel = None

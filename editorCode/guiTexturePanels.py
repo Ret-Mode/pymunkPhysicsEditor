@@ -5,7 +5,7 @@ from typing import List, Callable, Tuple
 from .database import Database
 from .editorState import EditorState
 from .shapeInternals.editorBodyI import BodyI
-from .guiButtons import ScrollableLayout, TexturePreview
+from .guiButtons import ScrollableLayout, TexturePreview, TextUpdatableInput
 from .guiButtons import Button, Label
 from .guiPanels import ScrollableCBLabelPanel, ScrollableConstantPanel, EmptyPanel
 from .config import physicsSetup
@@ -13,6 +13,85 @@ from .editorFilesystem import EditorDir
 from .textureContainerI import TextureContainerI
 from .textureMapping import TextureMapping
 from .editorState import EditorState
+from .commandExec import ComSetMappingOffset, ComSetMappingSize, CommandExec
+
+class ChannelSelector(ScrollableCBLabelPanel):
+
+    def __init__(self, lrWidth='quartWidth', labelWidth='halfWidth') -> None:
+        super().__init__('0', lrWidth=lrWidth, labelWidth=labelWidth, cbNext=self.nextChannel, cbPrev=self.prevChannel)
+
+    def nextChannel(self):
+        container = TextureContainerI.getInstance()
+        currentChannel = int(self.label.getCurrent())
+        currentChannel = (currentChannel + 1) % container.elems
+        EditorState.getInstance().setCurrentMappingChannel(currentChannel)
+
+    def prevChannel(self):
+        container = TextureContainerI.getInstance()
+        currentChannel = int(self.label.getCurrent())
+        currentChannel = (currentChannel - 1 + container.elems) % container.elems
+        EditorState.getInstance().setCurrentMappingChannel(currentChannel)
+
+    def on_update(self, dt):
+        retVal = super().on_update(dt)
+        self.label.setLabel(str(EditorState.getInstance().getCurrentMappingChannel()))
+        return retVal
+
+
+class TextureSizeIntPanel(arcade.gui.UIBoxLayout):
+
+    def __init__(self, label='Size'):
+        super().__init__(vertical=False)
+        label = Label(label, 'thirdWidth', 'left')
+        self.xPanel = Label('0', 'thirdWidth', 'left')
+        self.yPanel = Label('0', 'thirdWidth', 'left')
+        
+        self.add(label)
+        self.add(self.xPanel)
+        self.add(self.yPanel)
+    
+    def setSize(self, size:Tuple[int]):
+        try:
+            self.xPanel.setText(str(size[0]))
+            self.yPanel.setText(str(size[1]))
+        except:
+            self.xPanel.setText('0')
+            self.yPanel.setText('0')
+
+
+class TextureSizeIntEditablePanel(arcade.gui.UIBoxLayout):
+
+    def __init__(self, label='Size', callback: Callable[[None], None]=None):
+        super().__init__(vertical=False)
+        label = Label(label, 'quartWidth', 'left')
+        self.xPanel = TextUpdatableInput('0', 'quartWidth')
+        self.yPanel = TextUpdatableInput('0', 'quartWidth')
+        self.confirm = Button('Set', 'quartWidth', callback)
+        
+        self.add(label)
+        self.add(self.xPanel)
+        self.add(self.yPanel)
+        self.add(self.confirm)
+    
+    def setSize(self, size:Tuple[int]):
+        try:
+            self.xPanel.setNewVal(str(size[0]))
+            self.yPanel.setNewVal(str(size[1]))
+        except:
+            self.xPanel.setNewVal('0')
+            self.yPanel.setNewVal('0')
+
+    def refresh(self):
+        self.xPanel.refresh()
+        self.yPanel.refresh()
+
+    def getSize(self) -> Tuple[int, int]:
+        size = None
+        try:
+            size = int(self.xPanel.getVal()), int(self.yPanel.getVal())
+        except:
+            pass
+        return size
 
 # FILE PANELS
 class SetTextureToChannelPanel(arcade.gui.UIBoxLayout):
@@ -22,7 +101,7 @@ class SetTextureToChannelPanel(arcade.gui.UIBoxLayout):
         row = arcade.gui.UIBoxLayout(vertical=False)
         self.assignTexToChannel = assignTexToChannel
         self.assignButton = Button('Assign to:', 'halfWidth', self.assign)
-        self.channels = ScrollableConstantPanel(list(map(str, [i for i in range(16)])), 'eightWidth', 'quartWidth')
+        self.channels = ChannelSelector('eightWidth', 'quartWidth') # ScrollableConstantPanel(list(map(str, [i for i in range(16)])), 'eightWidth', 'quartWidth')
         currentlyAssigned = Label('Currently assigned to this channel:', align='left')
         self.currentPath = Label('...nothing ', align='right')
         row.add(self.assignButton)
@@ -46,27 +125,6 @@ class SetTextureToChannelPanel(arcade.gui.UIBoxLayout):
         else:
             self.currentPath.setText('...nothing ')
         return retVal
-
-
-class TextureSizeIntPanel(arcade.gui.UIBoxLayout):
-
-    def __init__(self):
-        super().__init__(vertical=False)
-        label = Label('Size', 'thirdWidth', 'left')
-        self.xPanel = Label('0', 'thirdWidth', 'left')
-        self.yPanel = Label('0', 'thirdWidth', 'left')
-        
-        self.add(label)
-        self.add(self.xPanel)
-        self.add(self.yPanel)
-    
-    def setSize(self, size:Tuple[int]):
-        try:
-            self.xPanel.setText(str(size[0]))
-            self.yPanel.setText(str(size[1]))
-        except:
-            self.xPanel.setText('0')
-            self.yPanel.setText('0')
 
 
 class TextureListPanel(arcade.gui.UIBoxLayout):
@@ -144,21 +202,20 @@ class TextureSelectPanel(arcade.gui.UIBoxLayout):
 
 # MAPPING PANELS
 
-class MappingDetailsPanel(arcade.gui.UIBoxLayout):
-
-    def __init__(self) -> None:
-        super().__init__(vertical=True)
 
 
 class BodySelectPanel(arcade.gui.UIBoxLayout):
 
     def __init__(self):
         super().__init__(vertical=False)
-        label = Label("Body", width='quartWidth', align='left')
+        bodylabel = Label("Body", width='quartWidth', align='left')
         self.currentBody = ScrollableCBLabelPanel('--', lrWidth='quartWidth', labelWidth='quartWidth', cbNext=self.next, cbPrev=self.prev)
         self.currentMapping:TextureMapping = None
-        self.add(label)
+
+        
+        self.add(bodylabel)
         self.add(self.currentBody)
+
 
     def next(self):
         database = Database.getInstance()
@@ -209,6 +266,47 @@ class BodySelectPanel(arcade.gui.UIBoxLayout):
         return retVal
 
 
+class MappingDetailsPanel(arcade.gui.UIBoxLayout):
+
+    def __init__(self) -> None:
+        super().__init__(vertical=True)
+        self.currentMapping: TextureMapping = None
+        self.bodySelect:BodySelectPanel = BodySelectPanel()
+        self.realSize:TextureSizeIntPanel = TextureSizeIntPanel('Tex Size')
+        self.mapOffset:TextureSizeIntEditablePanel = TextureSizeIntEditablePanel('MOffst', self.updateOffset)
+        self.mapSize:TextureSizeIntEditablePanel = TextureSizeIntEditablePanel('MSize', self.updateSize)
+
+        self.add(self.bodySelect)
+        self.add(self.realSize)
+        self.add(self.mapOffset)
+        self.add(self.mapSize)
+
+
+    def updateOffset(self):
+        mapping = EditorState.getInstance().getCurrentMapping()
+        offset = self.mapOffset.getSize()
+        if mapping and offset:
+            CommandExec.addCommand(ComSetMappingOffset(mapping, offset))
+
+
+    def updateSize(self):
+        mapping = EditorState.getInstance().getCurrentMapping()
+        size = self.mapSize.getSize()
+        if mapping and size:
+            CommandExec.addCommand(ComSetMappingSize(mapping, size))
+
+
+    def on_update(self, dt):
+        retVal = super().on_update(dt)
+        mapping = EditorState.getInstance().getCurrentMapping()
+        if mapping and self.currentMapping != mapping:
+            self.realSize.setSize(mapping.getTextureSize())
+            self.mapOffset.setSize(mapping.getMappingOffset())
+            self.mapSize.setSize(mapping.getMappingSize())
+        self.currentMapping = mapping
+        return retVal
+
+
 class MappingsPanel(arcade.gui.UIBoxLayout):
 
     def __init__(self) -> None:
@@ -216,11 +314,11 @@ class MappingsPanel(arcade.gui.UIBoxLayout):
         
         upperLine = arcade.gui.UIBoxLayout(vertical = False)
         addButton = Button('Add', 'quartWidth', self.addMapping)
-        self.currentChannelLine = ScrollableCBLabelPanel('--', lrWidth='quartWidth', labelWidth='quartWidth', cbNext=self.next, cbPrev=self.prev)
+        self.currentChannelLine = ChannelSelector(lrWidth='quartWidth', labelWidth='quartWidth')
         self.currentChannelPath = Label('--', align='left')
         self.mappings = ScrollableLayout(max=8, callback=self.loadMapping)
 
-        self.mappingDetails = BodySelectPanel()
+        self.mappingDetails = MappingDetailsPanel()
         self.empty = EmptyPanel('Select mapping')
 
         self.currentPanel = self.empty
@@ -235,65 +333,36 @@ class MappingsPanel(arcade.gui.UIBoxLayout):
 
     def addMapping(self):
         textures = TextureContainerI.getInstance()
-        current = textures.getCurrent()
-        if current is not None:
+        current = EditorState.getInstance().getCurrentMappingChannel()
+        if textures.getTexture(current):
             database = Database.getInstance()
             mapping = database.createMapping(current, textures.getSize(current))
             database.addMapping(mapping)
-            #textures.addMapping(mapping)
-            self.mappings.setLabels(database.getAllMappingLabelsOfChannel(current))
 
-    def prev(self):
-        textures = TextureContainerI.getInstance()
-        textures.setPrev()
-        current = textures.getCurrent()
-        if current is not None:
-            database = Database.getInstance()
-            self.currentChannelLine.setLabel(str(current))
-            self.currentChannelPath.setText(textures.getCurrentPath())
-            self.mappings.setLabels(database.getAllMappingLabelsOfChannel(current))
-        else:
-            self.currentChannelLine.setLabel('--')
-            self.currentChannelPath.setText('--')
-            self.mappings.setLabels([])
-
-    def next(self):
-        textures = TextureContainerI.getInstance()
-        textures.setNext()
-        current = textures.getCurrent()
-        if current is not None:
-            database = Database.getInstance()
-            self.currentChannelLine.setLabel(str(current))
-            self.currentChannelPath.setText(textures.getCurrentPath())
-            self.mappings.setLabels(database.getAllMappingLabelsOfChannel(current))
-        else:
-            self.currentChannelLine.setLabel('--')
-            self.currentChannelPath.setText('--')
-            self.mappings.setLabels([])
-
-    def loadMapping(self, label):
-        textures = TextureContainerI.getInstance()
-        currentChannel = textures.getCurrent()
-        if currentChannel is not None:
-            state = EditorState.getInstance()
-            state.setCurrentMappingByLabel(label)
-            mapping = state.getCurrentMapping()
-            if mapping:
-                if self.currentPanel == self.empty:
-                    self.remove(self.currentPanel)
-                    self.currentPanel = self.mappingDetails
-                    self.add(self.currentPanel)
-            else:
-                if self.currentPanel == self.mappingDetails:
-                    self.remove(self.currentPanel)
-                    self.currentPanel = self.empty
-                    self.add(self.currentPanel)
+    def updateMappingDetails(self):
+        mapping = EditorState.getInstance().getCurrentMapping()
+        if mapping:
+            if self.currentPanel == self.empty:
+                self.remove(self.currentPanel)
+                self.currentPanel = self.mappingDetails
+                self.add(self.currentPanel)
         else:
             if self.currentPanel == self.mappingDetails:
                 self.remove(self.currentPanel)
                 self.currentPanel = self.empty
                 self.add(self.currentPanel)
 
+    def loadMapping(self, label):
+        state = EditorState.getInstance()
+        state.setCurrentMappingByLabel(label)
+ 
+    def on_update(self, dt):
+        retVal = super().on_update(dt)
+        channel = EditorState.getInstance().getCurrentMappingChannel() 
+        self.mappings.setLabels(Database.getInstance().getAllMappingLabelsOfChannel(channel))
+        self.updateMappingDetails()
+        return retVal
+    
 # end of MAPPING PANELS
 
 class TextureButtons(arcade.gui.UIBoxLayout):

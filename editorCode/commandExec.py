@@ -1,4 +1,4 @@
-from typing import List, Literal, Union
+from typing import List, Literal, Union, Tuple
 from .editorShapes import Container
 from .shapeInternals.editorShapeI import ShapeI
 from .shapeInternals.editorBodyI import BodyI
@@ -1449,6 +1449,42 @@ class ComApplyContainerScale(CommandUndo):
 
 
 
+# MAPPING Commands
+
+class ComSetMappingOffset(CommandUndo):
+
+    def __init__(self, mapping:TextureMapping, newOffset:Tuple[int, int]):
+        self.mapping = mapping
+        self.newOffset = newOffset
+        self.oldOffset = mapping.mappingOffset
+        self.oldSize = mapping.mappingSize
+
+    def execute(self):
+        self.mapping.setMappingOffset(self.newOffset)
+
+    def undo(self):
+        self.mapping.mappingOffset = self.oldOffset
+        self.mapping.mappingSize = self.oldSize
+
+
+class ComSetMappingSize(CommandUndo):
+
+    def __init__(self, mapping:TextureMapping, newSize:Tuple[int, int]):
+        self.mapping = mapping
+        self.newSize = newSize
+        self.oldOffset = mapping.mappingOffset
+        self.oldSize = mapping.mappingSize
+
+    def execute(self):
+        self.mapping.setMappingSize(self.newSize)
+
+    def undo(self):
+        self.mapping.mappingOffset = self.oldOffset
+        self.mapping.mappingSize = self.oldSize
+
+
+# END OF MAPPING commands
+
 # begin of TRANSFORM COMMANDS
 class ComCancelTransform(Command):
 
@@ -1465,7 +1501,8 @@ class ComCancelTransform(Command):
 
 class ComStartTransform(CommandUndo):
 
-    def __init__(self, transform: ContinuousTransform, obj: Union[BodyI, ShapeI, TextureMapping], startPoint: V2, pivot: V2, mode: Literal[0,1,2,3,4,5,6,7]):
+    def __init__(self, transform: ContinuousTransform, obj: Union[BodyI, ShapeI, TextureMapping], 
+                 startPoint: V2, pivot: V2, mode: Literal[0,1,2,3,4,5,6,7]):
         self.transform = transform
         
         self.newObj = obj

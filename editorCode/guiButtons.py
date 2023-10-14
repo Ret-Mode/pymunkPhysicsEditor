@@ -146,9 +146,11 @@ class ScrollableLayout(arcade.gui.UIBoxLayout):
                 self.recalc()  
 
     def setLabels(self, labels: List[str]) -> None:
-        self.labels = labels
-        self.current = 0
-        self.recalc()
+        if labels != self.labels:
+            print("Updated labels")
+            self.labels = labels
+            self.current = 0
+            self.recalc()
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, arcade.gui.events.UIMouseScrollEvent):
@@ -331,6 +333,32 @@ class TextInput(arcade.gui.UIInputText):
                         width=editorButtonSetup[width], 
                         height=editorButtonSetup['height'])
         self.caret.color = (255,255,255)
+
+
+class TextUpdatableInput(arcade.gui.UIInputText):
+
+    def __init__(self, text: str, width: str = 'width'):
+        super().__init__(text=text, 
+                        font_size=editorButtonSetup['style']['font_size'],
+                        text_color=(255, 255, 255, 255),
+                        width=editorButtonSetup[width], 
+                        height=editorButtonSetup['height'])
+        self.caret.color = (255,255,255)
+        self.oldVal = text
+
+    def refresh(self):
+        if self.text != self.oldVal:
+            self.text = self.oldVal
+            self.trigger_full_render()
+
+    def setNewVal(self, val:str):
+        if val != self.oldVal or val != self.text:
+            self.text = val
+            self.oldVal = val
+            self.trigger_full_render()
+
+    def getVal(self):
+        return self.text
 
 
 class TexturePreview(arcade.gui.UITextureButton):
