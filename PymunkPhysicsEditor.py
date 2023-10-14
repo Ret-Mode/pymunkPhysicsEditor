@@ -197,6 +197,10 @@ class EditorView(arcade.View):
                 view.startScaleTransform()
             elif key == ord('q'):
                 view.startRotateScaleTransform()
+            elif key == ord('z'):
+                view.undo()
+            elif key == ord('y'):
+                view.redo()
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """

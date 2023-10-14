@@ -155,7 +155,6 @@ class EditorTextureView:
         self.bodyShader.draw()
         # draw texture channel
 
-        context = GLContextI.getInstance()
         context.setProjectionAndViewportFromCamera(self.textureView)
 
         self.gridShader.drawGrid(self.textureView)
@@ -176,3 +175,9 @@ class EditorTextureView:
         buffer.addHelperPoint(self.pivot.local)
         self.bodyShader.update(buffer.verts, buffer.colors, buffer.indices)
         self.bodyShader.draw()
+
+    def undo(self):
+        CommandExec.undo()
+
+    def redo(self):
+        CommandExec.redo()
