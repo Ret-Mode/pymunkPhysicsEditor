@@ -484,6 +484,16 @@ class ShapeBuffer:
         self.addPointXY(armXFinal[0], armXFinal[1], pointConfig['transformColor'], pointConfig['pointHalfWH'] * self.drawScale)
         self.addPointXY(armYFinal[0], armYFinal[1], pointConfig['transformColor'], pointConfig['pointHalfWH'] * self.drawScale)
 
+    def addEyeTransform(self):
+        centerFinal = (0.0, 0.0)
+        armXFinal = (1.0, 0.0)
+        armYFinal = (0.0, 1.0)
+        self.addEdgeXY(centerFinal[0], centerFinal[1], armXFinal[0], armXFinal[1], pointConfig['transformColor'])
+        self.addEdgeXY(centerFinal[0], centerFinal[1], armYFinal[0], armYFinal[1], pointConfig['transformColor'])
+        self.addPointXY(centerFinal[0], centerFinal[1], pointConfig['transformColor'], pointConfig['pointHalfWH'] * self.drawScale)
+        self.addPointXY(armXFinal[0], armXFinal[1], pointConfig['transformColor'], pointConfig['pointHalfWH'] * self.drawScale)
+        self.addPointXY(armYFinal[0], armYFinal[1], pointConfig['transformColor'], pointConfig['pointHalfWH'] * self.drawScale)
+
     def addInvTransform(self, transform:ContainerTransform):
         mat = transform.getInvMat()
         center = (0.0, 0.0)

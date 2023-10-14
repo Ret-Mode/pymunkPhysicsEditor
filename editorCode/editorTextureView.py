@@ -110,7 +110,8 @@ class EditorTextureView:
         
         mapping = state.getCurrentMapping()
         if mapping and mapping.body:
-            mapping.update()
+            mapping.body.updateEye()
+            mapping.updateShapeView()
 
 
     def draw(self):
@@ -144,7 +145,7 @@ class EditorTextureView:
             buffer.addBBox(currentBody.box.center.final, currentBody.box.halfWH.final, True, False)
             currentBody.bufferData(buffer)
             buffer.addTextureOutline(mapping.mappingRect)
-            buffer.addTransform(mapping.body.transform)
+            buffer.addEyeTransform()
             buffer.addCenterOfGravity(currentBody.physics.cog.final, True)
 
         

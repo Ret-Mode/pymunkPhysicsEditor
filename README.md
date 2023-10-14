@@ -9,17 +9,18 @@ Missing features (ordered somewhat as they are planned to be developed):
 - [x] Corrections of the draw call chain
 - [x] Adding background grid
 - [x] Generate grid on GPU as it was the slowest action to perform
-- [ ] Texture mapping:
+- [x] Texture mapping:
    - [x] Add file select panel restricted to game directory
    - [x] Add texture view
    - [x] Add mapping of textures to bodies
    - [x] Add texture shader
-   - [ ] Add texture utils
-- [ ] Lock mouse on transforms
-- [ ] Add transforms to constraints and texture views
+- [x] Add transforms to texture views
+- [ ] Add texture utils
 - [ ] Supporting all parameters of pymunk objects
-- [ ] Snapping to points
 - [ ] Saving/loading (JSON)
+- [ ] Snapping to points
+- [ ] Lock mouse on transforms
+- [ ] Add transforms to constraints view
 - [ ] Support for convex polygons
 - [ ] Support skewing
 - [ ] Snapping to edges

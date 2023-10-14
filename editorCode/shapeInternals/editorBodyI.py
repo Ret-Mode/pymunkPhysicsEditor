@@ -32,6 +32,9 @@ class BodyI:
     def updatePos(self, transform:Mat):
         raise NotImplementedError
 
+    def updateEye(self):
+        self.updatePos(Mat.Eye())
+
     def getJSONDict(self, parent:dict):
         raise NotImplementedError
 

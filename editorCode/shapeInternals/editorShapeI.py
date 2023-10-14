@@ -36,6 +36,9 @@ class ShapeI:
         self.internal.updatePos(transform)
         self.internal.getBounds(self.box)
 
+    def updateEye(self):
+        self.internal.updatePos(Mat.Eye())
+        self.internal.getBounds(self.box)
 
     def draw(self):
         self.internal.draw()
