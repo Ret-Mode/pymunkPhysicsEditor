@@ -1,6 +1,5 @@
-from typing import List
+from typing import List, Tuple
 import math
-from typing import List
 
 from .config import pointConfig
 from .editorTypes import V2, EditorPoint, UnboundAngle, ContainerTransform
@@ -469,6 +468,13 @@ class ShapeBuffer:
         self.colors += 4 * color
         self.indices += [ind, ind +1, ind+2, ind+3]
         self.currentIndex += 4
+
+    def addBaseUV(self, uvs:List[float]):
+        self.addEdgeXY(uvs[0]*2-1, uvs[1]*2-1, uvs[2]*2-1, uvs[3]*2-1, pointConfig['transformColor'])
+        self.addEdgeXY(uvs[2]*2-1, uvs[3]*2-1, uvs[6]*2-1, uvs[7]*2-1, pointConfig['transformColor'])
+        self.addEdgeXY(uvs[6]*2-1, uvs[7]*2-1, uvs[4]*2-1, uvs[5]*2-1, pointConfig['transformColor'])
+        self.addEdgeXY(uvs[4]*2-1, uvs[5]*2-1, uvs[0]*2-1, uvs[1]*2-1, pointConfig['transformColor'])
+        #self.addPointXY(x, y, pointConfig['transformColor'], pointConfig['pointHalfWH'] * self.drawScale)
 
     def addTransform(self, transform:ContainerTransform):
         mat = transform.getMat()

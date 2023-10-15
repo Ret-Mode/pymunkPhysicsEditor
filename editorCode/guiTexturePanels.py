@@ -195,7 +195,7 @@ class TextureSelectPanel(arcade.gui.UIBoxLayout):
             container.load(self.preview.originalFilePath, toChannel, size)
             database = Database.getInstance()
             for mapping in database.getAllMappingsOfChannel(toChannel):
-                mapping.initialize(size)
+                mapping.reloadTexture(size)
 
 # end of FILE PANELS
 
@@ -305,6 +305,14 @@ class MappingDetailsPanel(arcade.gui.UIBoxLayout):
             self.mapSize.setSize(mapping.getMappingSize())
         self.currentMapping = mapping
         return retVal
+    
+    def updateAll(self):
+        mapping = EditorState.getInstance().getCurrentMapping()
+        if mapping:
+            self.realSize.setSize(mapping.getTextureSize())
+            self.mapOffset.setSize(mapping.getMappingOffset())
+            self.mapSize.setSize(mapping.getMappingSize())
+        self.currentMapping = mapping
 
 
 class MappingsPanel(arcade.gui.UIBoxLayout):
@@ -358,10 +366,17 @@ class MappingsPanel(arcade.gui.UIBoxLayout):
  
     def on_update(self, dt):
         retVal = super().on_update(dt)
-        channel = EditorState.getInstance().getCurrentMappingChannel() 
+        channel = EditorState.getInstance().getCurrentMappingChannel()
         self.mappings.setLabels(Database.getInstance().getAllMappingLabelsOfChannel(channel))
+        path = TextureContainerI.getInstance().getPath(channel)
+        self.currentChannelPath.setText(path if path else '--')
         self.updateMappingDetails()
         return retVal
+    
+    def updateAll(self):
+        self.updateMappingDetails()
+        if self.currentPanel == self.mappingDetails:
+            self.mappingDetails.updateAll()
     
 # end of MAPPING PANELS
 
@@ -392,6 +407,7 @@ class TextureButtons(arcade.gui.UIBoxLayout):
         if self.current != self.mappingPanel:
             self.remove(self.current)
             self.current = self.mappingPanel
+            self.current.updateAll()
             self.add(self.current)
     
     def on_update(self, dt):

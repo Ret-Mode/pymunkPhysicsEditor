@@ -1,7 +1,7 @@
 
 from .editorCursor import Cursor
 from .editorCamera import EditorCamera
-from .editorTypes import EditorPoint
+from .editorTypes import EditorPoint, V2, Mat
 from .editorViewTransform import ContinuousTransform
 
 from .shapeBuffer import ShapeBuffer
@@ -11,7 +11,6 @@ from .lineShader import LineDraw
 from .gridShader import GridDraw
 from .glContext import GLContextI
 
-from .database import Database
 from .editorState import EditorState
 from .commandExec import CommandExec
 from .commandExec import ComResizeView, ComMoveCursor, ComMoveView, ComScaleView, ComSetPivot
@@ -26,11 +25,14 @@ class EditorTextureView:
         self.textureView = EditorCamera(width//2, height, width//2)
         self.cursor = cursor
         self.pivot = EditorPoint()
+        self.texPivot = V2()
+        self.texCursor = V2()
 
         self.texShader = TextureDraw()
         self.gridShader = GridDraw()
         self.bodyShader = LineDraw()
         self.transform = ContinuousTransform()
+        self.invTransformMat = Mat()
 
 
     def _selectView(self):
@@ -66,31 +68,43 @@ class EditorTextureView:
     def startMoveTransform(self):
         entity = EditorState.getInstance().getCurrentMapping()
         view = self._selectView()
-        if entity:
+        if entity and view == self.viewOffset:
+            self.invTransformMat.set(entity.transform.getMat())
+            self.invTransformMat.mulV(self.pivot.local, self.texPivot)
+            self.invTransformMat.mulV(self.cursor.viewCoords, self.texCursor)
             mode = ContinuousTransform.MOVE if view == self.textureView else ContinuousTransform.INVMOVE
-            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, mode))
+            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.texCursor, self.texPivot, mode))
 
     def startRotateTransform(self):
         entity = EditorState.getInstance().getCurrentMapping()
         view = self._selectView()
-        if entity:
+        if entity and view == self.viewOffset:
+            self.invTransformMat.set(entity.transform.getMat())
+            self.invTransformMat.mulV(self.pivot.local, self.texPivot)
+            self.invTransformMat.mulV(self.cursor.viewCoords, self.texCursor)
             mode = ContinuousTransform.ROTATE if view == self.textureView else ContinuousTransform.INVROTATE
-            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, mode))
+            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.texCursor, self.texPivot, mode))
 
     def startScaleTransform(self):
         entity = EditorState.getInstance().getCurrentMapping()
         view = self._selectView()
-        if entity:
+        if entity and view == self.viewOffset:
+            self.invTransformMat.set(entity.transform.getMat())
+            self.invTransformMat.mulV(self.pivot.local, self.texPivot)
+            self.invTransformMat.mulV(self.cursor.viewCoords, self.texCursor)
             mode = ContinuousTransform.SCALE if view == self.textureView else ContinuousTransform.INVSCALE
-            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, mode))
+            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.texCursor, self.texPivot, mode))
             
 
     def startRotateScaleTransform(self):
         entity = EditorState.getInstance().getCurrentMapping()
         view = self._selectView()
-        if entity:
+        if entity and view == self.viewOffset:
+            self.invTransformMat.set(entity.transform.getMat())
+            self.invTransformMat.mulV(self.pivot.local, self.texPivot)
+            self.invTransformMat.mulV(self.cursor.viewCoords, self.texCursor)
             mode = ContinuousTransform.ROTATESCALE if view == self.textureView else ContinuousTransform.INVROTATESCALE
-            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.cursor.viewCoords, self.pivot.local, mode))
+            CommandExec.addCommand(ComStartTransform(self.transform, entity, self.texCursor, self.texPivot, mode))
 
     def cancelTransform(self):
         CommandExec.addCommand(ComCancelTransform(self.transform))
@@ -105,10 +119,12 @@ class EditorTextureView:
         CommandExec.process()
         state = EditorState.getInstance()
 
-        if self.transform.active:
-            self.transform.update(self.cursor.viewCoords)
-        
         mapping = state.getCurrentMapping()
+
+        if self.transform.active:
+            self.invTransformMat.mulV(self.cursor.viewCoords, self.texCursor)
+            self.transform.update(self.texCursor)
+        
         if mapping and mapping.body:
             mapping.body.updateEye()
             mapping.updateShapeView()
@@ -157,7 +173,7 @@ class EditorTextureView:
 
         context.setProjectionAndViewportFromCamera(self.textureView)
 
-        self.gridShader.drawGrid(self.textureView)
+        #self.gridShader.drawGrid(self.textureView)
 
         if currentTexture is not None:
 
@@ -171,8 +187,10 @@ class EditorTextureView:
         buffer.reset()
         buffer.drawScale = self.textureView.scale
         if mapping and mapping.body:
+            #buffer.addTextureOutline(mapping.mappingRect)
+            buffer.addBaseUV(mapping.getMappingUvs())
             buffer.addTransform(mapping.transform)
-        buffer.addHelperPoint(self.pivot.local)
+        #buffer.addHelperPoint(self.texPivot)
         self.bodyShader.update(buffer.verts, buffer.colors, buffer.indices)
         self.bodyShader.draw()
 
