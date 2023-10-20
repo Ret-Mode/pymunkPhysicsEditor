@@ -13,7 +13,7 @@ from .glContext import GLContextI
 
 from .editorState import EditorState
 from .commandExec import CommandExec
-from .commandExec import ComResizeView, ComMoveCursor, ComMoveView, ComScaleView, ComSetPivot
+from .commandExec import ComResizeView, ComMoveCursor, ComMoveView, ComScaleView, ComSetPivot, ComSetMappingAnchor
 from .commandExec import ComStartTransform, ComCancelTransform,ComApplyTransform, ComSetMappingFromSelection
 
 from .textureContainerI import TextureContainerI
@@ -56,7 +56,12 @@ class EditorTextureView:
         return None
 
     def setHelperPoint(self):
-        CommandExec.addCommand(ComSetPivot(self.pivot.local, self.cursor.viewCoords))
+        state = EditorState.getInstance()
+        mapping = state.getCurrentMapping()
+        if self._selectView() == self.textureView and mapping:
+            CommandExec.addCommand(ComSetMappingAnchor(mapping, self.cursor.viewCoords))
+        else:
+            CommandExec.addCommand(ComSetPivot(self.pivot.local, self.cursor.viewCoords))
 
     def resize(self, x:float, y:float):
         CommandExec.addCommand(ComResizeView(self.viewOffset, x//2, y))
@@ -144,6 +149,7 @@ class EditorTextureView:
         if mapping and mapping.body:
             mapping.body.updateEye()
             mapping.updateShapeView()
+            mapping.recalcCog()
 
 
     def draw(self):
@@ -210,6 +216,7 @@ class EditorTextureView:
                 buffer.addBaseUV(mapping.getMappingUvs(), width, height)
             if self.selection.isActive():
                 buffer.addSelection(self.selection.start, self.selection.end)
+            buffer.addCenterOfGravity(mapping.cog, False)
         #buffer.addHelperPoint(self.texPivot)
         self.bodyShader.update(buffer.verts, buffer.colors, buffer.indices)
         self.bodyShader.draw()

@@ -12,10 +12,11 @@ class TextureMapping:
         self.transform = ContainerTransform()
         self.mappingRect: List[EditorPoint] = [EditorPoint() for i in range(4)]
         self.textureSize: List[int] = None
-        self.textureMid: List[float] = None
+        self.anchor: List[float] = None
         self.mappingSize: List[int] = None
         self.mappingOffset: List[int] = None
         self.uv: List[V2] = [V2() for i in range(4)]
+        self.cog:V2 = V2()
         self.initialize(textureSize)
 
     def updateUVs(self):
@@ -29,10 +30,14 @@ class TextureMapping:
         self.uv[2].setFromXY(offX/self.textureSize[0], endY/self.textureSize[1])
         self.uv[3].setFromXY(endX/self.textureSize[0], endY/self.textureSize[1])
 
-        self.mappingRect[0].local.setFromXY(offX/pixelPerMeter-self.textureMid[0],offY/pixelPerMeter-self.textureMid[1])
-        self.mappingRect[1].local.setFromXY(endX/pixelPerMeter-self.textureMid[0],offY/pixelPerMeter-self.textureMid[1])
-        self.mappingRect[2].local.setFromXY(offX/pixelPerMeter-self.textureMid[0],endY/pixelPerMeter-self.textureMid[1])
-        self.mappingRect[3].local.setFromXY(endX/pixelPerMeter-self.textureMid[0],endY/pixelPerMeter-self.textureMid[1])
+        self.mappingRect[0].local.setFromXY((offX-self.anchor[0])/pixelPerMeter,(offY-self.anchor[1])/pixelPerMeter)
+        self.mappingRect[1].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(offY-self.anchor[1])/pixelPerMeter)
+        self.mappingRect[2].local.setFromXY((offX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
+        self.mappingRect[3].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
+
+    def setAnchor(self, x:float, y:float):
+        self.anchor = [x, y]
+        self.updateUVs()
 
     def setMappingFromSelection(self, selection:Selection):
         minX, minY = int(max(min(selection.start.x, selection.end.x),0.0)), int(max(min(selection.start.y, selection.end.y), 0.0))
@@ -104,9 +109,8 @@ class TextureMapping:
         return (0,0)
     
     def initialize(self, textureSize: Tuple[int]):
-        pixelPerMeter = physicsSetup['pixelPerMeter']
         self.textureSize = list(textureSize)
-        self.textureMid: List[float] = [textureSize[0]/(2.0*pixelPerMeter), textureSize[1]/(2.0*pixelPerMeter)]
+        self.anchor: List[float] = [textureSize[0]/(2.0), textureSize[1]/(2.0)]
         self.mappingOffset = [0,0]
         self.mappingSize = list(textureSize)
         self.updateUVs()
@@ -118,7 +122,7 @@ class TextureMapping:
         oldMappingSize = self.mappingSize
 
         self.textureSize = list(textureSize)
-        self.textureMid: List[float] = [textureSize[0]/(2.0*pixelPerMeter), textureSize[1]/(2.0*pixelPerMeter)]
+        self.anchor: List[float] = [textureSize[0]/(2.0), textureSize[1]/(2.0)]
         
         newOffX = int(float(textureSize[0] * oldMappingOffset[0]) / oldTextureSize[0])
         newOffY = int(float(textureSize[1] * oldMappingOffset[1]) / oldTextureSize[1])
@@ -146,6 +150,14 @@ class TextureMapping:
             mappingBaseMat = self.transform.getInvMat()
             for point in self.mappingRect:
                 mappingBaseMat.mulV(point.local, point.final)
+
+    def recalcCog(self):
+        if self.body:
+            self.cog.sV(self.body.physics.cog.final).sS(physicsSetup['pixelPerMeter']).tD(self.anchor[0], self.anchor[1])
+            #bodyInvMat = self.body.transform.getInvMat()
+            bodyInvMat = self.transform.getMat()
+            bodyInvMat.mulV(self.cog, self.cog)
+            #self.cog.sS(physicsSetup['pixelPerMeter']).tD(self.anchor[0], self.anchor[1])
 
     def getMappingPos(self) -> List[float]:
         result = []

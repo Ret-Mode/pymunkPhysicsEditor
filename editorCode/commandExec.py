@@ -1498,6 +1498,20 @@ class ComSetMappingFromSelection(CommandUndo):
         self.mapping.mappingOffset = self.oldOffset
         self.mapping.mappingSize = self.oldSize
 
+
+class ComSetMappingAnchor(CommandUndo):
+
+    def __init__(self, mapping:TextureMapping, anchor:V2):
+        self.mapping = mapping
+        self.newAnchor = anchor
+        self.oldAnchor = mapping.anchor
+
+    def execute(self):
+        self.mapping.setAnchor(self.newAnchor.x, self.newAnchor.y)
+
+    def undo(self):
+        self.mapping.setAnchor(self.oldAnchor[0], self.oldAnchor[1])
+
 # END OF MAPPING commands
 
 # begin of TRANSFORM COMMANDS
