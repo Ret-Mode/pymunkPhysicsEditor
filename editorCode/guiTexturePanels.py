@@ -4,6 +4,7 @@ from typing import List, Callable, Tuple
 
 from .database import Database
 from .editorState import EditorState
+from .editorTextureView import EditorTextureView
 from .shapeInternals.editorBodyI import BodyI
 from .guiButtons import ScrollableLayout, TexturePreview, TextUpdatableInput
 from .guiButtons import Button, Label
@@ -176,6 +177,7 @@ class TextureSelectPanel(arcade.gui.UIBoxLayout):
         self.sizePanel = TextureSizeIntPanel()
         self.assignChannel = SetTextureToChannelPanel(self.assignToChannel)
         self.preview = TexturePreview()
+        self.view: EditorTextureView = None
 
         self.rows[0].add(self.textureListPanel)
         self.rows[1].add(self.sizePanel)
@@ -196,6 +198,11 @@ class TextureSelectPanel(arcade.gui.UIBoxLayout):
             database = Database.getInstance()
             for mapping in database.getAllMappingsOfChannel(toChannel):
                 mapping.reloadTexture(size)
+            # update view
+            if self.view:
+                self.view.textureView.fitToTexture(size[0], size[1])
+            
+
 
 # end of FILE PANELS
 
@@ -414,3 +421,6 @@ class TextureButtons(arcade.gui.UIBoxLayout):
         retVal = super().on_update(dt)
         
         return retVal
+
+    def setCommandPipeline(self, view: EditorTextureView):
+        self.texturePanel.view = view

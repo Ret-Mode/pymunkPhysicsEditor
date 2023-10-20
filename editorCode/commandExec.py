@@ -4,7 +4,7 @@ from .shapeInternals.editorShapeI import ShapeI
 from .shapeInternals.editorBodyI import BodyI
 from .constraintInternals.editorConstraintI import ConstraintI
 from .textureMapping import TextureMapping
-from .editorTypes import V2, Angle, EditorPoint
+from .editorTypes import V2, Angle, EditorPoint, Selection
 from .editorCursor import Cursor
 from .database import Database
 from .editorState import EditorState
@@ -1482,6 +1482,21 @@ class ComSetMappingSize(CommandUndo):
         self.mapping.mappingOffset = self.oldOffset
         self.mapping.mappingSize = self.oldSize
 
+
+class ComSetMappingFromSelection(CommandUndo):
+
+    def __init__(self, mapping:TextureMapping, selection:Selection):
+        self.mapping = mapping
+        self.selection = selection
+        self.oldOffset = mapping.mappingOffset
+        self.oldSize = mapping.mappingSize
+
+    def execute(self):
+        self.mapping.setMappingFromSelection(self.selection)
+
+    def undo(self):
+        self.mapping.mappingOffset = self.oldOffset
+        self.mapping.mappingSize = self.oldSize
 
 # END OF MAPPING commands
 

@@ -93,6 +93,7 @@ class EditorView(arcade.View):
         EditorView.modes['BODY'].setCommandPipeline(self.editorBodyView)
         EditorView.modes['SHAPE'].setCommandPipeline(self.editorShapeView)
         EditorView.modes['CNSTRNT'].setCommandPipeline(self.editorConstraintView)
+        EditorView.modes['TEX'].setCommandPipeline(self.editorTextureView)
 
         self.currentMode = 'BODY'
         self.buttonPanel.add(EditorView.modes[self.currentMode]) 
@@ -254,11 +255,16 @@ class EditorView(arcade.View):
                 else:
                     if view.transform.active:
                         view.applyTransform()
+                    else:
+                        view.startSelection()
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
        #if x < self.editableWidth:
         if button == arcade.MOUSE_BUTTON_MIDDLE:
             self.midbtn = False
+        if button == arcade.MOUSE_BUTTON_LEFT:
+            if self.currentMode == 'TEX':
+                self.editorTextureView.stopSelection()
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         view = self._getActiveView()

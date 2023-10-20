@@ -476,3 +476,25 @@ class CenterOfGravity:
 
     def get(self) -> V2:
         return self.final
+
+
+class Selection:
+
+    def __init__(self):
+        self.start:V2 = V2()
+        self.end:V2 = V2()
+        self.active: bool = False
+
+    def isActive(self) -> bool:
+        return self.active
+    
+    def begin(self, point:V2):
+        self.start.setFromV(point)
+        self.end.setFromV(point)
+        self.active = True
+
+    def update(self, point:V2):
+        self.end.setFromV(point)
+
+    def stop(self):
+        self.active = False

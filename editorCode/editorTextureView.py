@@ -1,7 +1,7 @@
 
 from .editorCursor import Cursor
 from .editorCamera import EditorCamera
-from .editorTypes import EditorPoint, V2, Mat
+from .editorTypes import EditorPoint, V2, Mat, Selection
 from .editorViewTransform import ContinuousTransform
 
 from .shapeBuffer import ShapeBuffer
@@ -14,7 +14,7 @@ from .glContext import GLContextI
 from .editorState import EditorState
 from .commandExec import CommandExec
 from .commandExec import ComResizeView, ComMoveCursor, ComMoveView, ComScaleView, ComSetPivot
-from .commandExec import ComStartTransform, ComCancelTransform,ComApplyTransform
+from .commandExec import ComStartTransform, ComCancelTransform,ComApplyTransform, ComSetMappingFromSelection
 
 from .textureContainerI import TextureContainerI
 
@@ -33,7 +33,20 @@ class EditorTextureView:
         self.bodyShader = LineDraw()
         self.transform = ContinuousTransform()
         self.invTransformMat = Mat()
+        self.selection = Selection()
 
+
+    def startSelection(self):
+        if self._selectView() == self.textureView and not self.selection.isActive():
+            self.selection.begin(self.cursor.viewCoords)
+
+    def stopSelection(self):
+        self.selection.stop()
+        state = EditorState.getInstance()
+        mapping = state.getCurrentMapping()
+        if mapping:
+            CommandExec.addCommand(ComSetMappingFromSelection(mapping, self.selection))
+        
 
     def _selectView(self):
         if self.viewOffset.coordsInView(self.cursor.screenCoords.x, self.cursor.screenCoords.y):
@@ -121,6 +134,9 @@ class EditorTextureView:
 
         mapping = state.getCurrentMapping()
 
+        if self.selection.isActive():
+            self.selection.update(self.cursor.viewCoords)
+
         if self.transform.active:
             self.invTransformMat.mulV(self.cursor.viewCoords, self.texCursor)
             self.transform.update(self.texCursor)
@@ -188,8 +204,12 @@ class EditorTextureView:
         buffer.drawScale = self.textureView.scale
         if mapping and mapping.body:
             #buffer.addTextureOutline(mapping.mappingRect)
-            buffer.addBaseUV(mapping.getMappingUvs())
-            buffer.addTransform(mapping.transform)
+            width, height = textures.getSize(currentChannel)
+            if width and height:
+                buffer.addBaseWH(width, height)
+                buffer.addBaseUV(mapping.getMappingUvs(), width, height)
+            if self.selection.isActive():
+                buffer.addSelection(self.selection.start, self.selection.end)
         #buffer.addHelperPoint(self.texPivot)
         self.bodyShader.update(buffer.verts, buffer.colors, buffer.indices)
         self.bodyShader.draw()

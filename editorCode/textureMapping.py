@@ -1,5 +1,5 @@
 from .shapeInternals.editorBodyI import BodyI
-from .editorTypes import V2, ContainerTransform, EditorPoint
+from .editorTypes import V2, ContainerTransform, EditorPoint, Selection
 from .config import physicsSetup
 from typing import List, Tuple
 
@@ -33,6 +33,16 @@ class TextureMapping:
         self.mappingRect[1].local.setFromXY(endX/pixelPerMeter-self.textureMid[0],offY/pixelPerMeter-self.textureMid[1])
         self.mappingRect[2].local.setFromXY(offX/pixelPerMeter-self.textureMid[0],endY/pixelPerMeter-self.textureMid[1])
         self.mappingRect[3].local.setFromXY(endX/pixelPerMeter-self.textureMid[0],endY/pixelPerMeter-self.textureMid[1])
+
+    def setMappingFromSelection(self, selection:Selection):
+        minX, minY = int(max(min(selection.start.x, selection.end.x),0.0)), int(max(min(selection.start.y, selection.end.y), 0.0))
+        maxX, maxY = int(min(max(selection.start.x, selection.end.x)+1, self.textureSize[0])), int(min(max(selection.start.y, selection.end.y)+1, self.textureSize[1]))
+        if minX < maxX and minY < maxY:
+            self.mappingOffset[0] = minX
+            self.mappingOffset[1] = minY
+            self.mappingSize[0] = maxX - minX   
+            self.mappingSize[1] = maxY - minY 
+            self.updateUVs()
 
     def setMappingOffset(self, newOffset:Tuple[int, int]):
         offX = max(min(newOffset[0], self.textureSize[0] - 1), 0)

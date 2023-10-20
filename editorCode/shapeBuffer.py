@@ -469,12 +469,25 @@ class ShapeBuffer:
         self.indices += [ind, ind +1, ind+2, ind+3]
         self.currentIndex += 4
 
-    def addBaseUV(self, uvs:List[float]):
-        self.addEdgeXY(uvs[0]*2-1, uvs[1]*2-1, uvs[2]*2-1, uvs[3]*2-1, pointConfig['transformColor'])
-        self.addEdgeXY(uvs[2]*2-1, uvs[3]*2-1, uvs[6]*2-1, uvs[7]*2-1, pointConfig['transformColor'])
-        self.addEdgeXY(uvs[6]*2-1, uvs[7]*2-1, uvs[4]*2-1, uvs[5]*2-1, pointConfig['transformColor'])
-        self.addEdgeXY(uvs[4]*2-1, uvs[5]*2-1, uvs[0]*2-1, uvs[1]*2-1, pointConfig['transformColor'])
+    def addBaseUV(self, uvs:List[float], width:int, height:int):
+        self.addEdgeXY(uvs[0]*width, uvs[1]*height, uvs[2]*width, uvs[3]*height, pointConfig['transformColor'])
+        self.addEdgeXY(uvs[2]*width, uvs[3]*height, uvs[6]*width, uvs[7]*height, pointConfig['transformColor'])
+        self.addEdgeXY(uvs[6]*width, uvs[7]*height, uvs[4]*width, uvs[5]*height, pointConfig['transformColor'])
+        self.addEdgeXY(uvs[4]*width, uvs[5]*height, uvs[0]*width, uvs[1]*height, pointConfig['transformColor'])
         #self.addPointXY(x, y, pointConfig['transformColor'], pointConfig['pointHalfWH'] * self.drawScale)
+
+    def addBaseWH(self, width:int, height:int):
+        self.addEdgeXY(0.0, 0.0, width, 0.0, pointConfig['inactivePointColor'])
+        self.addEdgeXY(width, 0.0, width, height, pointConfig['inactivePointColor'])
+        self.addEdgeXY(width, height, 0.0, height, pointConfig['inactivePointColor'])
+        self.addEdgeXY(0.0, height, 0.0, 0.0, pointConfig['inactivePointColor'])
+
+    def addSelection(self, frm:V2, to:V2):
+        self.addEdgeXY(frm.x, frm.y, to.x, frm.y, pointConfig['inactivePointColor'])
+        self.addEdgeXY(to.x, frm.y, to.x, to.y, pointConfig['inactivePointColor'])
+        self.addEdgeXY(to.x, to.y, frm.x, to.y, pointConfig['inactivePointColor'])
+        self.addEdgeXY(frm.x, to.y, frm.x, frm.y, pointConfig['inactivePointColor'])
+
 
     def addTransform(self, transform:ContainerTransform):
         mat = transform.getMat()

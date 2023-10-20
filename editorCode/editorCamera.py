@@ -134,3 +134,15 @@ class EditorCamera:
 
         self.setMatrix(self.sizeScaled.x, self.sizeScaled.y)
         self.setViewport()
+
+    def fitToTexture(self, width:int, height:int):
+        scale = max((width+1)  / self.viewportSize.x, (height +1) / self.viewportSize.y, self.scaleLimit)
+        self.scale = scale
+        self.sizeScaled.setFromV(self.viewportSize).sS(self.scale)
+
+        dx:float =  (width - self.sizeScaled.x)/2.0 
+        dy:float =  (height - self.sizeScaled.y)/2.0
+        self.offsetScaled.setFromXY(dx, dy)
+
+        self.setMatrix(self.sizeScaled.x, self.sizeScaled.y)
+        self.setViewport()
