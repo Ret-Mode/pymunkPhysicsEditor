@@ -11,10 +11,10 @@ class TextureContainerI:
         assert TextureContainerI._instance is not None
         return TextureContainerI._instance
 
-    def deleteTexture(self, texture):
+    def _deleteTexture(self, texture):
         raise NotImplementedError
     
-    def loadTexture(self, path:str) -> any:
+    def _loadTexture(self, path:str) -> any:
         raise NotImplementedError
 
     def use(self, textureIndex:int, onChannel:int):
@@ -26,12 +26,18 @@ class TextureContainerI:
         self.textures: List[any] = [None for i in range(self.elems)]
         self.sizes: List[Tuple[int]] = [(0,0) for i in range(self.elems)] 
 
+    def delete(self, textureIndex:int):
+        if self.textures[textureIndex] is not None:
+            self._deleteTexture(self.textures[textureIndex])
+            self.sizes[textureIndex] = (0,0)
+            self.paths[textureIndex] = ''
+
     def load(self, path:str, textureIndex:int, size:Tuple[int]):
         if 0 <= textureIndex < self.elems:
-            texture = self.loadTexture(path)
+            texture = self._loadTexture(path)
             if texture:
                 if self.textures[textureIndex] is not None:
-                    self.deleteTexture(self.textures[textureIndex])
+                    self._deleteTexture(self.textures[textureIndex])
                 self.paths[textureIndex] = path
                 self.textures[textureIndex] = texture
                 self.sizes[textureIndex] = size
@@ -50,4 +56,11 @@ class TextureContainerI:
         if 0 <= textureIndex <= self.elems:
             return self.sizes[textureIndex]
         return None
-            
+
+    def getJSONDict(self, parent:dict):
+        for i in range(self.elems):
+            if self.paths[i]:
+                tmp = {}
+                tmp['path'] = [self.paths[i]]
+                tmp['size'] = [self.sizes[i][0], self.sizes[i][1]]
+                parent[str(i)] = tmp

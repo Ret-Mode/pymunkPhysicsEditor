@@ -4,6 +4,7 @@ from .shapeInternals.editorShapeI import ShapeI
 from .shapeInternals.editorBodyI import BodyI
 from .constraintInternals.editorConstraintI import ConstraintI
 from .textureMapping import TextureMapping
+from .textureContainerI import TextureContainerI
 from .editorTypes import V2, Angle, EditorPoint, Selection
 from .editorCursor import Cursor
 from .database import Database
@@ -88,6 +89,16 @@ class ComScaleView(Command):
     def execute(self):
         self.view.changeScale(self.scale, self.viewCoords)
 
+
+class ComFitViewToTexture(Command):
+
+    def __init__(self, view: EditorCamera, size:Tuple[int, int]):
+        self.view = view
+        self.width = size[0]
+        self.height = size[1]
+    
+    def execute(self):
+        self.view.fitToTexture(self.width, self.height)
 
 # end of VIEW commands
 
@@ -1448,39 +1459,36 @@ class ComApplyContainerScale(CommandUndo):
 # #################
 
 
+# TEXTURE commands
+
+class ComLoadTexture(CommandUndo):
+
+    def __init__(self, path:str, toChannel:int, size:Tuple[int, int]):
+        self.container = TextureContainerI.getInstance()
+        self.database = Database.getInstance()
+        self.newPath = path
+        self.destChannel = toChannel
+        self.newSize = size
+        self.oldPath = self.container.paths[toChannel]
+        self.oldSize = self.container.sizes[toChannel]
+
+    def execute(self):
+        self.container.load(self.newPath, self.destChannel, self.newSize)
+        for mapping in self.database.getAllMappingsOfChannel(self.destChannel):
+            mapping.reloadTexture(self.newSize)
+
+    def undo(self):
+        if self.oldPath:
+            self.container.load(self.oldPath, self.destChannel, self.oldSize)
+            for mapping in self.database.getAllMappingsOfChannel(self.destChannel):
+                mapping.reloadTexture(self.oldSize)
+        else:
+            self.container.delete(self.destChannel)
+
+# END of TEXTURE commands
+
 
 # MAPPING Commands
-
-# class ComSetMappingOffset(CommandUndo):
-
-#     def __init__(self, mapping:TextureMapping, newOffset:Tuple[int, int]):
-#         self.mapping = mapping
-#         self.newOffset = newOffset
-#         self.oldOffset = mapping.mappingOffset
-#         self.oldSize = mapping.mappingSize
-
-#     def execute(self):
-#         self.mapping.setMappingOffset(self.newOffset)
-
-#     def undo(self):
-#         self.mapping.mappingOffset = self.oldOffset
-#         self.mapping.mappingSize = self.oldSize
-
-
-# class ComSetMappingSize(CommandUndo):
-
-#     def __init__(self, mapping:TextureMapping, newSize:Tuple[int, int]):
-#         self.mapping = mapping
-#         self.newSize = newSize
-#         self.oldOffset = mapping.mappingOffset
-#         self.oldSize = mapping.mappingSize
-
-#     def execute(self):
-#         self.mapping.setMappingSize(self.newSize)
-
-#     def undo(self):
-#         self.mapping.mappingOffset = self.oldOffset
-#         self.mapping.mappingSize = self.oldSize
 
 
 class ComSetMappingFromSelection(CommandUndo):

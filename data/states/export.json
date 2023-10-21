@@ -1,0 +1,133 @@
+{
+  "Bodies": {
+    "BODY": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 1.0,
+        "customMoment": 1.0,
+        "cog": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {}
+    },
+    "BODY_1": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 0.00469098914725174,
+        "customMoment": 0.0001916030605547695,
+        "cog": [
+          0.07370345109215061,
+          0.5824077131156559
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 0.00469098914725174,
+            "customDensity": 0.0009765625,
+            "customMoment": 0.0001916030605547695,
+            "cog": [
+              0.07370345109215061,
+              0.5824077131156559
+            ]
+          },
+          "type": "Polygon",
+          "internal": {
+            "points": [
+              [
+                0.4357142857142857,
+                0.7928571428571429
+              ],
+              [
+                -0.08571428571428574,
+                0.7428571428571429
+              ],
+              [
+                -0.275,
+                0.5964285714285713
+              ],
+              [
+                -0.22857142857142865,
+                0.40714285714285703
+              ],
+              [
+                0.1428571428571428,
+                0.375
+              ],
+              [
+                0.3214285714285714,
+                0.47857142857142865
+              ]
+            ],
+            "radius": 1.0
+          }
+        }
+      }
+    }
+  },
+  "Constraints": {
+    "CNSTRNT": {
+      "restAngle": 0.0,
+      "stiffness": 0.5,
+      "damping": 0.5,
+      "type": "Rotary Spring"
+    }
+  },
+  "Mappings": {
+    "MAP:0": {
+      "textureChannel": [
+        0
+      ],
+      "offset": [
+        20,
+        25
+      ],
+      "size": [
+        18,
+        19
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ]
+    },
+    "MAP:0_1": {
+      "textureChannel": [
+        0
+      ],
+      "offset": [
+        20,
+        25
+      ],
+      "size": [
+        18,
+        19
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ]
+    }
+  },
+  "Textures": {
+    "0": {
+      "path": [
+        "data/textures/wheel2.png"
+      ],
+      "size": [
+        64,
+        64
+      ]
+    }
+  }
+}

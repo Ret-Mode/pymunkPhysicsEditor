@@ -183,4 +183,13 @@ class TextureMapping:
             bodyInvMat = self.transform.getMat()
             bodyInvMat.mulV(self.body.physics.cog.final, self.cog)
             self.cog.sS(physicsSetup['pixelPerMeter']).tD(self.anchor[0], self.anchor[1])
+
+    def getJSONDict(self, parent:dict):
+        assert self.label not in parent
+        this = {}
+        this['textureChannel'] = [self.channel]
+        this['offset'] = [self.mappingOffset[0], self.mappingOffset[1]]
+        this['size'] = [self.mappingSize[0], self.mappingSize[1]]
+        this['anchor'] = [self.anchor[0], self.anchor[1]]
+        parent[self.label] = this
     

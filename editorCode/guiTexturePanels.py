@@ -6,15 +6,15 @@ from .database import Database
 from .editorState import EditorState
 from .editorTextureView import EditorTextureView
 from .shapeInternals.editorBodyI import BodyI
-from .guiButtons import ScrollableLayout, TexturePreview, TextUpdatableInput
+from .guiButtons import ScrollableLayout, TexturePreview
 from .guiButtons import Button, Label
-from .guiPanels import ScrollableCBLabelPanel, ScrollableConstantPanel, EmptyPanel
+from .guiPanels import ScrollableCBLabelPanel, EmptyPanel
 from .config import physicsSetup
 from .editorFilesystem import EditorDir
 from .textureContainerI import TextureContainerI
 from .textureMapping import TextureMapping
 from .editorState import EditorState
-from .commandExec import CommandExec
+from .commandExec import CommandExec, ComLoadTexture, ComFitViewToTexture
 
 class ChannelSelector(ScrollableCBLabelPanel):
 
@@ -38,6 +38,47 @@ class ChannelSelector(ScrollableCBLabelPanel):
         self.label.setLabel(str(EditorState.getInstance().getCurrentMappingChannel()))
         return retVal
 
+
+class NonEmptyChannelSelector(ScrollableCBLabelPanel):
+
+    def __init__(self, lrWidth='quartWidth', labelWidth='halfWidth') -> None:
+        super().__init__('--', lrWidth=lrWidth, labelWidth=labelWidth, cbNext=self.nextChannel, cbPrev=self.prevChannel)
+
+    def searchNonEmptyChannel(self):
+        pass
+
+    def nextChannel(self):
+        container = TextureContainerI.getInstance()
+        currentChannel = int(self.label.getCurrent())
+        nextChannel = (currentChannel + 1) % container.elems
+        while nextChannel != currentChannel:
+            if container.paths[nextChannel]:
+                EditorState.getInstance().setCurrentMappingChannel(nextChannel)
+                return
+            nextChannel = (nextChannel + 1) % container.elems
+
+    def prevChannel(self):
+        container = TextureContainerI.getInstance()
+        currentChannel = int(self.label.getCurrent())
+        prevChannel = (currentChannel - 1 + container.elems) % container.elems
+        while prevChannel != currentChannel:
+            if container.paths[prevChannel]:
+                EditorState.getInstance().setCurrentMappingChannel(prevChannel)
+                return
+            prevChannel = (prevChannel - 1 + container.elems) % container.elems
+
+    def on_update(self, dt):
+        retVal = super().on_update(dt)
+        currentLabel = self.getCurrent()
+        if currentLabel == '--':
+            self.nextChannel()
+        else:
+            channel = int(currentLabel)
+            if not TextureContainerI.getInstance().paths[channel]:
+                self.label.setLabel('--')
+        self.label.setLabel(str(EditorState.getInstance().getCurrentMappingChannel()))
+        return retVal
+    
 
 class TextureSizeIntPanel(arcade.gui.UIBoxLayout):
 
@@ -159,15 +200,10 @@ class TextureSelectPanel(arcade.gui.UIBoxLayout):
         # to reconsider moving this into command - file op, what if file is deleted?
         if self.preview.originalFilePath:
             size = self.preview.getTextureSize()
-            container = TextureContainerI.getInstance()
-            container.load(self.preview.originalFilePath, toChannel, size)
-            database = Database.getInstance()
-            for mapping in database.getAllMappingsOfChannel(toChannel):
-                mapping.reloadTexture(size)
+            CommandExec.addCommand(ComLoadTexture(self.preview.originalFilePath, toChannel, size))
             # update view
             if self.view:
-                self.view.textureView.fitToTexture(size[0], size[1])
-            
+                CommandExec.addCommand(ComFitViewToTexture(self.view.textureView, size)) 
 
 
 # end of FILE PANELS

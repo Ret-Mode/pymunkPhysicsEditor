@@ -18,10 +18,10 @@ class ArcadeTexture(TextureContainerI):
         self.ctx = arcade.get_window().ctx
         super().__init__(elems)
 
-    def loadTexture(self, path:str) -> Texture:
+    def _loadTexture(self, path:str) -> Texture:
         return self.ctx.load_texture(path)
 
-    def deleteTexture(self, texture:Texture):
+    def _deleteTexture(self, texture:Texture):
         texture.delete()
     
     def use(self, textureIndex:int, onChannel:int):

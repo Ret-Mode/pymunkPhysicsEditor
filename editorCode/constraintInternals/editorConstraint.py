@@ -29,6 +29,16 @@ class DampedRotarySpring(ConstraintI):
             buffer.addAngleArm(self.bodyB.physics.cog.final, 
                          self.restAngle.cos, self.restAngle.sin)
 
+    def getJSONDict(self, parent:dict):
+        assert self.label not in parent
+        this = {}
+        this['restAngle'] = self.restAngle.angle
+        this['stiffness'] = self.stiffness
+        this['damping'] = self.damping
+        this['type'] = self.type
+        this['bodyA'] = self.bodyA.label
+        this['bodyB'] = self.bodyB.label
+        parent[self.label] = this
 
 class DampedSpring(ConstraintI):
 
@@ -61,6 +71,19 @@ class DampedSpring(ConstraintI):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorB.final)
             
+    def getJSONDict(self, parent:dict):
+        assert self.label not in parent
+        this = {}
+        this['restLength'] = self.restLength
+        this['stiffness'] = self.stiffness
+        this['damping'] = self.damping
+        this['anchorA'] = [self.anchorA.offset.x, self.anchorA.offset.y]
+        this['anchorB'] = [self.anchorB.offset.x, self.anchorB.offset.y]
+        this['type'] = self.type
+        this['bodyA'] = self.bodyA.label
+        this['bodyB'] = self.bodyB.label
+        parent[self.label] = this
+    
 
 class GearJoint(ConstraintI):
 
@@ -90,6 +113,16 @@ class GearJoint(ConstraintI):
             buffer.addAngleRatioArm(self.bodyB.physics.cog.final, 
                               self.phase.cos, self.phase.sin, self.ratio)
 
+    def getJSONDict(self, parent:dict):
+        assert self.label not in parent
+        this = {}
+        this['phase'] = self.phase.angle
+        this['ratio'] = self.ratio
+        this['type'] = self.type
+        this['bodyA'] = self.bodyA.label
+        this['bodyB'] = self.bodyB.label
+        parent[self.label] = this
+    
 
 class GrooveJoint(ConstraintI):
 
@@ -124,7 +157,17 @@ class GrooveJoint(ConstraintI):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorB.final)
       
-            
+    def getJSONDict(self, parent:dict):
+        assert self.label not in parent
+        this = {}
+        this['grooveA'] = [self.grooveA.offset.x, self.grooveA.offset.y]
+        this['grooveB'] = [self.grooveB.offset.x, self.grooveB.offset.y]
+        this['anchorB'] = [self.anchorB.offset.x, self.anchorB.offset.y]
+        this['type'] = self.type
+        this['bodyA'] = self.bodyA.label
+        this['bodyB'] = self.bodyB.label
+        parent[self.label] = this
+
 
 class PinJoint(ConstraintI):
 
@@ -154,6 +197,16 @@ class PinJoint(ConstraintI):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorB.final)
 
+    def getJSONDict(self, parent:dict):
+        assert self.label not in parent
+        this = {}
+        this['anchorA'] = [self.anchorA.offset.x, self.anchorA.offset.y]
+        this['anchorB'] = [self.anchorB.offset.x, self.anchorB.offset.y]
+        this['type'] = self.type
+        this['bodyA'] = self.bodyA.label
+        this['bodyB'] = self.bodyB.label
+        parent[self.label] = this
+    
 
 class PivotJoint(ConstraintI):
 
@@ -182,6 +235,16 @@ class PivotJoint(ConstraintI):
     def bufferInternalB(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorB.final)
+
+    def getJSONDict(self, parent:dict):
+        assert self.label not in parent
+        this = {}
+        this['anchorA'] = [self.anchorA.offset.x, self.anchorA.offset.y]
+        this['anchorB'] = [self.anchorB.offset.x, self.anchorB.offset.y]
+        this['type'] = self.type
+        this['bodyA'] = self.bodyA.label
+        this['bodyB'] = self.bodyB.label
+        parent[self.label] = this
 
 
 class RatchetJoint(ConstraintI):
@@ -212,6 +275,16 @@ class RatchetJoint(ConstraintI):
                          self.phase.cos, self.phase.sin)
             buffer.addRatchetB(self.bodyB.physics.cog.final, self.phase, self.ratchet)
 
+    def getJSONDict(self, parent:dict):
+        assert self.label not in parent
+        this = {}
+        this['phase'] = self.phase.angle
+        this['ratchet'] = self.ratchet.angle
+        this['type'] = self.type
+        this['bodyA'] = self.bodyA.label
+        this['bodyB'] = self.bodyB.label
+        parent[self.label] = this
+
 
 class RotaryLimitJoint(ConstraintI):
 
@@ -235,6 +308,16 @@ class RotaryLimitJoint(ConstraintI):
         if self.bodyA and self.bodyB:
             buffer.addPhaseMinMaxB(self.bodyB.physics.cog.final, self.min, self.max)
 
+    def getJSONDict(self, parent:dict):
+        assert self.label not in parent
+        this = {}
+        this['min'] = self.min.angle
+        this['max'] = self.max.angle
+        this['type'] = self.type
+        this['bodyA'] = self.bodyA.label
+        this['bodyB'] = self.bodyB.label
+        parent[self.label] = this
+    
 
 class SimpleMotor(ConstraintI):
 
@@ -257,6 +340,15 @@ class SimpleMotor(ConstraintI):
         if self.bodyA and self.bodyB:
             buffer.addRateB(self.bodyB.physics.cog.final, self.rate)
 
+    def getJSONDict(self, parent:dict):
+        assert self.label not in parent
+        this = {}
+        this['rate'] = self.rate.angle
+        this['type'] = self.type
+        this['bodyA'] = self.bodyA.label
+        this['bodyB'] = self.bodyB.label
+        parent[self.label] = this
+    
 
 class SlideJoint(ConstraintI):
 
@@ -287,3 +379,13 @@ class SlideJoint(ConstraintI):
     def bufferInternalB(self, buffer:ShapeBuffer):
         if self.bodyA and self.bodyB:
             buffer.addAnchor(self.anchorB.final)
+
+    def getJSONDict(self, parent:dict):
+        assert self.label not in parent
+        this = {}
+        this['min'] = self.min
+        this['max'] = self.max
+        this['type'] = self.type
+        this['bodyA'] = self.bodyA.label
+        this['bodyB'] = self.bodyB.label
+        parent[self.label] = this

@@ -9,6 +9,7 @@ from editorCode.editorOptionView import EditorOptionView
 
 from editorCode.arcadeInit import arcadeInit
 
+from editorCode.JSONIO import JSONIO
 from editorCode.guiPanels import ButtonPanel, TopButtons
 from editorCode.guiBodyPanels import BodyButtons
 from editorCode.guiShapePanels import ShapeButtons
@@ -134,7 +135,9 @@ class EditorView(arcade.View):
         self.draw_cursor()
         
     def on_key_press(self, key, modifiers):
-        if key == arcade.key.F5:
+        if key == arcade.key.F6:
+            JSONIO.save('data/states/export.json')
+        elif key == arcade.key.F5:
             data = pickle.dumps(Database.getInstance())
             if data:
                 with open('data/states/save.car', 'wb') as f:

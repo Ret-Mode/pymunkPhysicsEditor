@@ -68,6 +68,9 @@ class ConstraintI:
         if self.bodyA and self.bodyB:
             self.bodyB.bufferData(buffer)
 
+    def getJSONDict(self, parent:dict):
+        raise NotImplementedError
+    
     @staticmethod
     def getTypes() -> List[str]:
         return [ConstraintI.DAMPEDROTARYSPRING, ConstraintI.DAMPEDSPRING, ConstraintI.GEARJOINT,
