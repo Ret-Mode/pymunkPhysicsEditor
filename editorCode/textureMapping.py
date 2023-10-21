@@ -187,9 +187,10 @@ class TextureMapping:
     def getJSONDict(self, parent:dict):
         assert self.label not in parent
         this = {}
-        this['textureChannel'] = [self.channel]
+        this['textureChannel'] = str(self.channel)
         this['offset'] = [self.mappingOffset[0], self.mappingOffset[1]]
         this['size'] = [self.mappingSize[0], self.mappingSize[1]]
         this['anchor'] = [self.anchor[0], self.anchor[1]]
+        this['body'] = self.body.label
         parent[self.label] = this
     
