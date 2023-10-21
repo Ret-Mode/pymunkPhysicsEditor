@@ -14,7 +14,7 @@ from .editorFilesystem import EditorDir
 from .textureContainerI import TextureContainerI
 from .textureMapping import TextureMapping
 from .editorState import EditorState
-from .commandExec import ComSetMappingOffset, ComSetMappingSize, CommandExec
+from .commandExec import CommandExec
 
 class ChannelSelector(ScrollableCBLabelPanel):
 
@@ -59,40 +59,6 @@ class TextureSizeIntPanel(arcade.gui.UIBoxLayout):
             self.xPanel.setText('0')
             self.yPanel.setText('0')
 
-
-class TextureSizeIntEditablePanel(arcade.gui.UIBoxLayout):
-
-    def __init__(self, label='Size', callback: Callable[[None], None]=None):
-        super().__init__(vertical=False)
-        label = Label(label, 'quartWidth', 'left')
-        self.xPanel = TextUpdatableInput('0', 'quartWidth')
-        self.yPanel = TextUpdatableInput('0', 'quartWidth')
-        self.confirm = Button('Set', 'quartWidth', callback)
-        
-        self.add(label)
-        self.add(self.xPanel)
-        self.add(self.yPanel)
-        self.add(self.confirm)
-    
-    def setSize(self, size:Tuple[int]):
-        try:
-            self.xPanel.setNewVal(str(size[0]))
-            self.yPanel.setNewVal(str(size[1]))
-        except:
-            self.xPanel.setNewVal('0')
-            self.yPanel.setNewVal('0')
-
-    def refresh(self):
-        self.xPanel.refresh()
-        self.yPanel.refresh()
-
-    def getSize(self) -> Tuple[int, int]:
-        size = None
-        try:
-            size = int(self.xPanel.getVal()), int(self.yPanel.getVal())
-        except:
-            pass
-        return size
 
 # FILE PANELS
 class SetTextureToChannelPanel(arcade.gui.UIBoxLayout):
@@ -280,8 +246,8 @@ class MappingDetailsPanel(arcade.gui.UIBoxLayout):
         self.currentMapping: TextureMapping = None
         self.bodySelect:BodySelectPanel = BodySelectPanel()
         self.realSize:TextureSizeIntPanel = TextureSizeIntPanel('Tex Size')
-        self.mapOffset:TextureSizeIntEditablePanel = TextureSizeIntEditablePanel('MOffst', self.updateOffset)
-        self.mapSize:TextureSizeIntEditablePanel = TextureSizeIntEditablePanel('MSize', self.updateSize)
+        self.mapOffset:TextureSizeIntPanel = TextureSizeIntPanel('MOffs')
+        self.mapSize:TextureSizeIntPanel = TextureSizeIntPanel('MSize')
 
         self.add(self.bodySelect)
         self.add(self.realSize)
@@ -289,24 +255,10 @@ class MappingDetailsPanel(arcade.gui.UIBoxLayout):
         self.add(self.mapSize)
 
 
-    def updateOffset(self):
-        mapping = EditorState.getInstance().getCurrentMapping()
-        offset = self.mapOffset.getSize()
-        if mapping and offset:
-            CommandExec.addCommand(ComSetMappingOffset(mapping, offset))
-
-
-    def updateSize(self):
-        mapping = EditorState.getInstance().getCurrentMapping()
-        size = self.mapSize.getSize()
-        if mapping and size:
-            CommandExec.addCommand(ComSetMappingSize(mapping, size))
-
-
     def on_update(self, dt):
         retVal = super().on_update(dt)
         mapping = EditorState.getInstance().getCurrentMapping()
-        if mapping and self.currentMapping != mapping:
+        if mapping:
             self.realSize.setSize(mapping.getTextureSize())
             self.mapOffset.setSize(mapping.getMappingOffset())
             self.mapSize.setSize(mapping.getMappingSize())

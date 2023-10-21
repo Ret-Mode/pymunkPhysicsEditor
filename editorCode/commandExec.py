@@ -1451,36 +1451,36 @@ class ComApplyContainerScale(CommandUndo):
 
 # MAPPING Commands
 
-class ComSetMappingOffset(CommandUndo):
+# class ComSetMappingOffset(CommandUndo):
 
-    def __init__(self, mapping:TextureMapping, newOffset:Tuple[int, int]):
-        self.mapping = mapping
-        self.newOffset = newOffset
-        self.oldOffset = mapping.mappingOffset
-        self.oldSize = mapping.mappingSize
+#     def __init__(self, mapping:TextureMapping, newOffset:Tuple[int, int]):
+#         self.mapping = mapping
+#         self.newOffset = newOffset
+#         self.oldOffset = mapping.mappingOffset
+#         self.oldSize = mapping.mappingSize
 
-    def execute(self):
-        self.mapping.setMappingOffset(self.newOffset)
+#     def execute(self):
+#         self.mapping.setMappingOffset(self.newOffset)
 
-    def undo(self):
-        self.mapping.mappingOffset = self.oldOffset
-        self.mapping.mappingSize = self.oldSize
+#     def undo(self):
+#         self.mapping.mappingOffset = self.oldOffset
+#         self.mapping.mappingSize = self.oldSize
 
 
-class ComSetMappingSize(CommandUndo):
+# class ComSetMappingSize(CommandUndo):
 
-    def __init__(self, mapping:TextureMapping, newSize:Tuple[int, int]):
-        self.mapping = mapping
-        self.newSize = newSize
-        self.oldOffset = mapping.mappingOffset
-        self.oldSize = mapping.mappingSize
+#     def __init__(self, mapping:TextureMapping, newSize:Tuple[int, int]):
+#         self.mapping = mapping
+#         self.newSize = newSize
+#         self.oldOffset = mapping.mappingOffset
+#         self.oldSize = mapping.mappingSize
 
-    def execute(self):
-        self.mapping.setMappingSize(self.newSize)
+#     def execute(self):
+#         self.mapping.setMappingSize(self.newSize)
 
-    def undo(self):
-        self.mapping.mappingOffset = self.oldOffset
-        self.mapping.mappingSize = self.oldSize
+#     def undo(self):
+#         self.mapping.mappingOffset = self.oldOffset
+#         self.mapping.mappingSize = self.oldSize
 
 
 class ComSetMappingFromSelection(CommandUndo):

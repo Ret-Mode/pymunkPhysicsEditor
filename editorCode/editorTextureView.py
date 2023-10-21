@@ -148,6 +148,7 @@ class EditorTextureView:
         
         if mapping and mapping.body:
             mapping.body.updateEye()
+            mapping.body.recalcPhysics()
             mapping.updateShapeView()
             mapping.recalcCog()
 

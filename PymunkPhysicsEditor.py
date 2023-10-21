@@ -24,6 +24,7 @@ from editorCode.config import globalWindowSetup
 
 from editorCode.database import Database
 from editorCode.editorState import EditorState
+from editorCode.arcadeTextureContainer import ArcadeTexture
 from editorCode.editorCursor import Cursor
 from editorCode.editorCamera import CursorCamera
 from editorCode.shapeBuffer import ShapeBuffer
@@ -138,13 +139,45 @@ class EditorView(arcade.View):
             if data:
                 with open('data/states/save.car', 'wb') as f:
                     f.write(data)
+            sizes = pickle.dumps(ArcadeTexture.getInstance().sizes)
+            if sizes:
+                with open('data/states/save.size', 'wb') as f:
+                    f.write(sizes)
+            paths = pickle.dumps(ArcadeTexture.getInstance().paths)
+            if paths:
+                with open('data/states/save.path', 'wb') as f:
+                    f.write(paths)
         elif key == arcade.key.F9:
-            with open('data/states/save.car', 'rb') as f:
-                data = f.read()
-                database:Database = pickle.loads(data)
-                Database._instance.bodies = database.bodies
-                Database._instance.shapeList = database.shapeList
-                Database._instance.constraints = database.constraints
+            try:
+                with open('data/states/save.car', 'rb') as f:
+                    data = f.read()
+                    database:Database = pickle.loads(data)
+                    Database._instance.bodies = database.bodies
+                    Database._instance.shapeList = database.shapeList
+                    Database._instance.constraints = database.constraints
+            except:
+                pass
+            instance = ArcadeTexture.getInstance()
+            try:
+                with open('data/states/save.size', 'rb') as f:
+                    data = f.read()
+                    tex = pickle.loads(data)
+                    for i in range(instance.elems):
+                        instance.sizes[i] = tex[i]
+            except:
+                pass
+            try:
+                with open('data/states/save.path', 'rb') as f:
+                    data = f.read()
+                    tex = pickle.loads(data)
+                    for i in range(instance.elems):
+                        instance.paths[i] = tex[i]
+            except:
+                pass
+            for i in range(instance.elems):
+                if instance.sizes[i] and instance.paths[i]:
+                    instance.load(instance.paths[i], i, instance.sizes[i])
+
 
         view = self._getActiveView()
         if self.currentMode == 'BODY':

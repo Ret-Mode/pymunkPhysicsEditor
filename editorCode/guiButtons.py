@@ -147,7 +147,6 @@ class ScrollableLayout(arcade.gui.UIBoxLayout):
 
     def setLabels(self, labels: List[str]) -> None:
         if labels != self.labels:
-            print("Updated labels")
             self.labels = labels
             self.current = 0
             self.recalc()
