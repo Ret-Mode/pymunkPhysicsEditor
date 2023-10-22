@@ -20,6 +20,7 @@ class JSONIO:
                 constraint.getJSONDict(constraints)
         mappings = {}
         for mapping in db.mappings:
+            mapping.update()
             mapping.getJSONDict(mappings)
         textures = {}
         TextureContainerI.getInstance().getJSONDict(textures)

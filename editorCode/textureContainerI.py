@@ -67,6 +67,6 @@ class TextureContainerI:
         for i in range(self.elems):
             if self.paths[i]:
                 tmp = {}
-                tmp['path'] = self.paths[i]
+                tmp['path'] = self.paths[i].replace('\\\\','/').replace('\\','/')
                 tmp['size'] = [self.sizes[i][0], self.sizes[i][1]]
                 parent[str(i)] = tmp
