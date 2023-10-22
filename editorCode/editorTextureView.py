@@ -185,7 +185,7 @@ class EditorTextureView:
             buffer.addBBox(currentBody.box.center.final, currentBody.box.halfWH.final, True, False)
             currentBody.bufferData(buffer)
             buffer.addTextureOutline(mapping.mappingRect)
-            buffer.addEyeTransform()
+            buffer.addTexturePivot(mapping.subAnchor.final)
             buffer.addCenterOfGravity(currentBody.physics.cog.final, True)
 
         

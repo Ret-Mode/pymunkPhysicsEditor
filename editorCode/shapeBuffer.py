@@ -355,6 +355,8 @@ class ShapeBuffer:
     def addCenterOfGravity(self, cog:V2, isChildCog:bool):
         self.addPoint(cog, pointConfig['cogColor'], pointConfig['cogHalfWH'] * self.drawScale)
 
+    def addTexturePivot(self, pivot:V2):
+        self.addPoint(pivot, pointConfig['anchorColor'], pointConfig['cogHalfWH'] * self.drawScale)
 
     def addCircle(self, center:V2, halfWH:V2, elems:int):
         color = pointConfig['inactivePointColor']

@@ -17,6 +17,7 @@ class TextureMapping:
         self.mappingOffset: List[int] = None
         self.uv: List[V2] = [V2() for i in range(4)]
         self.cog:V2 = V2()
+        self.subAnchor:EditorPoint = EditorPoint()
 
         self.initialize(textureSize)
 
@@ -40,7 +41,8 @@ class TextureMapping:
         self.mappingRect[1].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(offY-self.anchor[1])/pixelPerMeter)
         self.mappingRect[2].local.setFromXY((offX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
         self.mappingRect[3].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
-
+        self.subAnchor.local.setFromXY((offX + endX - self.anchor[0])/2.0,
+                                       (offY + endY - self.anchor[1])/2.0).unSS(pixelPerMeter)
     # def updateUVs(self):
     #     pixelPerMeter = physicsSetup['pixelPerMeter']
     #     offX = (1.0 * self.mappingOffset[0])
@@ -77,6 +79,8 @@ class TextureMapping:
         self.mappingRect[1].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(offY-self.anchor[1])/pixelPerMeter)
         self.mappingRect[2].local.setFromXY((offX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
         self.mappingRect[3].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
+        self.subAnchor.local.setFromXY((offX + endX - self.anchor[0])/2.0,
+                                       (offY + endY - self.anchor[1])/2.0).unSS(pixelPerMeter)
 
     def setMappingFromSelection(self, selection:Selection):
         minX, minY = int(max(min(selection.start.x, selection.end.x),0.0)), int(max(min(selection.start.y, selection.end.y), 0.0))
@@ -101,7 +105,9 @@ class TextureMapping:
             self.mappingRect[1].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(offY-self.anchor[1])/pixelPerMeter)
             self.mappingRect[2].local.setFromXY((offX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
             self.mappingRect[3].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
-
+            self.subAnchor.local.setFromXY((offX + endX - self.anchor[0])/2.0,
+                                       (offY + endY - self.anchor[1])/2.0).unSS(pixelPerMeter)
+        
     def reloadTexture(self, textureSize: Tuple[int]):
         oldTextureSize = self.textureSize
         oldMappingOffset = self.mappingOffset
@@ -133,6 +139,9 @@ class TextureMapping:
         self.mappingRect[2].local.setFromXY((offX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
         self.mappingRect[3].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
 
+        self.subAnchor.local.setFromXY((offX + endX - self.anchor[0])/2.0,
+                                       (offY + endY - self.anchor[1])/2.0).unSS(pixelPerMeter)
+        
     def getTextureSize(self) -> Tuple[int]:
         if self.textureSize:
             return tuple(self.textureSize)
@@ -171,12 +180,14 @@ class TextureMapping:
             mappingBaseMat.mulPre(self.body.transform.getMat())
             for point in self.mappingRect:
                 mappingBaseMat.mulV(point.local, point.final)
+            mappingBaseMat.mulV(self.subAnchor.local, self.subAnchor.final)
 
     def updateShapeView(self):
         if self.body:
             mappingBaseMat = self.transform.getInvMat()
             for point in self.mappingRect:
                 mappingBaseMat.mulV(point.local, point.final)
+            mappingBaseMat.mulV(self.subAnchor.local, self.subAnchor.final)
 
     def recalcCog(self):
         if self.body:
@@ -191,6 +202,9 @@ class TextureMapping:
         this['offset'] = [self.mappingOffset[0], self.mappingOffset[1]]
         this['size'] = [self.mappingSize[0], self.mappingSize[1]]
         this['anchor'] = [self.anchor[0], self.anchor[1]]
+        this['subAnchor'] = [self.subAnchor.final.x, self.subAnchor.final.y]
+        this['subScale'] = self.body.transform.objectScale / (self.transform.objectScale * physicsSetup['pixelPerMeter'])
+        this['subRotate'] = self.body.transform.objectAngle.angle - self.transform.objectAngle.angle
         this['body'] = self.body.label
         parent[self.label] = this
     
