@@ -41,8 +41,8 @@ class TextureMapping:
         self.mappingRect[1].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(offY-self.anchor[1])/pixelPerMeter)
         self.mappingRect[2].local.setFromXY((offX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
         self.mappingRect[3].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
-        self.subAnchor.local.setFromXY((offX + endX - self.anchor[0])/2.0,
-                                       (offY + endY - self.anchor[1])/2.0).unSS(pixelPerMeter)
+        self.subAnchor.local.setFromXY((offX + endX)/2.0 - self.anchor[0],
+                                        (offY + endY)/2.0 - self.anchor[1]).unSS(pixelPerMeter)
     # def updateUVs(self):
     #     pixelPerMeter = physicsSetup['pixelPerMeter']
     #     offX = (1.0 * self.mappingOffset[0])
@@ -79,8 +79,8 @@ class TextureMapping:
         self.mappingRect[1].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(offY-self.anchor[1])/pixelPerMeter)
         self.mappingRect[2].local.setFromXY((offX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
         self.mappingRect[3].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
-        self.subAnchor.local.setFromXY((offX + endX - self.anchor[0])/2.0,
-                                       (offY + endY - self.anchor[1])/2.0).unSS(pixelPerMeter)
+        self.subAnchor.local.setFromXY((offX + endX)/2.0 - self.anchor[0],
+                                        (offY + endY)/2.0 - self.anchor[1]).unSS(pixelPerMeter)
 
     def setMappingFromSelection(self, selection:Selection):
         minX, minY = int(max(min(selection.start.x, selection.end.x),0.0)), int(max(min(selection.start.y, selection.end.y), 0.0))
@@ -105,8 +105,8 @@ class TextureMapping:
             self.mappingRect[1].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(offY-self.anchor[1])/pixelPerMeter)
             self.mappingRect[2].local.setFromXY((offX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
             self.mappingRect[3].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
-            self.subAnchor.local.setFromXY((offX + endX - self.anchor[0])/2.0,
-                                       (offY + endY - self.anchor[1])/2.0).unSS(pixelPerMeter)
+            self.subAnchor.local.setFromXY((offX + endX)/2.0 - self.anchor[0],
+                                           (offY + endY)/2.0 - self.anchor[1]).unSS(pixelPerMeter)
         
     def reloadTexture(self, textureSize: Tuple[int]):
         oldTextureSize = self.textureSize
@@ -139,8 +139,8 @@ class TextureMapping:
         self.mappingRect[2].local.setFromXY((offX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
         self.mappingRect[3].local.setFromXY((endX-self.anchor[0])/pixelPerMeter,(endY-self.anchor[1])/pixelPerMeter)
 
-        self.subAnchor.local.setFromXY((offX + endX - self.anchor[0])/2.0,
-                                       (offY + endY - self.anchor[1])/2.0).unSS(pixelPerMeter)
+        self.subAnchor.local.setFromXY((offX + endX)/2.0 - self.anchor[0],
+                                        (offY + endY)/2.0 - self.anchor[1]).unSS(pixelPerMeter)
         
     def getTextureSize(self) -> Tuple[int]:
         if self.textureSize:

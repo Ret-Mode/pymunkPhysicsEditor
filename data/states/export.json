@@ -5,90 +5,32 @@
         "hasCustomMass": false,
         "hasCustomMoment": false,
         "hasCustomCog": false,
-        "customMass": 0.034266325330517385,
-        "customMoment": 0.033673605275010565,
+        "customMass": 0.0030679615757712823,
+        "customMoment": 0.0015339807878856412,
         "cog": [
-          0.09202300652524939,
-          0.18610807077644212
+          0.0,
+          0.0
         ]
       },
       "type": "Dynamic",
       "shapes": {
-        "SHAPE": {
+        "SHAPE_1": {
           "physics": {
             "hasCustomDensity": false,
             "hasCustomMass": false,
-            "customMass": 0.034266325330517385,
+            "customMass": 0.0030679615757712823,
             "customDensity": 0.0009765625,
-            "customMoment": 0.033673605275010565,
+            "customMoment": 0.0015339807878856412,
             "cog": [
-              0.09202300652524939,
-              0.18610807077644212
+              0.0,
+              0.0
             ]
           },
-          "type": "Line",
+          "type": "Circle",
           "internal": {
-            "points": [
-              [
-                0.5678571428571428,
-                -0.5678571428571428,
-                0.5642857142857143,
-                -0.32499999999999996
-              ],
-              [
-                0.5642857142857143,
-                -0.32499999999999996,
-                0.5035714285714286,
-                -0.13571428571428568
-              ],
-              [
-                0.5035714285714286,
-                -0.13571428571428568,
-                0.38928571428571423,
-                0.02499999999999991
-              ],
-              [
-                0.38928571428571423,
-                0.02499999999999991,
-                0.25357142857142856,
-                0.15714285714285703
-              ],
-              [
-                0.25357142857142856,
-                0.15714285714285703,
-                0.1428571428571428,
-                0.27142857142857135
-              ],
-              [
-                0.1428571428571428,
-                0.27142857142857135,
-                0.02857142857142847,
-                0.33571428571428563
-              ],
-              [
-                0.02857142857142847,
-                0.33571428571428563,
-                -0.16785714285714293,
-                0.3999999999999999
-              ],
-              [
-                -0.16785714285714293,
-                0.3999999999999999,
-                -0.3464285714285714,
-                0.5071428571428571
-              ],
-              [
-                -0.3464285714285714,
-                0.5071428571428571,
-                -0.47857142857142854,
-                0.6000000000000001
-              ],
-              [
-                -0.47857142857142854,
-                0.6000000000000001,
-                -0.5785714285714285,
-                0.7
-              ]
+            "offset": [
+              0.0,
+              0.0
             ],
             "radius": 1.0
           }
@@ -100,68 +42,515 @@
         "hasCustomMass": false,
         "hasCustomMoment": false,
         "hasCustomCog": false,
-        "customMass": 0.005542057661584535,
-        "customMoment": 0.0005975972507031462,
+        "customMass": 0.0015851755985813786,
+        "customMoment": 0.0004095197440186521,
         "cog": [
-          0.07724716120847223,
-          0.5199075959758345
+          0.020537410641201462,
+          0.27468786732607053
         ]
       },
       "type": "Dynamic",
       "shapes": {
-        "SHAPE_1": {
+        "SHAPE_2": {
           "physics": {
             "hasCustomDensity": false,
             "hasCustomMass": false,
-            "customMass": 0.005542057661584535,
+            "customMass": 0.0015851755985813786,
             "customDensity": 0.0009765625,
-            "customMoment": 0.0005975972507031462,
+            "customMoment": 0.0004095197440186521,
             "cog": [
-              0.07724716120847223,
-              0.5199075959758345
+              0.020537410641201462,
+              0.27468786732607053
             ]
           },
-          "type": "Polygon",
+          "type": "Circle",
           "internal": {
-            "points": [
-              [
-                0.6964285714285714,
-                0.7857142857142856
-              ],
-              [
-                0.2607142857142857,
-                0.7464285714285714
-              ],
-              [
-                -0.05714285714285716,
-                0.6499999999999999
-              ],
-              [
-                -0.30714285714285716,
-                0.5607142857142857
-              ],
-              [
-                -0.575,
-                0.35357142857142865
-              ],
-              [
-                -0.4892857142857143,
-                0.2749999999999999
-              ],
-              [
-                0.021428571428571352,
-                0.3214285714285714
-              ],
-              [
-                0.4464285714285714,
-                0.4535714285714285
-              ],
-              [
-                0.532142857142857,
-                0.5107142857142857
-              ]
+            "offset": [
+              0.020537410641201462,
+              0.27468786732607053
+            ],
+            "radius": 0.7188093724420538
+          }
+        }
+      }
+    },
+    "BODY_2": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 0.0005555282487738306,
+        "customMoment": 5.029587684913141e-05,
+        "cog": [
+          0.12613864950184767,
+          0.20516527328613823
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE_3": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 0.0005555282487738306,
+            "customDensity": 0.0009765625,
+            "customMoment": 5.029587684913141e-05,
+            "cog": [
+              0.12613864950184767,
+              0.20516527328613823
+            ]
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              0.12613864950184767,
+              0.20516527328613823
+            ],
+            "radius": 0.42552797422310146
+          }
+        }
+      }
+    },
+    "BODY_3": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 0.0018504030956722887,
+        "customMoment": 0.0005580238754477884,
+        "cog": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE_4": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 0.0018504030956722887,
+            "customDensity": 0.0009765625,
+            "customMoment": 0.0005580238754477884,
+            "cog": [
+              0.0,
+              0.0
+            ]
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              0.0,
+              0.0
+            ],
+            "radius": 0.7766193643917476
+          }
+        }
+      }
+    },
+    "BODY_4": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 0.0030679615757712823,
+        "customMoment": 0.0015339807878856412,
+        "cog": [
+          0.8678571428571433,
+          0.37857142857142856
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE_5": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 0.0030679615757712823,
+            "customDensity": 0.0009765625,
+            "customMoment": 0.0015339807878856412,
+            "cog": [
+              0.8678571428571433,
+              0.37857142857142856
+            ]
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              0.8678571428571433,
+              0.37857142857142856
             ],
             "radius": 1.0
+          }
+        }
+      }
+    },
+    "BODY_5": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 0.00112206401179655,
+        "customMoment": 0.00020518960480338643,
+        "cog": [
+          -0.4816490304134853,
+          -0.07775500042549521
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE_6": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 0.00112206401179655,
+            "customDensity": 0.0009765625,
+            "customMoment": 0.00020518960480338643,
+            "cog": [
+              -0.4816490304134853,
+              -0.07775500042549521
+            ]
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              -0.4816490304134853,
+              -0.07775500042549521
+            ],
+            "radius": 0.6047611144205195
+          }
+        }
+      }
+    },
+    "BODY_6": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 0.002460633632793916,
+        "customMoment": 0.0009867655974984686,
+        "cog": [
+          -0.42859321045132553,
+          -0.39021172891837075
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE_7": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 0.002460633632793916,
+            "customDensity": 0.0009765625,
+            "customMoment": 0.0009867655974984686,
+            "cog": [
+              -0.42859321045132553,
+              -0.39021172891837075
+            ]
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              -0.42859321045132553,
+              -0.39021172891837075
+            ],
+            "radius": 0.8955679024356055
+          }
+        }
+      }
+    },
+    "BODY_7": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 0.002678025234186365,
+        "customMoment": 0.001168824800736943,
+        "cog": [
+          -0.06339834838297488,
+          -0.4871662559954899
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE_8": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 0.002678025234186365,
+            "customDensity": 0.0009765625,
+            "customMoment": 0.001168824800736943,
+            "cog": [
+              -0.06339834838297488,
+              -0.4871662559954899
+            ]
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              -0.06339834838297488,
+              -0.4871662559954899
+            ],
+            "radius": 0.934291449854364
+          }
+        }
+      }
+    },
+    "BODY_8": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 0.0021978805559713364,
+        "customMoment": 0.0007872782658795919,
+        "cog": [
+          0.17834915898880602,
+          -0.14509762087224878
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE_9": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 0.0021978805559713364,
+            "customDensity": 0.0009765625,
+            "customMoment": 0.0007872782658795919,
+            "cog": [
+              0.17834915898880602,
+              -0.14509762087224878
+            ]
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              0.17834915898880602,
+              -0.14509762087224878
+            ],
+            "radius": 0.84640278842145
+          }
+        }
+      }
+    },
+    "BODY_9": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 0.0030679615757712823,
+        "customMoment": 0.0015339807878856412,
+        "cog": [
+          0.5285714285714289,
+          -0.3285714285714283
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE_10": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 0.0030679615757712823,
+            "customDensity": 0.0009765625,
+            "customMoment": 0.0015339807878856412,
+            "cog": [
+              0.5285714285714289,
+              -0.3285714285714283
+            ]
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              0.5285714285714289,
+              -0.3285714285714283
+            ],
+            "radius": 1.0
+          }
+        }
+      }
+    },
+    "BODY_10": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 0.0030679615757712823,
+        "customMoment": 0.0015339807878856412,
+        "cog": [
+          0.4214285714285708,
+          -0.22857142857142865
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE_11": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 0.0030679615757712823,
+            "customDensity": 0.0009765625,
+            "customMoment": 0.0015339807878856412,
+            "cog": [
+              0.4214285714285708,
+              -0.22857142857142865
+            ]
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              0.4214285714285708,
+              -0.22857142857142865
+            ],
+            "radius": 1.0
+          }
+        }
+      }
+    },
+    "BODY_11": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 0.0016348073398440297,
+        "customMoment": 0.00043556527231538504,
+        "cog": [
+          0.0,
+          0.0
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE_12": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 0.0016348073398440297,
+            "customDensity": 0.0009765625,
+            "customMoment": 0.00043556527231538504,
+            "cog": [
+              0.0,
+              0.0
+            ]
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              0.0,
+              0.0
+            ],
+            "radius": 0.7299755793154008
+          }
+        }
+      }
+    },
+    "BODY_12": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 0.0023726760131925974,
+        "customMoment": 0.000917480764433017,
+        "cog": [
+          0.637576451694835,
+          -0.34234400608244847
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE_13": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 0.0023726760131925974,
+            "customDensity": 0.0009765625,
+            "customMoment": 0.000917480764433017,
+            "cog": [
+              0.637576451694835,
+              -0.34234400608244847
+            ]
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              0.637576451694835,
+              -0.34234400608244847
+            ],
+            "radius": 0.8794157954411521
+          }
+        }
+      }
+    },
+    "BODY_13": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 0.0030679615757712823,
+        "customMoment": 0.0015339807878856412,
+        "cog": [
+          0.18214285714285694,
+          0.30000000000000027
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE_14": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 0.0030679615757712823,
+            "customDensity": 0.0009765625,
+            "customMoment": 0.0015339807878856412,
+            "cog": [
+              0.18214285714285694,
+              0.30000000000000027
+            ]
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              0.18214285714285694,
+              0.30000000000000027
+            ],
+            "radius": 1.0
+          }
+        }
+      }
+    },
+    "BODY_14": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 0.0011049223832741383,
+        "customMoment": 0.00019896818178912176,
+        "cog": [
+          -0.555114613622382,
+          0.3064918523088824
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 0.0011049223832741383,
+            "customDensity": 0.0009765625,
+            "customMoment": 0.00019896818178912176,
+            "cog": [
+              -0.555114613622382,
+              0.3064918523088824
+            ]
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              -0.555114613622382,
+              0.3064918523088824
+            ],
+            "radius": 0.6001239066187912
           }
         }
       }
@@ -172,57 +561,336 @@
     "MAP:0": {
       "textureChannel": "0",
       "offset": [
-        44,
-        42
+        0,
+        0
       ],
       "size": [
-        97,
-        53
-      ],
-      "anchor": [
-        96.0,
-        48.0
-      ],
-      "subAnchor": [
-        0.15789275175292142,
-        1.7727238946206705
-      ],
-      "subScale": 0.02317588397556025,
-      "subRotate": 0.519900454541864,
-      "body": "BODY"
-    },
-    "MAP:1": {
-      "textureChannel": "1",
-      "offset": [
-        19,
-        21
-      ],
-      "size": [
-        25,
-        22
+        64,
+        64
       ],
       "anchor": [
         32.0,
         32.0
       ],
       "subAnchor": [
-        0.7053032714590728,
-        0.028399486263196327
+        0.0,
+        0.0
       ],
       "subScale": 0.03125,
-      "subRotate": 0.520774596275458,
+      "subRotate": 0.0,
+      "body": "BODY"
+    },
+    "MAP:0_1": {
+      "textureChannel": "0",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        0.020537410641201462,
+        0.27468786732607053
+      ],
+      "subScale": 0.02246279288881418,
+      "subRotate": 0.0,
       "body": "BODY_1"
+    },
+    "MAP:0_2": {
+      "textureChannel": "0",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        0.12613864950184767,
+        0.20516527328613823
+      ],
+      "subScale": 0.01329774919447192,
+      "subRotate": 0.0,
+      "body": "BODY_2"
+    },
+    "MAP:0_3": {
+      "textureChannel": "0",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        0.0,
+        0.0
+      ],
+      "subScale": 0.024269355137242113,
+      "subRotate": 0.0,
+      "body": "BODY_3"
+    },
+    "MAP:0_4": {
+      "textureChannel": "0",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        0.8678571428571433,
+        0.37857142857142856
+      ],
+      "subScale": 0.03125,
+      "subRotate": 0.0,
+      "body": "BODY_4"
+    },
+    "MAP:0_5": {
+      "textureChannel": "0",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        -0.4816490304134853,
+        -0.07775500042549521
+      ],
+      "subScale": 0.018898784825641234,
+      "subRotate": 0.0,
+      "body": "BODY_5"
+    },
+    "MAP:0_6": {
+      "textureChannel": "0",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        -0.42859321045132553,
+        -0.39021172891837075
+      ],
+      "subScale": 0.02798649695111267,
+      "subRotate": 0.0,
+      "body": "BODY_6"
+    },
+    "MAP:0_7": {
+      "textureChannel": "0",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        -0.06339834838297488,
+        -0.4871662559954899
+      ],
+      "subScale": 0.029196607807948874,
+      "subRotate": 0.0,
+      "body": "BODY_7"
+    },
+    "MAP:0_8": {
+      "textureChannel": "0",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        0.17834915898880602,
+        -0.14509762087224878
+      ],
+      "subScale": 0.02645008713817031,
+      "subRotate": 0.0,
+      "body": "BODY_8"
+    },
+    "MAP:0_9": {
+      "textureChannel": "0",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        0.5285714285714289,
+        -0.3285714285714283
+      ],
+      "subScale": 0.03125,
+      "subRotate": 0.0,
+      "body": "BODY_9"
+    },
+    "MAP:0_10": {
+      "textureChannel": "0",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        0.4214285714285708,
+        -0.22857142857142865
+      ],
+      "subScale": 0.03125,
+      "subRotate": 0.0,
+      "body": "BODY_10"
+    },
+    "MAP:0_11": {
+      "textureChannel": "0",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        0.0,
+        0.0
+      ],
+      "subScale": 0.022811736853606275,
+      "subRotate": 0.0,
+      "body": "BODY_11"
+    },
+    "MAP:0_12": {
+      "textureChannel": "0",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        0.637576451694835,
+        -0.34234400608244847
+      ],
+      "subScale": 0.027481743607536004,
+      "subRotate": 0.0,
+      "body": "BODY_12"
+    },
+    "MAP:0_13": {
+      "textureChannel": "0",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        0.18214285714285694,
+        0.30000000000000027
+      ],
+      "subScale": 0.03125,
+      "subRotate": 0.0,
+      "body": "BODY_13"
+    },
+    "MAP:0_14": {
+      "textureChannel": "0",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        -0.555114613622382,
+        0.3064918523088824
+      ],
+      "subScale": 0.018753872081837226,
+      "subRotate": 0.0,
+      "body": "BODY_14"
     }
   },
   "Textures": {
     "0": {
-      "path": "data/textures/pinky.png",
-      "size": [
-        192,
-        96
-      ]
-    },
-    "1": {
       "path": "data/textures/wheel2.png",
       "size": [
         64,

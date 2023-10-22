@@ -15,25 +15,28 @@ class Camera(arcade.Camera):
         super().__init__()
         self._center:Vec2 = Vec2(self.viewport_width/2.0, self.viewport_height/2.0)
 
-    def move(self, vector: Vec2):
-        super().move(vector )
-
     def move_to(self, vector: Vec2, speed: float = 1):
         super().move_to(vector - self._center, speed)
 
+
 class Proxy:
-    def __init__(self, sprite, body): #, pos:Vec2, angle:float):
+    def __init__(self, sprite, body, pos:Vec2, angle:float):
         self.sprite:arcade.Sprite = sprite
         self.body:pymunk.Body = body
-        #self.dPos = pos
-        #self.dAngle = angle
+        self.dPos = pos
+        self.dAngle = angle
+
+    def update(self):
+        self.sprite.radians = self.body.angle + self.dAngle
+        self.sprite.position = self.body.position + self.dPos.rotate(self.body.angle)
+
 
 class PymunkLoader:
 
     def __init__(self, space):
         self.space = space
         self.proxy:List[Proxy] = []
-        self.sprites: List = []
+        self.sprites: List[arcade.Sprite] = []
         self.bodies = {}
         self.bodiesPhysics = {}
         self.shapes = {}
@@ -58,23 +61,20 @@ class PymunkLoader:
             self.loadBodies(obj['Bodies'])
             self.loadTextures(obj['Textures'], obj['Mappings'])
 
-    def loadTextures(self,textures, mappings):
-        for label, texture in textures.items():
-            #print(texture)
-            pass        
+    def loadTextures(self,textures, mappings):     
         for label, mapping in mappings.items():
             channel = mapping['textureChannel']
             texturePath = textures[channel]['path']
             textureSize = textures[channel]['size']
             offset = mapping['offset']
             size = mapping['size']
-            anchor = mapping['anchor']
-            #print(texturePath)
             currentTexture = arcade.load_texture(texturePath, offset[0], textureSize[1] - offset[1] - size[1], size[0], size[1])
             sprite = arcade.Sprite(texture = currentTexture)
             sprite.scale = mapping['subScale']
             body = self.bodies[mapping['body']]
-            self.proxy.append(Proxy(sprite, body, ))
+            rot = mapping['subRotate']
+            anchor = mapping['subAnchor']
+            self.proxy.append(Proxy(sprite, body, Vec2(anchor[0], anchor[1]), rot))
             #print(mapping)
 
     def loadBodies(self, data):
@@ -136,12 +136,10 @@ class PymunkLoader:
         if physics['hasCustomMass']:
             shape.mass = physics['customMass']
 
-
-
     def update(self):
         for proxy in self.proxy:
-            proxy.sprite.position = proxy.body.position
-            proxy.sprite.angle = proxy.body.angle
+            proxy.body.angle += 0.01
+            proxy.update()
 
     def addAll(self):
         for l, b in self.bodies.items():
@@ -162,7 +160,7 @@ class PymunkLoader:
     
     def debug(self):
         for proxy in self.proxy:
-            print(proxy.body.position.x, proxy.body.position.y)
+            print(proxy.body.position.x, proxy.body.position.y, proxy.body.angle)
 
 class Runner(arcade.Window):
 
@@ -173,10 +171,8 @@ class Runner(arcade.Window):
         self.loader = PymunkLoader(self.space)
         self.loader.loadFile('data/states/export.json')
         self.loader.addAll()
-        self.sprite = arcade.Sprite('data/textures/wheel2.png')
-        self.sprite.position = (300, 300)
         self.camera = Camera()
-        self.camera.scale = 1/32.0
+        self.camera.scale = 1/50.0
         self.camera.update()
 
     def on_resize(self, width: float, height: float):
@@ -195,8 +191,6 @@ class Runner(arcade.Window):
         self.camera.use()
         self.loader.draw()
         self.loader.debug()
-        #self.sprite.draw()
-        #arcade.draw_circle_filled(self.sprite.position[0], self.sprite.position[1], 2, (255, 0, 0))
 
 
 Runner(800, 600, "ShaderTest").run()
