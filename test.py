@@ -25,6 +25,9 @@ class PymunkLoader:
         self.lines = {}
         self.constraints = {}
 
+    def move(self, x:float, y:float):
+        for body in self.bodies.values():
+            body.position = (body.position.x + x, body.position.y + y)
 
     def loadFile(self, path:str):
         data = None
@@ -149,6 +152,8 @@ class Runner(arcade.Window):
         self.loader = PymunkLoader(self.space)
         self.loader.loadFile('data/states/export.json')
         self.loader.addAll()
+        self.sprite = arcade.Sprite('data/textures/wheel2.png')
+        self.sprite.position = (300, 300)
         
 
     def on_resize(self, width: float, height: float):
@@ -156,11 +161,14 @@ class Runner(arcade.Window):
     
     def on_update(self, delta_time: float):
         self.space.step(0.016)
+        self.sprite.angle += 1
         return super().on_update(delta_time)
 
     def on_draw(self):
         self.clear()
         self.loader.draw()
+        self.sprite.draw()
+        arcade.draw_circle_filled(self.sprite.position[0], self.sprite.position[1], 2, (255, 0, 0))
 
 
 Runner(800, 600, "ShaderTest").run()

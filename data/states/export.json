@@ -104,7 +104,7 @@
   },
   "Textures": {
     "0": {
-      "path": "data\\textures\\pinky.png",
+      "path": "data/textures/pinky.png",
       "size": [
         192,
         96

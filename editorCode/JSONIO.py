@@ -28,6 +28,7 @@ class JSONIO:
         tmp['Constraints'] = constraints 
         tmp['Mappings'] = mappings
         tmp['Textures'] = textures
+        tmp['Version'] = "0.1.0"
         with open(path, 'w') as f:
             f.write(json.dumps(tmp, indent=2))
 
