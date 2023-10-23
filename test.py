@@ -18,7 +18,7 @@ class Camera(arcade.Camera):
         self.scale = 1.0
 
     def updateCursor(self, x, y):
-        self.cursorCoords = (Vec2(x,y) - self._center).scale(self.scale)
+        self.cursorCoords = (Vec2(x,y)).scale(self.scale)
 
     def setWidthInMeters(self, meters:float):
         self.meters = meters
@@ -202,6 +202,7 @@ class Runner(arcade.Window):
         self.space.step(0.016)
         self.loader.update()
         self.vec = self.loader.bodies['BODY'].position
+        print(self.vec.x, self.vec.y)
         self.camera.move(self.vec)
         self.camera.update()
         return super().on_update(delta_time)
@@ -210,10 +211,15 @@ class Runner(arcade.Window):
         self.clear()
         self.camera.use()
         self.loader.draw()
-        arcade.draw_point(self.camera.cursorCoords.x, self.camera.cursorCoords.y, (255,0,0), 0.1)
-        #arcade.draw_circle_outline(self.camera.cursorCoords.x, self.camera.cursorCoords.y, 1.0, (255,0,0), border_width=0.1, num_segments=16)
-        self.loader.debug()
-        print(self.camera.cursorCoords.x, self.camera.cursorCoords.y)
+        #arcade.draw_point(self.camera.cursorCoords.x, self.camera.cursorCoords.y, (255,0,0), 0.1)
+        vec = self.loader.bodies['BODY'].position
+        arcade.draw_circle_outline(vec.x, vec.y, 1.0, (255,0,0), border_width=0.1, num_segments=16)
+        arcade.draw_circle_outline(self.camera.cursorCoords.x, self.camera.cursorCoords.y, 1.0, (255,0,0), border_width=0.1, num_segments=16)
+        print(self.camera.position)
+        print(self.camera._center)
+        #print(self.camera.cursorCoords.x, self.camera.cursorCoords.y)
+        #self.loader.debug()
+
 
 
 Runner(800, 600, "ShaderTest").run()
