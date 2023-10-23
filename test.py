@@ -2,10 +2,10 @@ import array
 import arcade
 from arcade.gl import BufferDescription
 from arcade import ArcadeContext
-from pyglet.math import Mat4, Vec2, Vec3
+from pyglet.math import Mat4, Vec2, Vec3, Vec4
 import random
 
-from typing import List
+from typing import List, Dict
 import pymunk
 import json
 
@@ -14,12 +14,26 @@ class Camera(arcade.Camera):
     def __init__(self):
         super().__init__()
         self._center:Vec2 = Vec2(self.viewport_width/2.0, self.viewport_height/2.0)
+        self.cursorCoords:Vec2 = Vec2(0,0)
+        self.scale = 1.0
+
+    def updateCursor(self, x, y):
+        self.cursorCoords = (Vec2(x,y) - self._center).scale(self.scale)
+
+    def setWidthInMeters(self, meters:float):
+        self.meters = meters
+        self.scale = self.meters / self.viewport_width
+
+    def resize(self, width, height):
+        self.scale = 1.0
+        super().resize(width, height)
+        self.scale = self.meters / width
+        self._center:Vec2 = Vec2(width/2.0, height/2.0)
 
     def move_to(self, vector: Vec2, speed: float = 1):
         super().move_to(vector - self._center, speed)
 
-
-class Proxy:
+class ArcadeProxy:
     def __init__(self, sprite, body, pos:Vec2, angle:float):
         self.sprite:arcade.Sprite = sprite
         self.body:pymunk.Body = body
@@ -33,22 +47,22 @@ class Proxy:
 
 class PymunkLoader:
 
-    def __init__(self, space):
+    def __init__(self, space:pymunk.Space):
         self.space = space
-        self.proxy:List[Proxy] = []
-        self.sprites: List[arcade.Sprite] = []
-        self.bodies = {}
+        self.proxy:List[ArcadeProxy] = []
+        self.constraints:Dict[str, pymunk.Constraint] = {}
+        self.bodies:Dict[str, pymunk.Body]  = {}
         self.bodiesPhysics = {}
-        self.shapes = {}
+        # 4 dicts below are not needed i guess
+        self.shapes:Dict[str, pymunk.Shape] = {}
         self.shapesPhysics = {}
-        self.lines = {}
+        self.lines:Dict[str, pymunk.Shape] = {}
         self.linesPhysics = {}
-        self.constraints = {}
-        self.physicsParams = {}
 
     def move(self, x:float, y:float):
         for body in self.bodies.values():
-            body.position = (body.position.x + x, body.position.y + y)
+            pos:Vec2 = body.position
+            body.position = (pos.x + x, pos.y + y)
 
     def loadFile(self, path:str):
         data = None
@@ -59,9 +73,9 @@ class PymunkLoader:
             obj = json.loads(data)
         if obj:
             self.loadBodies(obj['Bodies'])
-            self.loadTextures(obj['Textures'], obj['Mappings'])
+            self.loadSprites(obj['Textures'], obj['Mappings'])
 
-    def loadTextures(self,textures, mappings):     
+    def loadSprites(self,textures, mappings):     
         for label, mapping in mappings.items():
             channel = mapping['textureChannel']
             texturePath = textures[channel]['path']
@@ -74,7 +88,7 @@ class PymunkLoader:
             body = self.bodies[mapping['body']]
             rot = mapping['subRotate']
             anchor = mapping['subAnchor']
-            self.proxy.append(Proxy(sprite, body, Vec2(anchor[0], anchor[1]), rot))
+            self.proxy.append(ArcadeProxy(sprite, body, Vec2(anchor[0], anchor[1]), rot))
             #print(mapping)
 
     def loadBodies(self, data):
@@ -162,21 +176,27 @@ class PymunkLoader:
         for proxy in self.proxy:
             print(proxy.body.position.x, proxy.body.position.y, proxy.body.angle)
 
+
 class Runner(arcade.Window):
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
         self.space = pymunk.Space()
-        self.space.gravity = (10.0, 10.0)
+        self.space.gravity = (0.0, 0.0)
         self.loader = PymunkLoader(self.space)
         self.loader.loadFile('data/states/export.json')
         self.loader.addAll()
         self.camera = Camera()
-        self.camera.scale = 1/50.0
+        self.camera.setWidthInMeters(40.0)
         self.camera.update()
 
     def on_resize(self, width: float, height: float):
+        self.camera.resize(width, height)
         return super().on_resize(width, height)
+    
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
+        self.camera.updateCursor(float(x),float(y))
+        return super().on_mouse_motion(x, y, dx, dy)
     
     def on_update(self, delta_time: float):
         self.space.step(0.016)
@@ -190,7 +210,10 @@ class Runner(arcade.Window):
         self.clear()
         self.camera.use()
         self.loader.draw()
+        arcade.draw_point(self.camera.cursorCoords.x, self.camera.cursorCoords.y, (255,0,0), 0.1)
+        #arcade.draw_circle_outline(self.camera.cursorCoords.x, self.camera.cursorCoords.y, 1.0, (255,0,0), border_width=0.1, num_segments=16)
         self.loader.debug()
+        print(self.camera.cursorCoords.x, self.camera.cursorCoords.y)
 
 
 Runner(800, 600, "ShaderTest").run()
