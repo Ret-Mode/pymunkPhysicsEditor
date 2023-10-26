@@ -13,12 +13,12 @@ class Camera(arcade.Camera):
 
     def __init__(self):
         super().__init__()
-        self._center:Vec2 = Vec2(self.viewport_width/2.0, self.viewport_height/2.0)
         self.cursorCoords:Vec2 = Vec2(0,0)
         self.scale = 1.0
 
     def updateCursor(self, x, y):
-        self.cursorCoords = (Vec2(x,y)).scale(self.scale)
+        self.cursorCoords.x = (x - self.viewport_width/2.0) * self.scale + self.position.x
+        self.cursorCoords.y = (y - self.viewport_height/2.0) * self.scale + self.position.y
 
     def setWidthInMeters(self, meters:float):
         self.meters = meters
@@ -28,10 +28,16 @@ class Camera(arcade.Camera):
         self.scale = 1.0
         super().resize(width, height)
         self.scale = self.meters / width
-        self._center:Vec2 = Vec2(width/2.0, height/2.0)
 
-    def move_to(self, vector: Vec2, speed: float = 1):
-        super().move_to(vector - self._center, speed)
+    def set_projection(self):
+        self.projection_matrix = Mat4.orthogonal_projection(
+            -self.scale * self.viewport_width / 2.0,
+            self.scale * self.viewport_width / 2.0,
+            -self.scale * self.viewport_height / 2.0,
+            self.scale * self.viewport_height / 2.0,
+            self.near,
+            self.far
+        )
 
 class ArcadeProxy:
     def __init__(self, sprite, body, pos:Vec2, angle:float):
@@ -202,7 +208,6 @@ class Runner(arcade.Window):
         self.space.step(0.016)
         self.loader.update()
         self.vec = self.loader.bodies['BODY'].position
-        print(self.vec.x, self.vec.y)
         self.camera.move(self.vec)
         self.camera.update()
         return super().on_update(delta_time)
@@ -211,13 +216,9 @@ class Runner(arcade.Window):
         self.clear()
         self.camera.use()
         self.loader.draw()
-        #arcade.draw_point(self.camera.cursorCoords.x, self.camera.cursorCoords.y, (255,0,0), 0.1)
         vec = self.loader.bodies['BODY'].position
         arcade.draw_circle_outline(vec.x, vec.y, 1.0, (255,0,0), border_width=0.1, num_segments=16)
         arcade.draw_circle_outline(self.camera.cursorCoords.x, self.camera.cursorCoords.y, 1.0, (255,0,0), border_width=0.1, num_segments=16)
-        print(self.camera.position)
-        print(self.camera._center)
-        #print(self.camera.cursorCoords.x, self.camera.cursorCoords.y)
         #self.loader.debug()
 
 
