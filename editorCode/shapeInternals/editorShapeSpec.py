@@ -2,7 +2,7 @@ from ..editorTypes import V2, Mat, Radius, EditorPoint, BoundingBox
 from .editorShapeSpecI import ShapeSpec
 
 from typing import List, Optional, Tuple
-
+import math
 
 class PolygonSpec(ShapeSpec):
 
@@ -252,11 +252,14 @@ class LineSpec(ShapeSpec):
     def getJSONDict(self, parent:dict):
         prevPoint = self.points[0]
         points = []
+        length = 0.0
         for point in self.points[1:]:
+            length += math.sqrt((prevPoint.final.x - point.final.x) ** 2 + (prevPoint.final.y - point.final.y) ** 2)
             points.append([prevPoint.final.x, prevPoint.final.y, point.final.x, point.final.y])
             prevPoint = point
         this = {'points' : points,
-                'radius' : self.radius.final}
+                'radius' : self.radius.final,
+                'length' : length}
         parent['internal'] = this
 
     def addPoint(self, point:EditorPoint):

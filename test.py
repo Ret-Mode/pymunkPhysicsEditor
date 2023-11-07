@@ -8,6 +8,8 @@ import random
 from typing import List, Dict
 import pymunk
 import json
+import math
+
 
 class Camera(arcade.Camera):
 
@@ -39,6 +41,7 @@ class Camera(arcade.Camera):
             self.far
         )
 
+
 class ArcadeProxy:
     def __init__(self, sprite, body, pos:Vec2, angle:float):
         self.sprite:arcade.Sprite = sprite
@@ -55,15 +58,12 @@ class PymunkLoader:
 
     def __init__(self, space:pymunk.Space):
         self.space = space
-        self.proxy:List[ArcadeProxy] = []
         self.constraints:Dict[str, pymunk.Constraint] = {}
         self.bodies:Dict[str, pymunk.Body]  = {}
         self.bodiesPhysics = {}
         # 4 dicts below are not needed i guess
         self.shapes:Dict[str, pymunk.Shape] = {}
-        self.shapesPhysics = {}
-        self.lines:Dict[str, pymunk.Shape] = {}
-        self.linesPhysics = {}
+        self.lines:Dict[str, List[pymunk.Shape]] = {}
 
     def move(self, x:float, y:float):
         for body in self.bodies.values():
@@ -77,25 +77,10 @@ class PymunkLoader:
             data = f.read()
         if data:
             obj = json.loads(data)
-        if obj:
-            self.loadBodies(obj['Bodies'])
-            self.loadSprites(obj['Textures'], obj['Mappings'])
+            self.loadData(obj)
 
-    def loadSprites(self,textures, mappings):     
-        for label, mapping in mappings.items():
-            channel = mapping['textureChannel']
-            texturePath = textures[channel]['path']
-            textureSize = textures[channel]['size']
-            offset = mapping['offset']
-            size = mapping['size']
-            currentTexture = arcade.load_texture(texturePath, offset[0], textureSize[1] - offset[1] - size[1], size[0], size[1])
-            sprite = arcade.Sprite(texture = currentTexture)
-            sprite.scale = mapping['subScale']
-            body = self.bodies[mapping['body']]
-            rot = mapping['subRotate']
-            anchor = mapping['subAnchor']
-            self.proxy.append(ArcadeProxy(sprite, body, Vec2(anchor[0], anchor[1]), rot))
-            #print(mapping)
+    def loadData(self, obj:Dict):
+        self.loadBodies(obj['Bodies'])
 
     def loadBodies(self, data):
         for label, body in data.items():
@@ -120,27 +105,37 @@ class PymunkLoader:
 
     def loadShape(self, shape:dict, label:str, body:pymunk.Body):
         type = shape['type']
+        physics = shape['physics']
         if type in ('Polygon', "Box", "Rect"):
             points = []
             for point in shape['internal']['points']:
                 points.append((point[0], point[1]))
-            self.shapes[label] = pymunk.Poly(body=body, vertices=points, radius=shape['internal']['radius'])
-            #s = self.loadPolygon(shape['internal'], shape['physics'])
-            #s.body = body
+            s = pymunk.Poly(body=body, vertices=points, radius=shape['internal']['radius'])
+            self.shapes[label] = s
+            if physics['hasCustomMass']:
+                s.mass = physics['customMass']
+            else:
+                s.density = physics['customDensity']
         elif type == 'Circle':
             placement = shape['internal']['offset']
-            self.shapes[label] = pymunk.Circle(body=body, radius=shape['internal']['radius'], offset=placement)
-            # s = self.loadCircle(shape['internal'], shape['physics'])
-            # s.body = body
+            s = pymunk.Circle(body=body, radius=shape['internal']['radius'], offset=placement)
+            self.shapes[label] = s
+            if physics['hasCustomMass']:
+                s.mass = physics['customMass']
+            else:
+                s.density = physics['customDensity']
         elif type == 'Line':
-            #ss = self.loadLine(shape['internal'], shape['physics'])
             self.lines[label] = []
             for point in shape['internal']['points']:
                 p1 = (point[0], point[1])
                 p2 = (point[2], point[3])
                 s = pymunk.Segment(body=body, a=p1, b=p2, radius=shape['internal']['radius'])
+                if physics['hasCustomMass']:
+                    length = math.sqrt((point[0] - point[2]) ** 2 + (point[1] - point[3]) ** 2)
+                    s.mass = length / physics['customMass']
+                else:
+                    s.density = physics['customDensity']
                 self.lines[label].append(s)
-        self.shapesPhysics[label] = shape['physics']
 
     def loadBodyPhysics(self, body: pymunk.Body, physics:dict):
         if physics['hasCustomMass']:
@@ -151,28 +146,51 @@ class PymunkLoader:
         elif physics['hasCustomMoment']:
             body.moment = physics['customMoment']
 
-    def loadShapePhysics(self, shape: pymunk.Shape, physics:dict):
-        shape.density = physics['customDensity']
-        if physics['hasCustomMass']:
-            shape.mass = physics['customMass']
+    def addAll(self):
+        for l, b in self.bodies.items():
+            self.space.add(b)
+            for shape in b.shapes:
+                self.space.add(shape)
+            self.loadBodyPhysics(b, self.bodiesPhysics[l])
+
+
+class SpriteLoader(PymunkLoader):
+    def __init__(self, space:pymunk.Space):
+        super().__init__(space)
+        self.proxy:List[ArcadeProxy] = []
+
+    def loadFile(self, path:str):
+        data = None
+        obj = None
+        with open(path, 'r') as f:
+            data = f.read()
+        if data:
+            obj = json.loads(data)
+            super().loadData(obj)
+            self.loadData(obj)
+
+    def loadData(self, obj:Dict):
+        self.loadSprites(obj['Textures'], obj['Mappings'])
+
+    def loadSprites(self,textures, mappings):     
+        for label, mapping in mappings.items():
+            channel = mapping['textureChannel']
+            texturePath = textures[channel]['path']
+            textureSize = textures[channel]['size']
+            offset = mapping['offset']
+            size = mapping['size']
+            currentTexture = arcade.load_texture(texturePath, offset[0], textureSize[1] - offset[1] - size[1], size[0], size[1])
+            sprite = arcade.Sprite(texture = currentTexture)
+            sprite.scale = mapping['subScale']
+            body = self.bodies[mapping['body']]
+            rot = mapping['subRotate']
+            anchor = mapping['subAnchor']
+            self.proxy.append(ArcadeProxy(sprite, body, Vec2(anchor[0], anchor[1]), rot))
 
     def update(self):
         for proxy in self.proxy:
             proxy.body.angle += 0.01
             proxy.update()
-
-    def addAll(self):
-        for l, b in self.bodies.items():
-            self.loadBodyPhysics(b, self.bodiesPhysics[l])
-            self.space.add(b)
-        for l, s in self.shapes.items():
-            self.space.add(s)
-            self.loadShapePhysics(s, self.shapesPhysics[l])
-        for ls in self.lines.values():
-            for l in ls:
-                self.space.add(l)
-        for l, b in self.bodies.items():
-            self.loadBodyPhysics(b, self.bodiesPhysics[l])
 
     def draw(self):
         for proxy in self.proxy:
@@ -189,7 +207,7 @@ class Runner(arcade.Window):
         super().__init__(width, height, title, resizable=True)
         self.space = pymunk.Space()
         self.space.gravity = (0.0, 0.0)
-        self.loader = PymunkLoader(self.space)
+        self.loader = SpriteLoader(self.space)
         self.loader.loadFile('data/states/export.json')
         self.loader.addAll()
         self.camera = Camera()
@@ -217,7 +235,6 @@ class Runner(arcade.Window):
         self.camera.use()
         self.loader.draw()
         vec = self.loader.bodies['BODY'].position
-        arcade.draw_circle_outline(vec.x, vec.y, 1.0, (255,0,0), border_width=0.1, num_segments=16)
         arcade.draw_circle_outline(self.camera.cursorCoords.x, self.camera.cursorCoords.y, 1.0, (255,0,0), border_width=0.1, num_segments=16)
         #self.loader.debug()
 
