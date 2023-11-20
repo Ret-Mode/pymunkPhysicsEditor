@@ -201,7 +201,7 @@ class SpriteLoader(PymunkLoader):
 
     def update(self):
         for proxy in self.proxy:
-            proxy.body.angle += 0.01
+            #proxy.body.angle += 0.01
             proxy.update()
 
     def draw(self):

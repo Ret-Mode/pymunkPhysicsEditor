@@ -206,5 +206,13 @@ class TextureMapping:
         this['subScale'] = self.body.transform.objectScale / (self.transform.objectScale * physicsSetup['pixelPerMeter'])
         this['subRotate'] = self.body.transform.objectAngle.angle - self.transform.objectAngle.angle
         this['body'] = self.body.label
+        this['GLmapping'] = [self.mappingRect[0].final.x, self.mappingRect[0].final.y,
+                             self.mappingRect[1].final.x, self.mappingRect[1].final.y,
+                             self.mappingRect[2].final.x, self.mappingRect[2].final.y,
+                             self.mappingRect[3].final.x, self.mappingRect[3].final.y]
+        this['GLuv'] = [self.uv[0].x, self.uv[0].y,
+                        self.uv[1].x, self.uv[1].y,
+                        self.uv[2].x, self.uv[2].y,
+                        self.uv[3].x, self.uv[3].y,]
         parent[self.label] = this
     
