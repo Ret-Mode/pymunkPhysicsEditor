@@ -62,8 +62,8 @@ class GLProxy:
         self.dAngle = angle
 
     def update(self):
-        self.sprite.radians = self.body.angle + self.dAngle
-        self.sprite.position = self.body.position + self.dPos.rotate(self.body.angle)
+        radians = self.body.angle + self.dAngle
+        position = self.body.position + self.dPos.rotate(self.body.angle)
 
 
 class PymunkLoader:
@@ -93,13 +93,14 @@ class PymunkLoader:
 
     def loadData(self, obj:Dict):
         self.loadBodies(obj['Bodies'])
+        self.loadConstraints(obj['Constraints'])
 
-    def loadBodies(self, data):
+    def loadBodies(self, data:Dict):
         for label, body in data.items():
             self.loadBody(body, label)
 
-    def loadBody(self, data, label):
-        typ = data['type']
+    def loadBody(self, data:Dict, label:str):
+        typ:str = data['type']
         if typ == 'Dynamic':
             self.bodies[label] = pymunk.Body(pymunk.Body.DYNAMIC)
         elif typ == 'Kinematic':
@@ -107,15 +108,15 @@ class PymunkLoader:
         else:
             self.bodies[label] = pymunk.Body(pymunk.Body.STATIC)
 
-        physics = data['physics']
-        shapes = data['shapes']
+        physics:Dict = data['physics']
+        shapes:Dict = data['shapes']
 
         for sLabel, shape in shapes.items():
             self.loadShape(shape, sLabel, self.bodies[label])
 
         self.bodiesPhysics[label] = physics
 
-    def loadShape(self, shape:dict, label:str, body:pymunk.Body):
+    def loadShape(self, shape:Dict, label:str, body:pymunk.Body):
         type = shape['type']
         physics = shape['physics']
         if type in ('Polygon', "Box", "Rect"):
@@ -158,12 +159,21 @@ class PymunkLoader:
         elif physics['hasCustomMoment']:
             body.moment = physics['customMoment']
 
+    def loadConstraints(self, data:Dict):
+        for label in data:
+            self.loadConstraint(data[label], label)
+
+    def loadConstraint(self, constraint:Dict, label:str):
+        type = constraint['type']
+        print(type)
+
     def addAll(self):
         for l, b in self.bodies.items():
             self.space.add(b)
             for shape in b.shapes:
                 self.space.add(shape)
             self.loadBodyPhysics(b, self.bodiesPhysics[l])
+        
 
 
 class SpriteLoader(PymunkLoader):

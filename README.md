@@ -15,6 +15,8 @@ Missing features (ordered somewhat as they are planned to be developed):
    - [x] Add mapping of textures to bodies
    - [x] Add texture shader
 - [x] Add transforms to texture views
+- [ ] Change transform panel (remove update)
+- [ ] Fix pickling (default save method i guess)
 - [ ] Add texture utils
 - [ ] Supporting all parameters of pymunk objects
 - [ ] Saving/loading (JSON)
