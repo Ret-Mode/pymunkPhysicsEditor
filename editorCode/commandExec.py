@@ -15,6 +15,7 @@ from .constraintInternals.editorConstraint import DampedRotarySpring, DampedSpri
 from .constraintInternals.editorConstraint import GrooveJoint, PinJoint, PivotJoint, RatchetJoint
 from .constraintInternals.editorConstraint import RotaryLimitJoint, SimpleMotor, SlideJoint
 
+import pickle
 import collections
 import math
 
@@ -38,6 +39,48 @@ class CommandUndo(Command):
     def hasUndo(self):
         return True
     
+
+
+class ComSave(Command):
+
+    def __init__(self, filename:str):
+        self.filename = filename
+        self.database = Database.getInstance()
+        self.texture = TextureContainerI.getInstance()
+
+    def execute(self):
+        with open('data/states/'+self.filename, 'wb') as f:
+            data = {'database':self.database,
+                    'textureSizes': self.texture.sizes,
+                    'texturePaths': self.texture.paths}
+            f.write(pickle.dumps(data))
+
+
+class ComLoad(Command):
+
+    def __init__(self, filename:str):
+        self.filename = filename
+        self.database = Database.getInstance()
+        self.texture = TextureContainerI.getInstance()
+
+    def execute(self):
+        data = None
+        with open('data/states/'+self.filename, 'rb') as f:
+            data = pickle.loads(f.read())
+        if data:
+            database:Database = data['database']
+            self.database.bodies = database.bodies
+            self.database.constraints = database.constraints
+            self.database.shapeList = database.shapeList
+            self.database.mappings = database.mappings
+            
+            self.texture.deleteAll()
+            self.texture.sizes = data['textureSizes']
+            self.texture.paths = data['texturePaths']
+            for i, elem in enumerate(zip(self.texture.paths, self.texture.sizes)):
+                if elem[0] and elem[1]:
+                    self.texture.load(elem[0], i, elem[1])
+
 
 class ComMoveCursor(Command):
 

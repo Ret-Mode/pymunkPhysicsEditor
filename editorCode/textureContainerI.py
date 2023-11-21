@@ -30,12 +30,17 @@ class TextureContainerI:
     def updateNonEmptyList(self):
         self.nonEmptyChannels = list(filter(lambda x: self.paths[x], range(self.elems)))
 
+    def deleteAll(self):
+        for i in range(self.elems):
+            self.delete(i)
+
     def delete(self, textureIndex:int):
-        if self.textures[textureIndex] is not None:
-            self._deleteTexture(self.textures[textureIndex])
-            self.sizes[textureIndex] = (0,0)
-            self.paths[textureIndex] = ''
-        self.updateNonEmptyList()
+        if 0 <= textureIndex < self.elems:
+            if self.textures[textureIndex] is not None:
+                self._deleteTexture(self.textures[textureIndex])
+                self.sizes[textureIndex] = (0,0)
+                self.paths[textureIndex] = ''
+            self.updateNonEmptyList()
 
     def load(self, path:str, textureIndex:int, size:Tuple[int]):
         if 0 <= textureIndex < self.elems:

@@ -324,9 +324,6 @@ class EditorConstraintView:
                     else:
                         CommandExec.addCommand(ComSetSlideMinFromCoords(constraint, coords))
 
-
-
-
     def undo(self):
         self.clearCurrentOperations()
         CommandExec.undo()
