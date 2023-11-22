@@ -9,7 +9,6 @@ from .shapeInternals.editorBodyI import BodyI
 from .guiButtons import ScrollableLayout, TexturePreview
 from .guiButtons import Button, Label
 from .guiPanels import ScrollableCBLabelPanel, EmptyPanel
-from .config import physicsSetup
 from .editorFilesystem import EditorDir
 from .textureContainerI import TextureContainerI
 from .textureMapping import TextureMapping

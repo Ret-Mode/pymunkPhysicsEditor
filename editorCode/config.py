@@ -111,46 +111,28 @@ def scaleFromString(scale: str, default:float) -> float:
 
 def distanceInPixelsToString(distance: float, default:str) -> str:
     try:
-        if physicsSetup['measureInPixels']:
-            return f'{distance:.3f}'
-        else:
-            val = distance/physicsSetup['pixelPerMeter']
-            return f'{val:.3f}'
+        return f'{distance:.3f}'
     except:
         return default
 
 
 def distanceInStringToPixels(distance: str, default:float) -> float:
     try:
-        value = float(distance)
-        if physicsSetup['measureInPixels']:
-            return value
-        else:
-            return value * physicsSetup['pixelPerMeter']
-        
+        return  float(distance)
     except:
         return default
     
 
 def areaInPixelsToString(area: float, default:str) -> str:
     try:
-        if physicsSetup['measureInPixels']:
-            return f'{area:.3f}'
-        else:
-            val = area/(physicsSetup['pixelPerMeter'] * physicsSetup['pixelPerMeter'])
-            return f'{val:.3f}'
+        return f'{area:.3f}'
     except:
         return default
 
 
 def areaInStringToPixels(area: str, default:float) -> float:
     try:
-        value = float(area)
-        if physicsSetup['measureInPixels']:
-            return value
-        else:
-            return value * physicsSetup['pixelPerMeter'] * physicsSetup['pixelPerMeter']
-        
+        return float(area)
     except:
         return default
 
@@ -185,21 +167,13 @@ def momentInStringToPixels(moment: str, default:float) -> float:
     
 def densityInPixelsToString(density: float, default:str) -> str:
     try:
-        if physicsSetup['measureInPixels']:
-            return f'{density:.3f}'
-        else:
-            density = density * (physicsSetup['pixelPerMeter'] * physicsSetup['pixelPerMeter'])
-            return f'{density:.3f}'
+        return f'{density:.3f}'
     except:
         return default
 
 
 def densityInStringToPixels(density: str, default:float) -> float:
     try:
-        value = float(density)
-        if physicsSetup['measureInPixels']:
-            return value
-        else:
-            return value / (physicsSetup['pixelPerMeter'] * physicsSetup['pixelPerMeter'])
+        return float(density)
     except:
         return default

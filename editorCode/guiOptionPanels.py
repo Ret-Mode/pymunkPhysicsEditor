@@ -3,7 +3,6 @@ import arcade.gui
 from typing import List
 
 from .guiButtons import CheckButton
-from .config import physicsSetup
 
 class OptionsButtons(arcade.gui.UIBoxLayout):
 
@@ -16,7 +15,7 @@ class OptionsButtons(arcade.gui.UIBoxLayout):
         self.rows[0].add(CheckButton(text="Pixels", width='thirdWidth', default=True, cb = self.changeMeasure))
         
     def changeMeasure(self, value:bool):
-        physicsSetup['measureInPixels'] = value
+        pass
 
     def setCommandPipeline(self, commands):
         self.commands = commands

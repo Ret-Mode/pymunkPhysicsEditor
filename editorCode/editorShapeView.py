@@ -3,7 +3,7 @@ from .editorCursor import Cursor
 from .editorShapes import Container
 from .shapeInternals.editorShapeI import ShapeI
 from .editorCamera import EditorCamera
-from .commandExec import CommandExec, ComCancelTransform, ComStartTransform, ComNewShapeAddPoint, ComNewShapeNewRadius, ComNewShapeNewWH
+from .commandExec import CommandExec, ComCancelTransform, ComStartTransform, ComNewShapeAddPoint, ComNewShapeNewWH
 from .commandExec import ComMoveCursor, ComSetPivot, ComResizeView, ComScaleView, ComMoveView, ComApplyTransform
 from .editorViewTransform import ContinuousTransform
 from .database import Database

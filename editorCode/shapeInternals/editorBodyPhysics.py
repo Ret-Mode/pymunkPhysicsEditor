@@ -26,7 +26,7 @@ class BodyPhysics(PhysicsProp):
             else:
                 self.mass.final = self.mass.calc * self.density.final
         else:
-            self.density.final = 1.0 / (physicsSetup['pixelPerMeter'] * physicsSetup['pixelPerMeter'])
+            self.density.final = 1.0
             if self.mass.userDefined:
                 self.mass.final = self.mass.user
             else:
@@ -94,7 +94,7 @@ class BodyStaticPhysics(PhysicsProp):
             else:
                 self.mass.final = self.mass.calc * self.density.final
         else:
-            self.density.final = 1.0 / (physicsSetup['pixelPerMeter'] * physicsSetup['pixelPerMeter'])
+            self.density.final = 1.0
             if self.mass.userDefined:
                 self.mass.final = self.mass.user
             else:

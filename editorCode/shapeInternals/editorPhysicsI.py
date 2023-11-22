@@ -1,5 +1,4 @@
 from ..editorTypes import UserSettableFloat, ContainerTransform, CenterOfGravity
-from ..config import physicsSetup
 
 
 class PhysicsProp:
@@ -7,7 +6,7 @@ class PhysicsProp:
     def __init__(self):
         self.cog = CenterOfGravity()
         self.area: float = 1.0
-        self.density: UserSettableFloat = UserSettableFloat(1.0 / (physicsSetup['pixelPerMeter'] * physicsSetup['pixelPerMeter']))
+        self.density: UserSettableFloat = UserSettableFloat(1.0)
         self.mass: UserSettableFloat = UserSettableFloat(1.0)
         self.moment: UserSettableFloat = UserSettableFloat(1.0)
 

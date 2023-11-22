@@ -1,5 +1,4 @@
 from ..editorTypes import ContainerTransform, EditorPoint
-from ..config import physicsSetup
 from .editorPhysicsI import PhysicsProp
 from .editorShapeSpecI import ShapeSpec
 from .editorShapeSpec import RectSpec, BoxSpec
@@ -23,7 +22,7 @@ class ShapePhysics(PhysicsProp):
         if self.density.userDefined:
             self.density.final = self.density.user
         else:
-            self.density.final = 1.0 / (physicsSetup['pixelPerMeter'] * physicsSetup['pixelPerMeter'])
+            self.density.final = 1.0
 
         if self.mass.userDefined:
             self.mass.final = self.mass.user * transform.objectScale * transform.objectScale
@@ -142,7 +141,9 @@ class BoxPhysics(ShapePhysics):
 
     def recalcArea(self,internal: BoxSpec):
         point = internal.halfWH.final
+        
         radius = internal.radius.final
+        print(point, radius)
         self.cog.calc.setFromV(internal.points[0].final)
         a = point.length() * math.sqrt(2.0)
         self.area = a * a + 4 * a * radius + math.pi * radius * radius
