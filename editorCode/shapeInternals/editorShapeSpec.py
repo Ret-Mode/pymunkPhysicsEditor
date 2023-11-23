@@ -10,7 +10,7 @@ class PolygonSpec(ShapeSpec):
         # TODO correct all shapes internals - points to hold geometry only
         self.points: List[EditorPoint] = []
         self.currentPoint: Optional[EditorPoint] = None
-        self.radius: Radius = Radius(1.0)
+        self.radius: Radius = Radius(0.01)
 
     def getJSONDict(self, parent:dict):
         points = []
@@ -53,11 +53,12 @@ class CircleSpec(ShapeSpec):
         # this is basically radius
         self.halfWH: EditorPoint = self.points[1]
         #user radius, unusable on circles
-        self.radius: Radius = Radius(0.0)
+        self.radius: Radius = Radius(1.0)
         self.drawLines: int = 32
 
     def getJSONDict(self, parent:dict):
         center = self.center
+        # TODO use radius, not HW
         halfWH = self.halfWH
         this = {'offset' : [center.final.x, center.final.y],
                 'radius' : halfWH.final.length()}
@@ -101,7 +102,7 @@ class BoxSpec(ShapeSpec):
         self.points: List[EditorPoint] = [EditorPoint(0.0, 0.0), EditorPoint(0.0, 0.0), EditorPoint(0.0, 0.0), EditorPoint(0.0, 0.0), EditorPoint(0.0, 0.0)]
         # TODO Cleanup halfWH use
         self.halfWH: EditorPoint = EditorPoint(1.0, 1.0)
-        self.radius: Radius = Radius(1.0)
+        self.radius: Radius = Radius(0.01)
         self._setVerts()
 
     def _setVerts(self):
@@ -176,7 +177,7 @@ class RectSpec(ShapeSpec):
         self.halfWH = EditorPoint(1.0, 1.0)
         self.right: V2 = V2()
         self.up: V2 = V2()
-        self.radius: Radius = Radius(1.0)
+        self.radius: Radius = Radius(0.01)
         self._setVerts()
 
     def _setVerts(self):
@@ -247,7 +248,7 @@ class LineSpec(ShapeSpec):
         # TODO correct all shapes internals - points to hold geometry only
         self.points: List[EditorPoint] = []
         self.currentPoint: Optional[EditorPoint] = None
-        self.radius: Radius = Radius(1.0)
+        self.radius: Radius = Radius(0.01)
 
     def getJSONDict(self, parent:dict):
         prevPoint = self.points[0]

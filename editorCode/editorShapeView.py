@@ -4,7 +4,7 @@ from .editorShapes import Container
 from .shapeInternals.editorShapeI import ShapeI
 from .editorCamera import EditorCamera
 from .commandExec import CommandExec, ComCancelTransform, ComStartTransform, ComNewShapeAddPoint, ComNewShapeNewWH
-from .commandExec import ComMoveCursor, ComSetPivot, ComResizeView, ComScaleView, ComMoveView, ComApplyTransform
+from .commandExec import ComMoveCursor, ComSetPivot, ComResizeView, ComScaleView, ComMoveView, ComApplyTransform, ComNewShapeNewCircleRadius
 from .editorViewTransform import ContinuousTransform
 from .database import Database
 from .editorState import EditorState
@@ -82,6 +82,7 @@ class EditorShapeView:
                 CommandExec.addCommand(ComNewShapeAddPoint(self.cursor.viewCoords, shape))
             elif shape.type == ShapeI.CIRCLE:
                 CommandExec.addCommand(ComNewShapeNewWH(self.cursor.viewCoords, shape))
+                CommandExec.addCommand(ComNewShapeNewCircleRadius(self.cursor.viewCoords, shape))
             elif shape.type == ShapeI.BOX:
                 CommandExec.addCommand(ComNewShapeNewWH(self.cursor.viewCoords, shape))
             elif shape.type == ShapeI.RECT:

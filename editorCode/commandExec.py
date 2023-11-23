@@ -288,6 +288,52 @@ class ComSetBodyAsCurrent(CommandUndo):
         self.state.setCurrentBodyByLabel(self.prev.label if self.prev else None)
 
 
+class ComSelectNextBody(CommandUndo):
+
+    def __init__(self):
+        self.state = EditorState.getInstance()
+        self.oldBody = self.state.getCurrentBody()
+        self.oldShape = self.state.getCurrentShape()
+        self.newBody:BodyI = None
+        self.newShape:ShapeI = None
+        self.executed:bool = False
+
+    def execute(self):
+        if not self.executed:
+            self.state.setNextBodyAsCurrent()
+            self.newBody = self.state.getCurrentBody()
+            self.newShape = self.state.getCurrentShape()
+            self.executed = True
+        else:
+            self.state.setCurrentBodyAndShape(self.newBody, self.newShape)
+
+    def undo(self):
+        self.state.setCurrentBodyAndShape(self.oldBody, self.oldShape)
+
+
+class ComSelectPrevBody(CommandUndo):
+
+    def __init__(self):
+        self.state = EditorState.getInstance()
+        self.oldBody = self.state.getCurrentBody()
+        self.oldShape = self.state.getCurrentShape()
+        self.newBody:BodyI = None
+        self.newShape:ShapeI = None
+        self.executed:bool = False
+
+    def execute(self):
+        if not self.executed:
+            self.state.setPrevBodyAsCurrent()
+            self.newBody = self.state.getCurrentBody()
+            self.newShape = self.state.getCurrentShape()
+            self.executed = True
+        else:
+            self.state.setCurrentBodyAndShape(self.newBody, self.newShape)
+
+    def undo(self):
+        self.state.setCurrentBodyAndShape(self.oldBody, self.oldShape)
+
+
 # END OF BODY functions
 
 # SHAPE new functions
@@ -333,50 +379,6 @@ class ComRenameNewShape(CommandUndo):
             self.database.renameNewShape(self.shape, self.oldName)
 
 
-class ComSelectNextBody(CommandUndo):
-
-    def __init__(self):
-        self.state = EditorState.getInstance()
-        self.oldBody = self.state.getCurrentBody()
-        self.oldShape = self.state.getCurrentShape()
-        self.newBody:BodyI = None
-        self.newShape:ShapeI = None
-        self.executed:bool = False
-
-    def execute(self):
-        if not self.executed:
-            self.state.setNextBodyAsCurrent()
-            self.newBody = self.state.getCurrentBody()
-            self.newShape = self.state.getCurrentShape()
-            self.executed = True
-        else:
-            self.state.setCurrentBodyAndShape(self.newBody, self.newShape)
-
-    def undo(self):
-        self.state.setCurrentBodyAndShape(self.oldBody, self.oldShape)
-
-
-class ComSelectPrevBody(CommandUndo):
-
-    def __init__(self):
-        self.state = EditorState.getInstance()
-        self.oldBody = self.state.getCurrentBody()
-        self.oldShape = self.state.getCurrentShape()
-        self.newBody:BodyI = None
-        self.newShape:ShapeI = None
-        self.executed:bool = False
-
-    def execute(self):
-        if not self.executed:
-            self.state.setPrevBodyAsCurrent()
-            self.newBody = self.state.getCurrentBody()
-            self.newShape = self.state.getCurrentShape()
-            self.executed = True
-        else:
-            self.state.setCurrentBodyAndShape(self.newBody, self.newShape)
-
-    def undo(self):
-        self.state.setCurrentBodyAndShape(self.oldBody, self.oldShape)
 
 
 class ComSetNewShapeAsCurrent(CommandUndo):
@@ -499,6 +501,22 @@ class ComNewShapeNewWH(CommandUndo):
 
     def undo(self):
         self.shape.internal.setWH(self.oldWH)
+
+
+class ComNewShapeNewCircleRadius(CommandUndo):
+
+    def __init__(self, worldCoords: V2, shape: ShapeI):
+        self.shape: ShapeI = shape
+        self.oldRadius = self.shape.internal.radius.final
+        self.newRadius = worldCoords.distV(self.shape.internal.points[0].final)
+        #self.shape.transform.getInvMat().mulV(worldCoords, self.point.local)
+        #self.point.world.unTV(shape.transform.objectAnchor).unRA(shape.transform.objectAngle).unSS(shape.transform.objectScale)
+    
+    def execute(self):
+        self.shape.internal.radius.final = self.newRadius
+
+    def undo(self):
+        self.shape.internal.radius.final = self.oldRadius
 
 # End of Shape functions
 
