@@ -47,12 +47,14 @@ class ComSave(Command):
         self.filename = filename
         self.database = Database.getInstance()
         self.texture = TextureContainerI.getInstance()
+        self.queue = CommandExec.getInstance()
 
     def execute(self):
         with open('data/states/'+self.filename, 'wb') as f:
             data = {'database':self.database,
                     'textureSizes': self.texture.sizes,
-                    'texturePaths': self.texture.paths}
+                    'texturePaths': self.texture.paths,
+                    'queueProcessed': self.queue.processed}
             f.write(pickle.dumps(data))
 
 
@@ -62,6 +64,7 @@ class ComLoad(Command):
         self.filename = filename
         self.database = Database.getInstance()
         self.texture = TextureContainerI.getInstance()
+        self.queue = CommandExec.getInstance()
 
     def execute(self):
         data = None
@@ -80,6 +83,9 @@ class ComLoad(Command):
             for i, elem in enumerate(zip(self.texture.paths, self.texture.sizes)):
                 if elem[0] and elem[1]:
                     self.texture.load(elem[0], i, elem[1])
+
+            self.queue.clearAll()
+            self.queue.processed = data['queueProcessed']
 
 
 class ComMoveCursor(Command):
@@ -1646,7 +1652,7 @@ class CommandExec:
         return CommandExec._instance
     
     def __init__(self):
-        self.processed = collections.deque(maxlen=100)
+        self.processed = collections.deque(maxlen=200)
         self.reverse   = collections.deque()
         self.toProcess = collections.deque()
 
