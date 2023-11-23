@@ -1,9 +1,7 @@
-from typing import Optional
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 import arcade
 import arcade.gui
-import pickle
 
 from editorCode.editorOptionView import EditorOptionView
 
