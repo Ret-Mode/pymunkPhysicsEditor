@@ -1,4 +1,4 @@
-from ..editorTypes import V2, Mat, Radius, EditorPoint, BoundingBox
+from ..editorTypes import V2, Mat, Radius, CircleRadius, EditorPoint, BoundingBox
 from .editorShapeSpecI import ShapeSpec
 
 from typing import List, Optional, Tuple
@@ -51,48 +51,40 @@ class CircleSpec(ShapeSpec):
         self.points: List[EditorPoint] = [EditorPoint(0.0, 0.0), EditorPoint(1.0, 0.0)]
         self.center: EditorPoint = self.points[0]
         # this is basically radius
-        self.halfWH: EditorPoint = self.points[1]
+        self.radiusVector:V2 = V2()
         #user radius, unusable on circles
-        self.radius: Radius = Radius(1.0)
+        self.radius: CircleRadius = CircleRadius(1.0)
         self.drawLines: int = 32
 
     def getJSONDict(self, parent:dict):
         center = self.center
         # TODO use radius, not HW
-        halfWH = self.halfWH
+        #halfWH = self.halfWH
         this = {'offset' : [center.final.x, center.final.y],
-                'radius' : halfWH.final.length()}
+                'radius' : self.radius.final}
         parent['internal'] = this
 
     def addPoint(self, point:EditorPoint):
         assert False
 
     def resetWH(self, point:EditorPoint):
-        center = self.center
-        halfWH = self.halfWH
-        halfWH.local.setFromV(point.local).unTV(center.local)
-        length = halfWH.local.length()
-        halfWH.local.setFromXY(length, 0.0)
+        pass
 
     def setWH(self, point:EditorPoint):
-        halfWH = self.halfWH
-        halfWH.local.setFromV(point.local)
-        length = halfWH.local.length()
-        halfWH.local.setFromXY(length, 0.0)
+        pass
 
     def deletePoint(self, point:EditorPoint):
         pass
 
     def updatePos(self, final: Mat):
         center = self.center
-        halfWH = self.halfWH
         final.mulV(center.local, center.final)
-        final.mulV(halfWH.local, halfWH.final).unTV(center.final)
+        self.radius.update(final)
 
     def getBounds(self, box: BoundingBox) -> Tuple[float]:
         center = self.center
-        halfWH = self.halfWH
-        length = halfWH.final.length()
+        #halfWH = self.halfWH
+        length = self.radius.final
         box.setFinal(center.final.x - length, center.final.y - length, center.final.x + length, center.final.y + length)
 
 

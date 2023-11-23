@@ -250,6 +250,18 @@ class Radius:
         self.final = value
 
 
+class CircleRadius(Radius):
+
+    def __init__(self, value):
+        super().__init__(value)
+        self.base: float = value
+
+    def update(self, final:"Mat"):
+        vals = final.mulRSXY(self.base, 0.0)
+        self.final = math.sqrt(vals[0] ** 2 + vals[1] ** 2)
+
+
+
 class Mat:
 
     _eye: "Mat" = None

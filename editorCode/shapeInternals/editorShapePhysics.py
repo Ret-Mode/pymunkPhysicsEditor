@@ -119,12 +119,12 @@ class CirclePhysics(ShapePhysics):
         super().__init__()
 
     def recalcMoment(self, internal: ShapeSpec):
-        radius = internal.points[1].final.length()
+        radius = internal.radius.final
         offset = self.cog.final.distSqrV(internal.points[0].final)
         self.moment.calc = self.mass.final * (offset + radius * radius / 2.0)
 
     def recalcArea(self, internal:ShapeSpec):
-        radius = internal.points[1].final.length()
+        radius = internal.radius.final
         self.cog.calc.setFromV(internal.points[0].final)
         self.area = math.pi * radius * radius
 

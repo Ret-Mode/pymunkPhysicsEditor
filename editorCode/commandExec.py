@@ -5,7 +5,7 @@ from .shapeInternals.editorBodyI import BodyI
 from .constraintInternals.editorConstraintI import ConstraintI
 from .textureMapping import TextureMapping
 from .textureContainerI import TextureContainerI
-from .editorTypes import V2, Angle, EditorPoint, Selection
+from .editorTypes import V2, Angle, EditorPoint, Selection, CircleRadius
 from .editorCursor import Cursor
 from .database import Database
 from .editorState import EditorState
@@ -513,16 +513,17 @@ class ComNewShapeNewCircleRadius(CommandUndo):
 
     def __init__(self, worldCoords: V2, shape: ShapeI):
         self.shape: ShapeI = shape
-        self.oldRadius = self.shape.internal.radius.final
-        self.newRadius = worldCoords.distV(self.shape.internal.points[0].final)
-        #self.shape.transform.getInvMat().mulV(worldCoords, self.point.local)
-        #self.point.world.unTV(shape.transform.objectAnchor).unRA(shape.transform.objectAngle).unSS(shape.transform.objectScale)
+        self.radiusObj: CircleRadius = self.shape.internal.radius
+        self.oldRadius = self.radiusObj.base
+        newRadius = worldCoords.distV(self.shape.internal.points[0].final)
+        coords = self.shape.transform.getInvMat().mulRSXY(newRadius, 0.0)
+        self.newRadius = math.sqrt(coords[0] ** 2 + coords[1] **2)
     
     def execute(self):
-        self.shape.internal.radius.final = self.newRadius
+        self.radiusObj.base = self.newRadius
 
     def undo(self):
-        self.shape.internal.radius.final = self.oldRadius
+        self.radiusObj.base = self.oldRadius
 
 # End of Shape functions
 

@@ -358,15 +358,15 @@ class ShapeBuffer:
     def addTexturePivot(self, pivot:V2):
         self.addPoint(pivot, pointConfig['anchorColor'], pointConfig['cogHalfWH'] * self.drawScale)
 
-    def addCircle(self, center:V2, halfWH:V2, elems:int):
+    def addCircle(self, center:V2, radius:float, elems:int):
         color = pointConfig['inactivePointColor']
 
         circleELemAngle = math.pi * 2.0 / elems
         cos = math.cos(circleELemAngle)
         sin = math.sin(circleELemAngle)
 
-        prevX = halfWH.x
-        prevY = halfWH.y
+        prevX = radius
+        prevY = 0.0
 
         ind = self.currentIndex
         self.verts += [center.x + prevX, center.y + prevY] 
@@ -386,11 +386,11 @@ class ShapeBuffer:
         self.currentIndex += elems
 
         # add arm
-        self.verts += [center.x, center.y]
-        self.colors +=  color
-        self.indices += [ind, ind + elems]
+        # self.verts += [center.x, center.y]
+        # self.colors +=  color
+        # self.indices += [ind, ind + elems]
 
-        self.currentIndex += 1
+        # self.currentIndex += 1
 
 
     def addLineShape(self, points: List[EditorPoint]):

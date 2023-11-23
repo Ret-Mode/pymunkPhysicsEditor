@@ -25,7 +25,7 @@ class Circle(ShapeI):
         self.physics = CirclePhysics()
 
     def bufferData(self, buffer:ShapeBuffer):
-        buffer.addCircle(self.internal.center.final, self.internal.halfWH.final,
+        buffer.addCircle(self.internal.center.final, self.internal.radius.final,
                          self.internal.drawLines)
 
 
