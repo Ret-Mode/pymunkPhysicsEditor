@@ -53,7 +53,7 @@ class PolygonPhysics(ShapePhysics):
         points = internal.points
         pointsNumber: int = len(points)
         mass = self.mass.final
-        radius = internal.radius.final
+        radius = internal.radius.get()
         if pointsNumber == 1:
             self.moment.calc = mass * (radius * radius) / 2
             return
@@ -79,7 +79,7 @@ class PolygonPhysics(ShapePhysics):
         
     def recalcArea(self, internal: ShapeSpec):
         points = internal.points
-        radius = internal.radius.final
+        radius = internal.radius.get()
         pointsNumber: int = len(points)
         if pointsNumber == 0:
             self.cog.calc.setFromXY(0.0, 0.0)
@@ -119,12 +119,12 @@ class CirclePhysics(ShapePhysics):
         super().__init__()
 
     def recalcMoment(self, internal: ShapeSpec):
-        radius = internal.radius.final
+        radius = internal.radius.get()
         offset = self.cog.final.distSqrV(internal.points[0].final)
         self.moment.calc = self.mass.final * (offset + radius * radius / 2.0)
 
     def recalcArea(self, internal:ShapeSpec):
-        radius = internal.radius.final
+        radius = internal.radius.get()
         self.cog.calc.setFromV(internal.points[0].final)
         self.area = math.pi * radius * radius
 
@@ -142,7 +142,7 @@ class BoxPhysics(ShapePhysics):
     def recalcArea(self,internal: BoxSpec):
         point = internal.halfWH.final
         
-        radius = internal.radius.final
+        radius = internal.radius.get()
         print(point, radius)
         self.cog.calc.setFromV(internal.points[0].final)
         a = point.length() * math.sqrt(2.0)
@@ -164,7 +164,7 @@ class RectPhysics(ShapePhysics):
 
     def recalcArea(self, internal: RectSpec):
         point = internal.halfWH.final
-        radius = internal.radius.final
+        radius = internal.radius.get()
         self.cog.calc.setFromV(internal.points[0].final)
         point.x * point.y
         self.area = point.x * point.y * 4 + (point.x + point.y) * 4 * radius + math.pi * radius * radius
@@ -177,7 +177,7 @@ class LinePhysics(ShapePhysics):
 
     def recalcMoment(self, internal: ShapeSpec):
         points = internal.points
-        radius = internal.radius.final
+        radius = internal.radius.get()
         pointsNumber: int = len(points)
         # TODO correct mass to fragment of mass per line
         mass = self.mass.final
@@ -199,7 +199,7 @@ class LinePhysics(ShapePhysics):
 
     def recalcArea(self, internal: ShapeSpec):
         points = internal.points
-        radius = internal.radius.final
+        radius = internal.radius.get()
         pointsNumber: int = len(points)
         if pointsNumber == 0:
             self.cog.calc.setFromXY(0.0, 0.0)

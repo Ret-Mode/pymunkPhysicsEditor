@@ -1,4 +1,7 @@
 from typing import List, Literal, Union, Tuple
+
+from .JSONIO import JSONIO
+from .config import app
 from .editorShapes import Container
 from .shapeInternals.editorShapeI import ShapeI
 from .shapeInternals.editorBodyI import BodyI
@@ -41,20 +44,33 @@ class CommandUndo(Command):
     
 
 
+class ComExport(Command):
+
+    def __init__(self, filename:str):
+        self.filename = filename
+
+    def execute(self):
+        JSONIO.save(self.filename)
+
+
 class ComSave(Command):
 
     def __init__(self, filename:str):
         self.filename = filename
         self.database = Database.getInstance()
-        self.texture = TextureContainerI.getInstance()
         self.queue = CommandExec.getInstance()
 
     def execute(self):
-        with open('data/states/'+self.filename, 'wb') as f:
+        texture = TextureContainerI.getInstance()
+        sizes = texture.sizes
+        paths = texture.paths
+        with open(self.filename, 'wb') as f:
             data = {'database':self.database,
-                    'textureSizes': self.texture.sizes,
-                    'texturePaths': self.texture.paths,
-                    'queueProcessed': self.queue.processed}
+                    'textureSizes': sizes,
+                    'texturePaths': paths,
+                    'queueProcessed': self.queue.processed,
+                    'version': app['version']
+                    }
             f.write(pickle.dumps(data))
 
 
@@ -63,12 +79,12 @@ class ComLoad(Command):
     def __init__(self, filename:str):
         self.filename = filename
         self.database = Database.getInstance()
-        self.texture = TextureContainerI.getInstance()
         self.queue = CommandExec.getInstance()
 
     def execute(self):
         data = None
-        with open('data/states/'+self.filename, 'rb') as f:
+        texture = TextureContainerI.getInstance()
+        with open(self.filename, 'rb') as f:
             data = pickle.loads(f.read())
         if data:
             database:Database = data['database']
@@ -77,12 +93,12 @@ class ComLoad(Command):
             self.database.shapeList = database.shapeList
             self.database.mappings = database.mappings
             
-            self.texture.deleteAll()
-            self.texture.sizes = data['textureSizes']
-            self.texture.paths = data['texturePaths']
-            for i, elem in enumerate(zip(self.texture.paths, self.texture.sizes)):
+            texture.deleteAll()
+            texture.sizes = data['textureSizes']
+            texture.paths = data['texturePaths']
+            for i, elem in enumerate(zip(texture.paths, texture.sizes)):
                 if elem[0] and elem[1]:
-                    self.texture.load(elem[0], i, elem[1])
+                    texture.load(elem[0], i, elem[1])
 
             self.queue.clearAll()
             self.queue.processed = data['queueProcessed']
@@ -520,10 +536,10 @@ class ComNewShapeNewCircleRadius(CommandUndo):
         self.newRadius = math.sqrt(coords[0] ** 2 + coords[1] **2)
     
     def execute(self):
-        self.radiusObj.base = self.newRadius
+        self.radiusObj.set(self.newRadius)
 
     def undo(self):
-        self.radiusObj.base = self.oldRadius
+        self.radiusObj.set(self.oldRadius)
 
 # End of Shape functions
 
@@ -1517,26 +1533,28 @@ class ComApplyContainerScale(CommandUndo):
 class ComLoadTexture(CommandUndo):
 
     def __init__(self, path:str, toChannel:int, size:Tuple[int, int]):
-        self.container = TextureContainerI.getInstance()
+        container = TextureContainerI.getInstance()
         self.database = Database.getInstance()
         self.newPath = path
         self.destChannel = toChannel
         self.newSize = size
-        self.oldPath = self.container.paths[toChannel]
-        self.oldSize = self.container.sizes[toChannel]
+        self.oldPath = container.paths[toChannel]
+        self.oldSize = container.sizes[toChannel]
 
     def execute(self):
-        self.container.load(self.newPath, self.destChannel, self.newSize)
+        container = TextureContainerI.getInstance()
+        container.load(self.newPath, self.destChannel, self.newSize)
         for mapping in self.database.getAllMappingsOfChannel(self.destChannel):
             mapping.reloadTexture(self.newSize)
 
     def undo(self):
+        container = TextureContainerI.getInstance()
         if self.oldPath:
-            self.container.load(self.oldPath, self.destChannel, self.oldSize)
+            container.load(self.oldPath, self.destChannel, self.oldSize)
             for mapping in self.database.getAllMappingsOfChannel(self.destChannel):
                 mapping.reloadTexture(self.oldSize)
         else:
-            self.container.delete(self.destChannel)
+            container.delete(self.destChannel)
 
 # END of TEXTURE commands
 
@@ -1638,9 +1656,6 @@ class ComApplyTransform(Command):
     def execute(self):
         self.transform.active = False
 
-
-# DEBUG info
-coms = []
 
 class CommandExec:
 

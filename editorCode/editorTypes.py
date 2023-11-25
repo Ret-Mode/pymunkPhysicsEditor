@@ -249,6 +249,12 @@ class Radius:
     def __init__(self, value:float):
         self.final = value
 
+    def get(self):
+        return self.final
+    
+    def set(self, value:float):
+        self.final = value
+
 
 class CircleRadius(Radius):
 
@@ -259,7 +265,9 @@ class CircleRadius(Radius):
     def update(self, final:"Mat"):
         vals = final.mulRSXY(self.base, 0.0)
         self.final = math.sqrt(vals[0] ** 2 + vals[1] ** 2)
-
+    
+    def set(self, value:float):
+        self.base = value
 
 
 class Mat:

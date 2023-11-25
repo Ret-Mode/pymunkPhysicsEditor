@@ -1,5 +1,6 @@
 from typing import Dict
 from .database import Database
+from .config import app
 from .textureContainerI import TextureContainerI
 import json
 
@@ -28,7 +29,7 @@ class JSONIO:
         tmp['Constraints'] = constraints 
         tmp['Mappings'] = mappings
         tmp['Textures'] = textures
-        tmp['Version'] = "0.1.0"
+        tmp['Version'] = app['version']
         with open(path, 'w') as f:
             f.write(json.dumps(tmp, indent=2))
 

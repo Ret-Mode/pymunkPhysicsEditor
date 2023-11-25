@@ -14,14 +14,16 @@ from editorCode.guiShapePanels import ShapeButtons
 from editorCode.guiConstraintPanels import ConstraintButtons
 from editorCode.guiOptionPanels import OptionsButtons
 from editorCode.guiTexturePanels import TextureButtons
+from editorCode.guiLoadSavePanels import LoadSaveButtons
 from editorCode.editorBodyView import EditorBodyView
 from editorCode.editorShapeView import EditorShapeView
 from editorCode.editorConstraintView import EditorConstraintView
 from editorCode.editorTextureView import EditorTextureView
+from editorCode.editorLoadSaveView import EditorLoadSaveView
 from editorCode.guiTimeMeasure import TimeMeasure
 from editorCode.config import globalWindowSetup
 
-from editorCode.commandExec import CommandExec, ComLoad, ComSave
+
 from editorCode.database import Database
 from editorCode.editorState import EditorState
 from editorCode.arcadeTextureContainer import ArcadeTexture
@@ -37,7 +39,8 @@ class EditorView(arcade.View):
              'SHAPE': None,
              'CNSTRNT': None,
              'OPTIONS': None,
-             'TEX': None}
+             'TEX': None,
+             'LD/SV': None}
 
 
     def _getActiveView(self):
@@ -51,6 +54,8 @@ class EditorView(arcade.View):
             return self.editorOptionView
         elif self.currentMode == 'TEX':
             return self.editorTextureView
+        elif self.currentMode == 'LD/SV':
+            return self.editorLoadSaveView
         else:
             assert False
 
@@ -73,6 +78,7 @@ class EditorView(arcade.View):
         self.editorShapeView = EditorShapeView(self.editableWidth, globalWindowSetup['height'], self.cursor)
         self.editorBodyView = EditorBodyView(self.editableWidth, globalWindowSetup['height'], self.cursor)
         self.editorConstraintView = EditorConstraintView(self.editableWidth, globalWindowSetup['height'], self.cursor)
+        self.editorLoadSaveView = EditorLoadSaveView(self.editableWidth, globalWindowSetup['height'], self.cursor)
         self.editorOptionView = EditorOptionView(self.editableWidth, globalWindowSetup['height'], self.cursor)
         self.editorTextureView = EditorTextureView(self.editableWidth, globalWindowSetup['height'], self.cursor)
 
@@ -88,6 +94,7 @@ class EditorView(arcade.View):
         EditorView.modes['SHAPE'] = ShapeButtons()
         EditorView.modes['CNSTRNT'] = ConstraintButtons()
         EditorView.modes['OPTIONS'] = OptionsButtons()
+        EditorView.modes['LD/SV'] = LoadSaveButtons()
         EditorView.modes['TEX'] = TextureButtons()
 
         # set panels
@@ -134,12 +141,13 @@ class EditorView(arcade.View):
         self.draw_cursor()
         
     def on_key_press(self, key, modifiers):
-        if key == arcade.key.F6:
-            JSONIO.save('data/states/export.json')
-        elif key == arcade.key.F5:
-            CommandExec.getInstance().addCommand(ComSave('save.sv'))
-        elif key == arcade.key.F9:
-            CommandExec.getInstance().addCommand(ComLoad('save.sv'))
+
+        # if key == arcade.key.F6:
+        #     JSONIO.save('data/states/export.json')
+        # elif key == arcade.key.F5:
+        #     CommandExec.getInstance().addCommand(ComSave('save.sv'))
+        # elif key == arcade.key.F9:
+        #     CommandExec.getInstance().addCommand(ComLoad('save.sv'))
 
 
         view = self._getActiveView()
@@ -265,23 +273,9 @@ class EditorView(arcade.View):
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         view = self._getActiveView()
         if self.midbtn and x < self.editableWidth:
-            if self.currentMode == 'BODY':
-                view.moveView(float(-dx),float(-dy))
-            elif self.currentMode == 'SHAPE':
-                view.moveView(float(-dx),float(-dy))
-            elif self.currentMode == 'CNSTRNT':
-                view.moveView(float(-dx),float(-dy))
-            elif self.currentMode == 'TEX':
-                view.moveView(float(-dx),float(-dy))
+            view.moveView(float(-dx),float(-dy))
         else:
-            if self.currentMode == 'BODY':
-                view.moveCursor(float(x),float(y))
-            elif self.currentMode == 'SHAPE':
-                view.moveCursor(float(x),float(y))
-            elif self.currentMode == 'CNSTRNT':
-                view.moveCursor(float(x),float(y))
-            elif self.currentMode == 'TEX':
-                view.moveCursor(float(x),float(y))
+            view.moveCursor(float(x),float(y))
         
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         if x < self.editableWidth:
@@ -293,6 +287,7 @@ class EditorView(arcade.View):
         self.editorShapeView.resize(self.editableWidth, height)
         self.editorBodyView.resize(self.editableWidth, height)
         self.editorConstraintView.resize(self.editableWidth, height)
+        self.editorLoadSaveView.resize(self.editableWidth, height)
         self.editorTextureView.resize(self.editableWidth, height)
         self.buttonPanel.resize()
 

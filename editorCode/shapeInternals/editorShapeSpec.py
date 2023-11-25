@@ -17,7 +17,7 @@ class PolygonSpec(ShapeSpec):
         for point in self.points:
             points.append([point.final.x, point.final.y])
         this = {'points' : points,
-                'radius' : self.radius.final}
+                'radius' : self.radius.get()}
         parent['internal'] = this
     
     def addPoint(self, point:EditorPoint):
@@ -61,7 +61,7 @@ class CircleSpec(ShapeSpec):
         # TODO use radius, not HW
         #halfWH = self.halfWH
         this = {'offset' : [center.final.x, center.final.y],
-                'radius' : self.radius.final}
+                'radius' : self.radius.get()}
         parent['internal'] = this
 
     def addPoint(self, point:EditorPoint):
@@ -112,7 +112,7 @@ class BoxSpec(ShapeSpec):
                             (self.points[3].final.x, self.points[3].final.y),
                             (self.points[4].final.x, self.points[4].final.y)
                             ],
-                'radius' : self.radius.final}
+                'radius' : self.radius.get()}
         parent['internal'] = this
     
     def addPoint(self, point:EditorPoint):
@@ -186,7 +186,7 @@ class RectSpec(ShapeSpec):
                             (self.points[3].final.x, self.points[3].final.y),
                             (self.points[4].final.x, self.points[4].final.y)
                             ],
-                'radius' : self.radius.final}
+                'radius' : self.radius.get()}
         parent['internal'] = this
     
     def addPoint(self, point:EditorPoint):
@@ -251,7 +251,7 @@ class LineSpec(ShapeSpec):
             points.append([prevPoint.final.x, prevPoint.final.y, point.final.x, point.final.y])
             prevPoint = point
         this = {'points' : points,
-                'radius' : self.radius.final,
+                'radius' : self.radius.get(),
                 'length' : length}
         parent['internal'] = this
 

@@ -2,6 +2,8 @@ import math
 
 import json
 
+app = {'version': '0.0.1'} 
+
 physicsSetup = {'pixelPerMeter': 32.0,
                 'measureInPixels': True}
 
@@ -12,7 +14,7 @@ globalWindowSetup = {'width': 800,
                      'resizable': True,
                      'update_rate': 1.0 / 60.0,
                      'antialiasing': False,
-                     'vsync': True }
+                     'vsync': True}
 
 editorButtonSetup = {'width': 240,
                      'sevenEightsWidth': 210,
