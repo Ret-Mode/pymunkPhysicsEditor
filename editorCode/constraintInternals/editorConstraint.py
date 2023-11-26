@@ -77,8 +77,8 @@ class DampedSpring(ConstraintI):
         this['restLength'] = self.restLength
         this['stiffness'] = self.stiffness
         this['damping'] = self.damping
-        this['anchorA'] = [self.anchorA.offset.x, self.anchorA.offset.y]
-        this['anchorB'] = [self.anchorB.offset.x, self.anchorB.offset.y]
+        this['anchorA'] = [self.anchorA.final.x, self.anchorA.final.y]
+        this['anchorB'] = [self.anchorB.final.x, self.anchorB.final.y]
         this['type'] = self.type
         this['bodyA'] = self.bodyA.label
         this['bodyB'] = self.bodyB.label
@@ -160,9 +160,9 @@ class GrooveJoint(ConstraintI):
     def getJSONDict(self, parent:dict):
         assert self.label not in parent
         this = {}
-        this['grooveA'] = [self.grooveA.offset.x, self.grooveA.offset.y]
-        this['grooveB'] = [self.grooveB.offset.x, self.grooveB.offset.y]
-        this['anchorB'] = [self.anchorB.offset.x, self.anchorB.offset.y]
+        this['grooveA'] = [self.grooveA.final.x, self.grooveA.final.y]
+        this['grooveB'] = [self.grooveB.final.x, self.grooveB.final.y]
+        this['anchorB'] = [self.anchorB.final.x, self.anchorB.final.y]
         this['type'] = self.type
         this['bodyA'] = self.bodyA.label
         this['bodyB'] = self.bodyB.label
@@ -200,8 +200,8 @@ class PinJoint(ConstraintI):
     def getJSONDict(self, parent:dict):
         assert self.label not in parent
         this = {}
-        this['anchorA'] = [self.anchorA.offset.x, self.anchorA.offset.y]
-        this['anchorB'] = [self.anchorB.offset.x, self.anchorB.offset.y]
+        this['anchorA'] = [self.anchorA.final.x, self.anchorA.final.y]
+        this['anchorB'] = [self.anchorB.final.x, self.anchorB.final.y]
         this['type'] = self.type
         this['bodyA'] = self.bodyA.label
         this['bodyB'] = self.bodyB.label
@@ -239,8 +239,8 @@ class PivotJoint(ConstraintI):
     def getJSONDict(self, parent:dict):
         assert self.label not in parent
         this = {}
-        this['anchorA'] = [self.anchorA.offset.x, self.anchorA.offset.y]
-        this['anchorB'] = [self.anchorB.offset.x, self.anchorB.offset.y]
+        this['anchorA'] = [self.anchorA.final.x, self.anchorA.final.y]
+        this['anchorB'] = [self.anchorB.final.x, self.anchorB.final.y]
         this['type'] = self.type
         this['bodyA'] = self.bodyA.label
         this['bodyB'] = self.bodyB.label
