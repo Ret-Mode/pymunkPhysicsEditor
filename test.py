@@ -42,10 +42,13 @@ class Runner(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
         self.space = pymunk.Space()
-        self.space.gravity = (0.0, 0.0)
-        self.loader = SpriteLoader(self.space)
-        self.loader.loadFile('data/states/export.json')
-        self.loader.addAll()
+        self.space.gravity = (0.0, -9.81)
+        self.level = SpriteLoader(self.space)
+        self.level.loadFile('data/states/level.json')
+        self.level.addAll()
+        self.vehicle = SpriteLoader(self.space)
+        self.vehicle.loadFile('data/states/export.json')
+        self.vehicle.addAll()
         self.camera = Camera()
         self.camera.setWidthInMeters(40.0)
         self.camera.update()
@@ -58,10 +61,17 @@ class Runner(arcade.Window):
         self.camera.updateCursor(float(x),float(y))
         return super().on_mouse_motion(x, y, dx, dy)
     
+    def on_key_press(self, key, modifiers):
+        if key == ord('w'):
+            self.vehicle.bodies['WHeelL'].angular_velocity -= 10.0
+        elif key == ord('s'):
+            self.vehicle.bodies['WHeelL'].angular_velocity += 10.0
+
     def on_update(self, delta_time: float):
         self.space.step(0.016)
-        self.loader.update()
-        self.vec = self.loader.bodies['Main'].position
+        self.level.update()
+        self.vehicle.update()
+        self.vec = self.vehicle.bodies['Main'].position
         self.camera.move(self.vec)
         self.camera.update()
         return super().on_update(delta_time)
@@ -69,7 +79,8 @@ class Runner(arcade.Window):
     def on_draw(self):
         self.clear()
         self.camera.use()
-        self.loader.draw()
+        self.level.draw()
+        self.vehicle.draw()
         arcade.draw_circle_outline(self.camera.cursorCoords.x, self.camera.cursorCoords.y, 1.0, (255,0,0), border_width=0.1, num_segments=16)
         #self.loader.debug()
 

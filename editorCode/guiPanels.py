@@ -215,7 +215,7 @@ class PhysicsPanel(arcade.gui.UIBoxLayout):
 class BodyPhysicsPanel(PhysicsPanel):
 
     def __init__(self, label:str = '--', newName:str = 'ENTITY'):
-        super().__init__(label = '--', newName = 'ENTITY')
+        super().__init__(label, newName = 'ENTITY')
         self.cogLine = SettableCoordButton('CoG', '0.0', self.setUserCog, self.resetCog)
         self.add(self.cogLine)
 

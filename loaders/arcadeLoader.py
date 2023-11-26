@@ -21,14 +21,14 @@ class SpriteLoader(PymunkLoader):
         super().__init__(space)
         self.proxy:List[ArcadeProxy] = []
 
-    def loadFile(self, path:str):
+    def loadFile(self, path:str, offsetX:float=0.0, offsetY:float=0.0):
         data = None
         obj = None
         with open(path, 'r') as f:
             data = f.read()
         if data:
             obj = json.loads(data)
-            super().loadData(obj)
+            super().loadData(obj, offsetX, offsetY)
             self.loadData(obj)
 
     def loadData(self, obj:Dict):

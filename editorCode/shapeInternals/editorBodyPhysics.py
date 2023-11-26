@@ -19,6 +19,8 @@ class BodyPhysics(PhysicsProp):
         else:
             self.cog.final.setFromV(self.cog.calc)
 
+        # TODO fix mass settings - for body it seems that only mass 
+        # should be set by user
         if self.density.userDefined:
             self.density.final = self.density.user
             if self.mass.userDefined:
