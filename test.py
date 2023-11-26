@@ -5,6 +5,30 @@ import pymunk
 
 from loaders.arcadeLoader import SpriteLoader
 
+
+class Keys:
+    def __init__(self):
+        self.k = {arcade.key.W: False,
+                  arcade.key.S: False,
+                  arcade.key.A: False,
+                  arcade.key.D: False,
+                  arcade.key.E: False,
+                  arcade.key.SPACE: False
+                  }
+
+    def setKey(self, key):
+        if key in self.k:
+            self.k[key] = True
+
+    def unsetKey(self, key):
+        if key in self.k:
+            self.k[key] = False
+
+    def isPressed(self, key):
+        if key in self.k:
+            return self.k[key]
+        return False
+
 class Camera(arcade.Camera):
 
     def __init__(self):
@@ -41,6 +65,7 @@ class Runner(arcade.Window):
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
+        self.keys = Keys()
         self.space = pymunk.Space()
         self.space.gravity = (0.0, -9.81)
         self.level = SpriteLoader(self.space)
@@ -62,12 +87,17 @@ class Runner(arcade.Window):
         return super().on_mouse_motion(x, y, dx, dy)
     
     def on_key_press(self, key, modifiers):
-        if key == ord('w'):
-            self.vehicle.bodies['WHeelL'].angular_velocity -= 10.0
-        elif key == ord('s'):
-            self.vehicle.bodies['WHeelL'].angular_velocity += 10.0
+        self.keys.setKey(key)
+
+    def on_key_release(self, key: int, modifiers: int):
+        self.keys.unsetKey(key)
 
     def on_update(self, delta_time: float):
+        self.vehicle.bodies['WHeelL'].angular_velocity *= 0.95
+        if self.keys.isPressed(arcade.key.W):
+            self.vehicle.bodies['WHeelL'].angular_velocity = min(-20.0, self.vehicle.bodies['WHeelL'].angular_velocity - 1.5)
+        if self.keys.isPressed(arcade.key.S):
+            self.vehicle.bodies['WHeelL'].angular_velocity = max(7.0, self.vehicle.bodies['WHeelL'].angular_velocity + 0.5)
         self.space.step(0.016)
         self.level.update()
         self.vehicle.update()
