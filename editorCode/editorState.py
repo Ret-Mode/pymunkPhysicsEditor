@@ -22,6 +22,19 @@ class EditorState:
         self.currentMappingChannel: int = 0
         self.database:Database = Database.getInstance()
 
+    def clear(self):
+        self.currentBody = None
+        self.currentShape = None
+        self.currentConstraint = None
+        self.currentMapping = None
+        self.currentMappingChannel = 0
+        self.database = Database.getInstance()
+
+        self.setAnyBodyAsCurrent()
+        self.setAnyShapeAsCurrent()
+        self.setAnyConstraintAsCurrent()
+        self.setAnyMappingAsCurrent()
+
     def setCurrentBodyAndShape(self, body:BodyI, shape:ShapeI):
         if shape is not None and body is not None:
             # sanity check

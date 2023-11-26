@@ -103,6 +103,8 @@ class ComLoad(Command):
             self.queue.clearAll()
             self.queue.processed = data['queueProcessed']
 
+            EditorState.getInstance().clear()
+
 
 class ComMoveCursor(Command):
 
