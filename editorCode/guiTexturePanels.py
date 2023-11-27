@@ -337,6 +337,7 @@ class MappingsPanel(arcade.gui.UIBoxLayout):
         textures = TextureContainerI.getInstance()
         current = EditorState.getInstance().getCurrentMappingChannel()
         if textures.getTexture(current):
+            # TODO push to command
             database = Database.getInstance()
             mapping = database.createMapping(current, textures.getSize(current))
             database.addMapping(mapping)
