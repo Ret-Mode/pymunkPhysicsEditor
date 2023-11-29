@@ -1564,6 +1564,50 @@ class ComLoadTexture(CommandUndo):
 # MAPPING Commands
 
 
+class ComCreateMapping(CommandUndo):
+
+    def __init__(self, channel:int, size:Tuple[int]):
+        self.state = EditorState.getInstance()
+        self.database = Database.getInstance()
+        self.mapping = self.database.createMapping(channel, size)
+        self.prevMapping = self.state.getCurrentMapping()
+
+    def execute(self):
+        self.database.addMapping(self.mapping)
+        self.state.setCurrentMappingByLabel(self.mapping.label)
+
+    def undo(self):
+        if self.prevMapping:
+            self.state.setCurrentMappingByLabel(self.prevMapping.label)
+        else:
+            self.state.setCurrentMappingByLabel(None)
+        self.database.deleteMapping(self.mapping.label)
+
+
+class ComDeleteMapping(CommandUndo):
+
+    def __init__(self, label:str):
+        self.state = EditorState.getInstance()
+        self.database = Database.getInstance()
+        self.mapping = self.database.getMappingByLabel(label)
+        self.index = self.database.getMappingIndex(self.mapping)
+        self.current = False
+
+    def execute(self):
+        if self.state.getCurrentMapping() == self.mapping:
+            self.current = True
+        self.database.deleteMapping(self.mapping)
+        if self.current:
+            channel = self.state.getCurrentMappingChannel()
+            self.state.setAnyMappingFromChannelAsCurrent(channel)
+
+    def undo(self):
+        self.database.addMapping(self.mapping, self.index)
+        if self.current:
+            self.state.setCurrentMappingByLabel(self.mapping.label)
+        
+
+
 class ComSetMappingFromSelection(CommandUndo):
 
     def __init__(self, mapping:TextureMapping, selection:Selection):

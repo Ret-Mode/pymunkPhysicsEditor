@@ -141,15 +141,6 @@ class EditorView(arcade.View):
         self.draw_cursor()
         
     def on_key_press(self, key, modifiers):
-
-        # if key == arcade.key.F6:
-        #     JSONIO.save('data/states/export.json')
-        # elif key == arcade.key.F5:
-        #     CommandExec.getInstance().addCommand(ComSave('save.sv'))
-        # elif key == arcade.key.F9:
-        #     CommandExec.getInstance().addCommand(ComLoad('save.sv'))
-
-
         view = self._getActiveView()
         if self.currentMode == 'BODY':
             if key == ord('m'):

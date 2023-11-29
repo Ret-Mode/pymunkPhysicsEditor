@@ -13,7 +13,7 @@ from .editorFilesystem import EditorDir
 from .textureContainerI import TextureContainerI
 from .textureMapping import TextureMapping
 from .editorState import EditorState
-from .commandExec import CommandExec, ComLoadTexture, ComFitViewToTexture
+from .commandExec import CommandExec, ComLoadTexture, ComFitViewToTexture, ComCreateMapping
 
 class ChannelSelector(ScrollableCBLabelPanel):
 
@@ -195,8 +195,6 @@ class TextureSelectPanel(arcade.gui.UIBoxLayout):
         self.sizePanel.setSize(self.preview.getTextureSize())
 
     def assignToChannel(self, toChannel:int):
-        # TODO add command when other functionality is ready
-        # to reconsider moving this into command - file op, what if file is deleted?
         if self.preview.originalFilePath:
             size = self.preview.getTextureSize()
             CommandExec.addCommand(ComLoadTexture(self.preview.originalFilePath, toChannel, size))
@@ -335,12 +333,9 @@ class MappingsPanel(arcade.gui.UIBoxLayout):
 
     def addMapping(self):
         textures = TextureContainerI.getInstance()
-        current = EditorState.getInstance().getCurrentMappingChannel()
-        if textures.getTexture(current):
-            # TODO push to command
-            database = Database.getInstance()
-            mapping = database.createMapping(current, textures.getSize(current))
-            database.addMapping(mapping)
+        channel = EditorState.getInstance().getCurrentMappingChannel()
+        if textures.getTexture(channel):
+            CommandExec.getInstance().addCommand(ComCreateMapping(channel, textures.getSize(channel)))
 
     def updateMappingDetails(self):
         mapping = EditorState.getInstance().getCurrentMapping()
