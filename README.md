@@ -16,12 +16,12 @@ Missing features (ordered somewhat as they are planned to be developed):
    - [x] Add texture shader
 - [x] Add transforms to texture views
 - [x] Add constraints to simple loader
+- [x] Saving/loading (JSON)
 - [ ] Add GL texture loader
 - [ ] Change transform panel (remove update)
 - [ ] Fix pickling (default save method i guess - move mappings and textures to the database)
-- [ ] Add texture utils
+- [ ] Add texture utils ans options (mipmaps, filtering, etc)
 - [ ] Supporting all parameters of pymunk objects
-- [ ] Saving/loading (JSON)
 - [ ] Snapping to points
 - [ ] Lock mouse on transforms
 - [ ] Add transforms to constraints view
