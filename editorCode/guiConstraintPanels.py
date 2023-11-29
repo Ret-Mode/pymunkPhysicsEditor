@@ -3,8 +3,9 @@ from typing import List, Optional, Callable, Union
 import arcade.gui
 
 from .guiButtons import Button, Label, TextButton, ScrollableLayout, ScrollableCBLabel, ScrollableConstant, editorButtonSetup
-from .guiPanels import SettableOkResetButton, AddNewPanel, SettableOkButton, SettableCoordOkButton, ScrollableConstantPanel
+from .guiPanels import SettableOkResetButton, AddNewPanel, SettableOkButton, SettableCoordOkButton, ScrollableConstantPanel, CursorPanel
 from .editorConstraintView import EditorConstraintView
+from .editorCursor import Cursor
 from .commandExec import CommandExec, ComRenameConstraint, ComSetConstraintAsCurrent, ComAddConstraint, ComConstraintSetNewBodyA, ComConstraintSetNewBodyB
 from .commandExec import ComDelConstraint, ComConstraintClone, ComShiftConstraintDown, ComShiftConstraintUp, ComSetRestAngle, ComSetStiffness, ComSetDamping
 from .commandExec import ComSetRestLength, ComSetAnchorA, ComSetAnchorB, ComSetPhase, ComSetRatio, ComSetGrooveA, ComSetGrooveB, ComSetRatchet
@@ -557,7 +558,7 @@ class ConstraintButtons(arcade.gui.UIBoxLayout):
 
     def __init__(self) -> None:
         super().__init__(vertical = True)
-        self.rows: List[arcade.gui.UIBoxLayout] = [self.add(arcade.gui.UIBoxLayout(vertical=False)) for i in range(8)]
+        self.rows: List[arcade.gui.UIBoxLayout] = [self.add(arcade.gui.UIBoxLayout(vertical=False)) for i in range(9)]
 
         self.rows[0].add(Label(text="--NEW CNSTRNT TYPE--", align='center'))
 
@@ -587,23 +588,29 @@ class ConstraintButtons(arcade.gui.UIBoxLayout):
 
         self.rows[6].add(self.labelLine)
 
+        self.cursorLine: CursorPanel = CursorPanel()
+        self.rows[7].add(self.cursorLine)
+
         self.constraintProp: DetailsPanel = DetailsPanel()
         
-        self.rows[7].add(self.constraintProp)
+        self.rows[8].add(self.constraintProp)
 
         self.view: EditorConstraintView = None
-
+        self.cursor: Cursor = None
         # self.commands = None
         self.current: Optional[ConstraintI] = None
 
 
     def setCommandPipeline(self, view: EditorConstraintView):
         self.view = view
+        self.cursor = view.cursor
         self.constraintProp.view = view
 
     def on_update(self, dt):
         retVal = super().on_update(dt)
 
+        self.cursorLine.setNewVal(self.cursor.viewCoords.x, self.cursor.viewCoords.y)
+        
         # update list of constraints
         labels: List[str] = Database.getInstance().getAllConstraintLabels()
         self.updateListOfLabels(labels, self.constraintList)

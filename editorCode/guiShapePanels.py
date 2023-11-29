@@ -3,8 +3,9 @@ from typing import List, Optional
 import arcade.gui
 
 from .guiButtons import Button, Label, TextButton, ScrollableLayout, ScrollableSelector, ScrollableConstant, editorButtonSetup
-from .guiPanels import ShapePhysicsPanel, SettableOkResetButton, ContainerTransformPanel, AddNewPanel, ScrollableCBLabelPanel
+from .guiPanels import ShapePhysicsPanel, SettableOkResetButton, ContainerTransformPanel, AddNewPanel, ScrollableCBLabelPanel, CursorPanel
 from .editorShapeView import EditorShapeView
+from .editorCursor import Cursor
 from .shapeInternals.editorShapeI import ShapeI
 from .shapeInternals.editorShape import Polygon
 from .commandExec import ComNewShapeClone,  ComSetNewShapeAsCurrent, ComShiftNewShapeUp, ComShiftNewShapeDown
@@ -77,7 +78,7 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
 
     def __init__(self) -> None:
         super().__init__(vertical = True)
-        self.rows: List[arcade.gui.UIBoxLayout] = [self.add(arcade.gui.UIBoxLayout(vertical=False)) for i in range(10)]
+        self.rows: List[arcade.gui.UIBoxLayout] = [self.add(arcade.gui.UIBoxLayout(vertical=False)) for i in range(11)]
 
         self.rows[0].add(Label(text="Parent", align='center', width='thirdWidth'))
         
@@ -107,7 +108,6 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
         
         self.rows[4].add(Button(text="DOWN", width='thirdWidth', callback=self.down_btn_cb))
         
-        
 
         self.shapeList: ScrollableLayout = ScrollableLayout(8, self.select)
 
@@ -117,19 +117,23 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
 
         self.rows[6].add(self.labelLine)
 
+        self.cursorLine: CursorPanel = CursorPanel()
+        self.rows[7].add(self.cursorLine)
+
         self.currentDetails: ShapePhysicsPanel = ShapePhysicsPanel(label='--PHYSICS PROP--', newName='SHAPE')
 
-        self.rows[7].add(self.currentDetails)
+        self.rows[8].add(self.currentDetails)
 
         self.transform: ContainerTransformPanel = ContainerTransformPanel()
 
-        self.rows[8].add(self.transform)
+        self.rows[9].add(self.transform)
 
         self.shapeProp: DetailsPanel = DetailsPanel()
         
-        self.rows[9].add(self.shapeProp)
+        self.rows[10].add(self.shapeProp)
 
         self.view: EditorShapeView = None
+        self.cursor: Cursor = None
 
         # self.commands = None
         self.current: Optional[ShapeI] = None
@@ -137,11 +141,14 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
 
     def setCommandPipeline(self, view: EditorShapeView):
         self.view = view
+        self.cursor = view.cursor
         self.transform.pivot = view.pivot.local
 
 
     def on_update(self, dt):
         retVal = super().on_update(dt)
+
+        self.cursorLine.setNewVal(self.cursor.viewCoords.x, self.cursor.viewCoords.y)
 
         database = Database.getInstance()
         state = EditorState.getInstance()

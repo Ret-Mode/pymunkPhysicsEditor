@@ -3,11 +3,12 @@ from typing import List
 import arcade.gui
 
 from .shapeInternals.editorBodyI import BodyI
-from .editorTypes import V2, Angle
+from .editorTypes import V2, UnboundAngle
+from .editorCursor import Cursor
 from .editorBodyView import EditorBodyView
 from .editorShapes import Container
 from .guiButtons import Button, Label, TextButton, ScrollableLayout, TextInput, editorButtonSetup
-from .guiPanels import BodyPhysicsPanel, AddNewPanel, SettableOkResetButton, ContainerTransformPanel, ScrollableConstantPanel
+from .guiPanels import BodyPhysicsPanel, AddNewPanel, SettableOkResetButton, ContainerTransformPanel, CursorPanel
 from .commandExec import ComAddBody, ComDelBody, ComSetContainerPosXY, ComApplyContainerPosXY, ComSetContainerAngleDeg, ComApplyContainerRotateDeg, ComSetContainerScale, ComApplyContainerScale
 from .commandExec import ComShiftBodyUp, ComShiftBodyDown, ComSetBodyAsCurrent, ComBodyClone
 from .commandExec import CommandExec, ComRenameBody, ComSetLastBodyAsCurrent
@@ -18,7 +19,7 @@ class BodyButtons(arcade.gui.UIBoxLayout):
 
     def __init__(self) -> None:
         super().__init__(vertical=True)
-        self.rows: List[arcade.gui.UIBoxLayout] = [self.add(arcade.gui.UIBoxLayout(vertical=False)) for i in range(9)]
+        self.rows: List[arcade.gui.UIBoxLayout] = [self.add(arcade.gui.UIBoxLayout(vertical=False)) for i in range(10)]
 
         self.rows[0].add(Label(text="--BODY--", align='center'))
         
@@ -50,23 +51,30 @@ class BodyButtons(arcade.gui.UIBoxLayout):
 
         self.rows[6].add(self.typeLine)
 
+        self.cursorLine: CursorPanel = CursorPanel()
+        self.rows[7].add(self.cursorLine)
+
         self.currentDetails: BodyPhysicsPanel = BodyPhysicsPanel(label='--PHYSICS PROP--', newName='BODY')
 
-        self.rows[7].add(self.currentDetails)
+        self.rows[8].add(self.currentDetails)
 
         self.transform: ContainerTransformPanel = ContainerTransformPanel()
-        self.rows[8].add(self.transform)
+        self.rows[9].add(self.transform)
 
         self.view: EditorBodyView = None
+        self.cursor: Cursor = None
         self.current = None
 
     def setCommandPipeline(self, view: EditorBodyView):
         self.view = view
+        self.cursor = view.cursor
         self.transform.pivot = view.pivot.local
 
     def on_update(self, dt):
         retVal = super().on_update(dt)
 
+        # update cursor coordinates
+        self.cursorLine.setNewVal(self.cursor.viewCoords.x, self.cursor.viewCoords.y)
         # get all bodies
         labels: List[str] = Database.getInstance().getAllBodyLabels()
         # update list of bodies

@@ -69,7 +69,7 @@ def fromJSON(data:str) -> dict:
 
 def floatToString(value:float, default:str) -> str:
     try:
-        return f'{value:.4f}'
+        return f'{value:.3f}'
     except:
         return default
 

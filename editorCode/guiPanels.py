@@ -6,7 +6,7 @@ from arcade import Color
 from typing import List, Callable, Tuple, NamedTuple
 
 from .config import massInPixelsToString, massInStringToPixels, densityInPixelsToString, densityInStringToPixels, distanceInPixelsToString, scaleToString, scaleFromString, angleToString, angleFromString, distanceInStringToPixels, areaInStringToPixels, areaInPixelsToString
-from .config import momentInPixelsToString, momentInStringToPixels
+from .config import momentInPixelsToString, momentInStringToPixels, floatToString
 
 from .guiButtons import Button, Label, TextButton, TextInput, ScrollableCBLabel, ScrollableConstant, editorButtonSetup
 from .guiTimeMeasure import TimeMeasure
@@ -211,6 +211,28 @@ class PhysicsPanel(arcade.gui.UIBoxLayout):
         density = densityInStringToPixels(self.densityLine.getVal(), 1.0)
         return density
     
+
+class CursorPanel(arcade.gui.UIBoxLayout):
+
+    def __init__(self):
+        super().__init__(vertical=False)
+        self.description = Label(text="Cursor", width='thirdWidth', align='left')
+        self.xCoord = Label(text='0', width='thirdWidth', align='left')
+        self.yCoord = Label(text='0', width='thirdWidth', align='left')
+        self.oldX:float = 0.0
+        self.oldY:float = 0.0
+        self.add(self.description)
+        self.add(self.xCoord)
+        self.add(self.yCoord)
+
+    def setNewVal(self, x:float, y:float):
+        if self.oldX != x:
+            self.oldX = x
+            self.xCoord.setText(floatToString(x, '0.0'))
+        if self.oldY != y:
+            self.oldY = y
+            self.yCoord.setText(floatToString(y, '0.0'))
+
 
 class BodyPhysicsPanel(PhysicsPanel):
 
