@@ -277,7 +277,7 @@ class ShapePhysicsPanel(PhysicsPanel):
         super().setCurrent(current)
         self.elasticity.setNewVal(floatToString(current.elasticity, "0.000"))
         self.friction.setNewVal(floatToString(current.friction, "1.000"))
-        self.sensor.setNewVal(floatToString(current.isSensor, False))
+        self.sensor.setNewVal(current.isSensor)
         self.filterGroup.setNewVal(hexToString(current.shapeFilterGroup, "0"))
         self.filterCategory.setNewVal(hexToString(current.shapeFilterCategory, "0"))
         self.filterMask.setNewVal(hexToString(current.shapeFilterMask, "0"))
@@ -296,7 +296,7 @@ class ShapePhysicsPanel(PhysicsPanel):
 
     def setSensor(self):
         if self.current:
-            CommandExec.addCommand(ComNewShapeSetSensor(self.current, self.sensor.getVal()))
+            CommandExec.addCommand(ComNewShapeSetSensor(self.current, not self.sensor.getVal()))
 
     def setElasticity(self):
         if self.current:
@@ -599,8 +599,6 @@ class SettableBoolButton(arcade.gui.UIBoxLayout):
         self.add(self.okButton)
 
     def exec(self):
-        self.internal = not self.internal
-        self.refresh()
         self.callback()
 
     def refresh(self):

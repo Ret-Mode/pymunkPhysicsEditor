@@ -17,14 +17,16 @@ Missing features (ordered somewhat as they are planned to be developed):
 - [x] Add transforms to texture views
 - [x] Add constraints to simple loader
 - [x] Saving/loading (JSON)
+- [x] Supporting all parameters of pymunk objects
+- [ ] Cloning of objects
+- [ ] Additional buttons (CoG to Pivot, etc)
+- [ ] Snapping to points
 - [ ] Add GL texture loader
 - [ ] Change transform panel (remove update)
 - [ ] Fix pickling (default save method i guess - move mappings and textures to the database)
-- [ ] Add texture utils ans options (mipmaps, filtering, etc)
-- [ ] Supporting all parameters of pymunk objects
-- [ ] Snapping to points
+- [ ] Add texture utils and options (mipmaps, filtering, etc)
 - [ ] Lock mouse on transforms
-- [ ] Add transforms to constraints view
+- [ ] Add transforms and textures to constraints view
 - [ ] Support for convex polygons
 - [ ] Support skewing
 - [ ] Snapping to edges

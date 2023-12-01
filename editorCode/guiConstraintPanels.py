@@ -49,7 +49,7 @@ class ConstraintPhysicsData(arcade.gui.UIBoxLayout):
 
     def setSelfCollision(self):
         if self.current:
-            CommandExec.addCommand(ComSetSelfCollision(self.current, self.sCollide.getVal()))
+            CommandExec.addCommand(ComSetSelfCollision(self.current, not self.sCollide.getVal()))
 
     def setMBias(self):
         if self.current:

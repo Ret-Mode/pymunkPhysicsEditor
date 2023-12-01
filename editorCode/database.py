@@ -145,6 +145,12 @@ class Database:
                 return parent
         return None
     
+    def getNewShapeBodyIndex(self, shape:ShapeI) -> int:
+        parent = self.getNewShapeParent(shape)
+        if parent and shape in parent.shapes:
+            return parent.shapes.index(shape)
+        return -1
+
     def getAllNewShapeLabels(self):
         return [x.label for x in self.shapeList]
 
