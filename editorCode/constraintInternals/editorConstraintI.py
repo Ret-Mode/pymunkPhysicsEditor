@@ -24,8 +24,10 @@ class ConstraintI:
         self.bodyA: BodyI = None
         self.bodyB: BodyI = None
 
-        self.collideBodies: bool = False
-        self.max_force: float = 1.0
+        self.selfCollide: bool = False
+        self.maxForce: float = 1.0
+        self.maxBias:float = 1.0
+        self.errorBias:float = 1.0
 
     def updateBodies(self):
         if self.bodyA and self.bodyB:

@@ -8,7 +8,7 @@ from .shapeInternals.editorBodyI import BodyI
 from .constraintInternals.editorConstraintI import ConstraintI
 from .textureMapping import TextureMapping
 from .textureContainerI import TextureContainerI
-from .editorTypes import V2, Angle, EditorPoint, Selection, CircleRadius
+from .editorTypes import V2, Angle, EditorPoint, Selection, CircleRadius, UnboundAngle
 from .editorCursor import Cursor
 from .database import Database
 from .editorState import EditorState

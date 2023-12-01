@@ -28,6 +28,13 @@ class ShapeI:
         
         self.physics: PhysicsProp
 
+        self.elasticity: float = 1.0
+        self.friction: float = 1.0
+        self.isSensor:bool = False
+        self.shapeFilterGroup:int = 0
+        self.shapeFilterCategory:int = 0
+        self.shapeFilterMask:int = 0
+
     # untransformed physics
     def recalcPhysics(self) -> None:
         self.physics.recalcPhysics(self.internal, self.transform)
