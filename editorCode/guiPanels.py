@@ -6,7 +6,7 @@ from arcade import Color
 from typing import List, Callable, Tuple, NamedTuple
 
 from .config import massInPixelsToString, massInStringToPixels, densityInPixelsToString, densityInStringToPixels, distanceInPixelsToString, scaleToString, scaleFromString, angleToString, angleFromString, distanceInStringToPixels, areaInStringToPixels, areaInPixelsToString
-from .config import momentInPixelsToString, momentInStringToPixels, floatToString
+from .config import momentInPixelsToString, momentInStringToPixels, floatFromString, floatToString, intToString, intFromString, hexToString, hexFromString
 
 from .guiButtons import Button, Label, TextButton, TextInput, ScrollableCBLabel, ScrollableConstant, editorButtonSetup
 from .guiTimeMeasure import TimeMeasure
@@ -14,8 +14,9 @@ from .editorTypes import V2
 from .editorShapes import Container
 from .commandExec import ComSetUserParam, ComResetUserParam, ComSetPivotXY, ComSetPivotRelativeXY, ComSetUserCoords, ComResetUserCoords
 from .commandExec import ComSetContainerPosXY, ComApplyContainerPosXY, ComSetContainerAngle, ComApplyContainerRotate, ComSetContainerScale, ComApplyContainerScale
-from .commandExec import CommandExec
+from .commandExec import CommandExec, ComNewShapeSetMask, ComNewShapeSetCategory, ComNewShapeSetGroup, ComNewShapeSetSensor, ComNewShapeSetFriction, ComNewShapeSetElasticity
 
+from .shapeInternals.editorShapeI import ShapeI
 from .shapeInternals.editorPhysicsI import PhysicsProp
 
 
@@ -210,28 +211,7 @@ class PhysicsPanel(arcade.gui.UIBoxLayout):
     def getDensity(self) -> float:
         density = densityInStringToPixels(self.densityLine.getVal(), 1.0)
         return density
-    
 
-class CursorPanel(arcade.gui.UIBoxLayout):
-
-    def __init__(self):
-        super().__init__(vertical=False)
-        self.description = Label(text="Cursor", width='thirdWidth', align='left')
-        self.xCoord = Label(text='0', width='thirdWidth', align='left')
-        self.yCoord = Label(text='0', width='thirdWidth', align='left')
-        self.oldX:float = 0.0
-        self.oldY:float = 0.0
-        self.add(self.description)
-        self.add(self.xCoord)
-        self.add(self.yCoord)
-
-    def setNewVal(self, x:float, y:float):
-        if self.oldX != x:
-            self.oldX = x
-            self.xCoord.setText(floatToString(x, '0.0'))
-        if self.oldY != y:
-            self.oldY = y
-            self.yCoord.setText(floatToString(y, '0.0'))
 
 
 class BodyPhysicsPanel(PhysicsPanel):
@@ -277,7 +257,54 @@ class ShapePhysicsPanel(PhysicsPanel):
     def __init__(self, label:str = '--', newName:str = 'ENTITY'):
         super().__init__(label = '--', newName = 'ENTITY')
         self.cogLine = LabelledCoord('CoG', '0.0')
+
+        self.elasticity = SettableOkButton('Elasticity', "0.000", self.setElasticity)
+        self.friction = SettableOkButton('Friction', "1.000", self.setFriction)
+        self.sensor:SettableBoolButton = SettableBoolButton("Sensor", False, self.setSensor)
+        self.filterGroup = SettableOkButton('Group', "0", self.setFilterGroup)
+        self.filterCategory = SettableOkButton('Category', "0", self.setFilterCategory)
+        self.filterMask = SettableOkButton('Mask', "0", self.setFilterMask)
+
         self.add(self.cogLine)
+        self.add(self.elasticity)
+        self.add(self.friction)
+        self.add(self.sensor)
+        self.add(self.filterGroup)
+        self.add(self.filterCategory)
+        self.add(self.filterMask)
+
+    def setCurrent(self, current:ShapeI):
+        super().setCurrent(current)
+        self.elasticity.setNewVal(floatToString(current.elasticity, "0.000"))
+        self.friction.setNewVal(floatToString(current.friction, "1.000"))
+        self.sensor.setNewVal(floatToString(current.isSensor, False))
+        self.filterGroup.setNewVal(hexToString(current.shapeFilterGroup, "0"))
+        self.filterCategory.setNewVal(hexToString(current.shapeFilterCategory, "0"))
+        self.filterMask.setNewVal(hexToString(current.shapeFilterMask, "0"))
+
+    def setFilterMask(self):
+        if self.current:
+            CommandExec.addCommand(ComNewShapeSetMask(self.current, hexFromString(self.filterMask.getVal(), "0")))
+
+    def setFilterCategory(self):
+        if self.current:
+            CommandExec.addCommand(ComNewShapeSetCategory(self.current, hexFromString(self.filterCategory.getVal(), "0")))
+
+    def setFilterGroup(self):
+        if self.current:
+            CommandExec.addCommand(ComNewShapeSetGroup(self.current, hexFromString(self.filterGroup.getVal(), "0")))
+
+    def setSensor(self):
+        if self.current:
+            CommandExec.addCommand(ComNewShapeSetSensor(self.current, self.sensor.getVal()))
+
+    def setElasticity(self):
+        if self.current:
+            CommandExec.addCommand(ComNewShapeSetElasticity(self.current, floatFromString(self.elasticity.getVal(), "0.0")))
+
+    def setFriction(self):
+        if self.current:
+            CommandExec.addCommand(ComNewShapeSetFriction(self.current, floatFromString(self.friction.getVal(), "1.0")))
 
     def setCurrentDetails(self, current: PhysicsProp):
         super().setCurrentDetails(current)
@@ -286,7 +313,31 @@ class ShapePhysicsPanel(PhysicsPanel):
         cogY = distanceInPixelsToString(cog.y, '0.0')
         self.cogLine.setNewVal(cogX, cogY)
     
-    
+
+class CursorPanel(arcade.gui.UIBoxLayout):
+
+    def __init__(self):
+        super().__init__(vertical=False)
+        self.description = Label(text="Cursor", width='thirdWidth', align='left')
+        self.xCoord = Label(text='0.000', width='thirdWidth', align='left')
+        self.yCoord = Label(text='0.000', width='thirdWidth', align='left')
+        self.oldX:str = '0.000'
+        self.oldY:str = '0.000'
+        self.add(self.description)
+        self.add(self.xCoord)
+        self.add(self.yCoord)
+
+    def setNewVal(self, x:float, y:float):
+        x = floatToString(x, '0.0')
+        y = floatToString(y, '0.0')
+        if self.oldX != x:
+            self.oldX = x
+            self.xCoord.setText(x)
+        if self.oldY != y:
+            self.oldY = y
+            self.yCoord.setText(y)
+
+
 class TopButtons(arcade.gui.UIBoxLayout):
 
     def __init__(self, callback: Callable[[str], None]):
@@ -531,6 +582,40 @@ class SettableCoordButton(arcade.gui.UIBoxLayout):
     def getY(self):
         return self.yCoord.text
     
+
+class SettableBoolButton(arcade.gui.UIBoxLayout):
+
+    def __init__(self, label:str, default:bool = False, okCB:Callable[[None], None]=None) -> None:
+        super().__init__(vertical=False)
+        initText = "YES" if default else "NO" 
+        self.description = Label(text=label, width='thirdWidth', align='left')
+        self.value = Label(text=initText, width='thirdWidth', align='left')
+        self.okButton = Button(text="Change", width='thirdWidth', callback=self.exec)
+        self.internal = default
+        self.callback = okCB
+
+        self.add(self.description)
+        self.add(self.value)
+        self.add(self.okButton)
+
+    def exec(self):
+        self.internal = not self.internal
+        self.refresh()
+        self.callback()
+
+    def refresh(self):
+        if self.internal:
+            self.value.setText("YES")
+        else:
+            self.value.setText("NO")
+
+    def setNewVal(self, val:bool):
+        if val != self.internal:
+            self.internal = val
+            self.refresh()
+
+    def getVal(self):
+        return self.internal
 
     
 class SettableOkButton(arcade.gui.UIBoxLayout):

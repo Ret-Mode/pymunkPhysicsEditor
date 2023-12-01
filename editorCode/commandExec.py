@@ -543,6 +543,91 @@ class ComNewShapeNewCircleRadius(CommandUndo):
     def undo(self):
         self.radiusObj.set(self.oldRadius)
 
+
+class ComNewShapeSetElasticity(CommandUndo):
+
+    def __init__(self, shape: ShapeI, value:float):
+        self.shape = shape
+        self.oldValue = shape.elasticity
+        self.newValue = value
+    
+    def execute(self):
+        self.shape.elasticity = self.newValue
+
+    def undo(self):
+        self.shape.elasticity = self.oldValue
+
+
+class ComNewShapeSetFriction(CommandUndo):
+
+    def __init__(self, shape: ShapeI, value:float):
+        self.shape = shape
+        self.oldValue = shape.friction
+        self.newValue = value
+    
+    def execute(self):
+        self.shape.friction = self.newValue
+
+    def undo(self):
+        self.shape.friction = self.oldValue
+
+
+class ComNewShapeSetSensor(CommandUndo):
+
+    def __init__(self, shape: ShapeI, value:float):
+        self.shape = shape
+        self.oldValue = shape.isSensor
+        self.newValue = value
+    
+    def execute(self):
+        self.shape.isSensor = self.newValue
+
+    def undo(self):
+        self.shape.isSensor = self.oldValue
+
+
+class ComNewShapeSetGroup(CommandUndo):
+
+    def __init__(self, shape: ShapeI, value:int):
+        self.shape = shape
+        self.oldValue = shape.shapeFilterGroup
+        self.newValue = value
+    
+    def execute(self):
+        self.shape.shapeFilterGroup = self.newValue
+
+    def undo(self):
+        self.shape.shapeFilterGroup = self.oldValue
+
+
+class ComNewShapeSetCategory(CommandUndo):
+
+    def __init__(self, shape: ShapeI, value:int):
+        self.shape = shape
+        self.oldValue = shape.shapeFilterCategory
+        self.newValue = value
+    
+    def execute(self):
+        self.shape.shapeFilterCategory = self.newValue
+
+    def undo(self):
+        self.shape.shapeFilterCategory = self.oldValue
+
+
+class ComNewShapeSetMask(CommandUndo):
+
+    def __init__(self, shape: ShapeI, value:int):
+        self.shape = shape
+        self.oldValue = shape.shapeFilterMask
+        self.newValue = value
+    
+    def execute(self):
+        self.shape.shapeFilterMask = self.newValue
+
+    def undo(self):
+        self.shape.shapeFilterMask = self.oldValue
+
+
 # End of Shape functions
 
 
@@ -709,6 +794,61 @@ class ComSetConstraintAsCurrent(CommandUndo):
 
 
 # Constraint Internal Params
+
+class ComSetSelfCollision(CommandUndo):
+
+    def __init__(self, constraint:ConstraintI, value:bool):
+        self.constraint = constraint
+        self.oldVal = constraint.selfCollide
+        self.newVal = value
+
+    def execute(self):
+        self.constraint.selfCollide = self.newVal
+
+    def undo(self):
+        self.constraint.selfCollide = self.oldVal
+
+
+class ComSetMaxBias(CommandUndo):
+
+    def __init__(self, constraint:ConstraintI, value:float):
+        self.constraint = constraint
+        self.oldVal = constraint.maxBias
+        self.newVal = value
+
+    def execute(self):
+        self.constraint.maxBias = self.newVal
+
+    def undo(self):
+        self.constraint.maxBias = self.oldVal
+
+
+class ComSetMaxForce(CommandUndo):
+
+    def __init__(self, constraint:ConstraintI, value:float):
+        self.constraint = constraint
+        self.oldVal = constraint.maxForce
+        self.newVal = value
+
+    def execute(self):
+        self.constraint.maxForce = self.newVal
+
+    def undo(self):
+        self.constraint.maxForce = self.oldVal
+
+
+class ComSetErrorBias(CommandUndo):
+
+    def __init__(self, constraint:ConstraintI, value:float):
+        self.constraint = constraint
+        self.oldVal = constraint.errorBias
+        self.newVal = value
+
+    def execute(self):
+        self.constraint.errorBias = self.newVal
+
+    def undo(self):
+        self.constraint.errorBias = self.oldVal
 
 
 class ComSetRestAngle(CommandUndo):

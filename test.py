@@ -93,6 +93,8 @@ class Runner(arcade.Window):
         self.keys.unsetKey(key)
 
     def on_update(self, delta_time: float):
+        if 'WHeelL' not in self.vehicle.bodies:
+            print(self.vehicle.bodies.keys())
         self.vehicle.bodies['WHeelL'].angular_velocity *= 0.95
         if self.keys.isPressed(arcade.key.W):
             self.vehicle.bodies['WHeelL'].angular_velocity = min(-20.0, self.vehicle.bodies['WHeelL'].angular_velocity - 1.5)
@@ -112,7 +114,7 @@ class Runner(arcade.Window):
         self.level.draw()
         self.vehicle.draw()
         arcade.draw_circle_outline(self.camera.cursorCoords.x, self.camera.cursorCoords.y, 1.0, (255,0,0), border_width=0.1, num_segments=16)
-        #self.loader.debug()
+        print(self.vehicle.constraints['CNSTRNT_3'].max_bias, self.vehicle.constraints['CNSTRNT_3'].max_force, self.vehicle.constraints['CNSTRNT_3'].error_bias)
 
 
 

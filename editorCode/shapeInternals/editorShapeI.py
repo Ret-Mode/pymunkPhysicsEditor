@@ -28,12 +28,12 @@ class ShapeI:
         
         self.physics: PhysicsProp
 
-        self.elasticity: float = 1.0
+        self.elasticity: float = 0.0
         self.friction: float = 1.0
         self.isSensor:bool = False
         self.shapeFilterGroup:int = 0
-        self.shapeFilterCategory:int = 0
-        self.shapeFilterMask:int = 0
+        self.shapeFilterCategory:int = 0xFFFFFFFF
+        self.shapeFilterMask:int = 0xFFFFFFFF
 
     # untransformed physics
     def recalcPhysics(self) -> None:
@@ -63,6 +63,13 @@ class ShapeI:
         this['physics']['customDensity'] = self.physics.density.final
         this['physics']['customMoment'] = self.physics.moment.final
         this['physics']['cog'] = [self.physics.cog.final.x, self.physics.cog.final.y]
+        this['physics']['elasticity'] = self.elasticity
+        this['physics']['friction'] = self.friction
+        this['physics']['isSensor'] = self.isSensor
+        this['physics']['filterGroup'] = self.shapeFilterGroup
+        this['physics']['filterCategory'] = self.shapeFilterCategory
+        this['physics']['filterMask'] = self.shapeFilterMask
+
 
         this['type'] = self.type
         self.internal.getJSONDict(this)

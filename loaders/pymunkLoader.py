@@ -61,14 +61,25 @@ class PymunkLoader:
         self.bodiesPhysics[label] = physics
 
     def loadShape(self, shape:Dict, label:str, body:pymunk.Body):
-        type = shape['type']
-        physics = shape['physics']
+        type:str = shape['type']
+        physics:Dict = shape['physics']
+
+        elasticity = physics.get('elasticity', 0.0)
+        friction = physics.get('friction', 1.0)
+        isSensor = physics.get('isSensor', False)
+        filterGroup = physics.get('filterGroup', 0)
+        filterCategory = physics.get('filterCategory', 0xFFFFFFFF)
+        filterMask = physics.get('filterMask', 0xFFFFFFFF)
+
         if type in ('Polygon', "Box", "Rect"):
             points = []
             for point in shape['internal']['points']:
                 points.append((point[0], point[1]))
             s = pymunk.Poly(body=body, vertices=points, radius=shape['internal']['radius'])
-            s.friction = 1.0
+            s.elasticity = elasticity
+            s.friction = friction
+            s.sensor = isSensor
+            s.filter = pymunk.ShapeFilter(filterGroup, filterCategory, filterMask)
             self.shapes[label] = s
             if physics['hasCustomMass']:
                 s.mass = physics['customMass']
@@ -77,7 +88,10 @@ class PymunkLoader:
         elif type == 'Circle':
             placement = shape['internal']['offset']
             s = pymunk.Circle(body=body, radius=shape['internal']['radius'], offset=placement)
-            s.friction = 1.0
+            s.elasticity = elasticity
+            s.friction = friction
+            s.sensor = isSensor
+            s.filter = pymunk.ShapeFilter(filterGroup, filterCategory, filterMask)
             self.shapes[label] = s
             if physics['hasCustomMass']:
                 s.mass = physics['customMass']
@@ -89,7 +103,10 @@ class PymunkLoader:
                 p1 = (point[0], point[1])
                 p2 = (point[2], point[3])
                 s = pymunk.Segment(body=body, a=p1, b=p2, radius=shape['internal']['radius'])
-                s.friction = 1.0
+                s.elasticity = elasticity
+                s.friction = friction
+                s.sensor = isSensor
+                s.filter = pymunk.ShapeFilter(filterGroup, filterCategory, filterMask)
                 if physics['hasCustomMass']:
                     length = math.sqrt((point[0] - point[2]) ** 2 + (point[1] - point[3]) ** 2)
                     s.mass = length / physics['customMass']
@@ -118,8 +135,7 @@ class PymunkLoader:
             restAngle = constraint['restAngle']
             stiffness = constraint['stiffness']
             damping = constraint['damping']
-            constraint = pymunk.constraints.DampedRotarySpring(bodyA, bodyB, restAngle, stiffness, damping)
-            constraint.collide_bodies = False
+            constraintObj = pymunk.constraints.DampedRotarySpring(bodyA, bodyB, restAngle, stiffness, damping)
         elif type == "Damped Spring":
             bodyA = self.bodies[constraint['bodyA']]
             bodyB = self.bodies[constraint['bodyB']]
@@ -128,57 +144,49 @@ class PymunkLoader:
             restLength = constraint['restLength']
             stiffness = constraint['stiffness']
             damping = constraint['damping']
-            constraint = pymunk.constraints.DampedSpring(bodyA, bodyB, anchorA, anchorB, restLength, stiffness, damping)
-            constraint.collide_bodies = False
+            constraintObj = pymunk.constraints.DampedSpring(bodyA, bodyB, anchorA, anchorB, restLength, stiffness, damping)
         elif type == "Gear":
             bodyA = self.bodies[constraint['bodyA']]
             bodyB = self.bodies[constraint['bodyB']]
             phase = constraint['phase']
             ratio = constraint['ratio']
-            constraint = pymunk.constraints.GearJoint(bodyA, bodyB, phase, ratio)
-            constraint.collide_bodies = False
+            constraintObj = pymunk.constraints.GearJoint(bodyA, bodyB, phase, ratio)
         elif type == "Groove":
             bodyA = self.bodies[constraint['bodyA']]
             bodyB = self.bodies[constraint['bodyB']]
             grooveA = tuple(constraint['grooveA'])
             grooveB = tuple(constraint['grooveB'])
             anchorB = tuple(constraint['anchorB'])
-            constraint = pymunk.constraints.GrooveJoint(bodyA, bodyB, grooveA, grooveB, anchorB)
-            constraint.collide_bodies = False
+            constraintObj = pymunk.constraints.GrooveJoint(bodyA, bodyB, grooveA, grooveB, anchorB)
         elif type == "Pin":
             bodyA = self.bodies[constraint['bodyA']]
             bodyB = self.bodies[constraint['bodyB']]
             anchorA = tuple(constraint['anchorA'])
             anchorB = tuple(constraint['anchorB'])
-            constraint = pymunk.constraints.PinJoint(bodyA, bodyB, anchorA, anchorB)
-            constraint.collide_bodies = False
+            constraintObj = pymunk.constraints.PinJoint(bodyA, bodyB, anchorA, anchorB)
         elif type == "Pivot":
             bodyA = self.bodies[constraint['bodyA']]
             bodyB = self.bodies[constraint['bodyB']]
             anchorA = tuple(constraint['anchorA'])
             anchorB = tuple(constraint['anchorB'])
-            constraint = pymunk.constraints.PivotJoint(bodyA, bodyB, anchorA, anchorB)
-            constraint.collide_bodies = False
+            constraintObj = pymunk.constraints.PivotJoint(bodyA, bodyB, anchorA, anchorB)
         elif type == "Ratchet":
             bodyA = self.bodies[constraint['bodyA']]
             bodyB = self.bodies[constraint['bodyB']]
             phase = constraint['phase']
             ratchet = constraint['ratchet']
-            constraint = pymunk.constraints.RatchetJoint(bodyA, bodyB, phase, ratchet)
-            constraint.collide_bodies = False
+            constraintObj = pymunk.constraints.RatchetJoint(bodyA, bodyB, phase, ratchet)
         elif type == "Rotary Limit":
             bodyA = self.bodies[constraint['bodyA']]
             bodyB = self.bodies[constraint['bodyB']]
             fMin = constraint['min']
             fMax = constraint['max']
-            constraint = pymunk.constraints.RotaryLimitJoint(bodyA, bodyB, fMin, fMax)
-            constraint.collide_bodies = False
+            constraintObj = pymunk.constraints.RotaryLimitJoint(bodyA, bodyB, fMin, fMax)
         elif type == "Motor":
             bodyA = self.bodies[constraint['bodyA']]
             bodyB = self.bodies[constraint['bodyB']]
             rate = constraint['rate']
-            constraint = pymunk.constraints.SimpleMotor(bodyA, bodyB, rate)
-            constraint.collide_bodies = False
+            constraintObj = pymunk.constraints.SimpleMotor(bodyA, bodyB, rate)
         elif type == "Slide":
             bodyA = self.bodies[constraint['bodyA']]
             bodyB = self.bodies[constraint['bodyB']]
@@ -186,11 +194,16 @@ class PymunkLoader:
             anchorB = tuple(constraint['anchorB'])
             fMin = constraint['min']
             fMax = constraint['max']
-            constraint = pymunk.constraints.SlideJoint(bodyA, bodyB, anchorA, anchorB, fMin, fMax)
-            constraint.collide_bodies = False
+            constraintObj = pymunk.constraints.SlideJoint(bodyA, bodyB, anchorA, anchorB, fMin, fMax)
         else:
              return
-        self.constraints[label] = constraint
+        
+        constraintObj.max_bias = constraint.get('maxBias', float("inf"))
+        constraintObj.error_bias = constraint.get('errorBias', pow(0.9, 60))
+        constraintObj.max_force = constraint.get('maxForce', float("inf"))
+        constraintObj.collide_bodies = constraint.get('selfCollide', False)
+
+        self.constraints[label] = constraintObj
 
     def addAll(self):
         for l, b in self.bodies.items():

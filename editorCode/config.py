@@ -2,7 +2,7 @@ import math
 
 import json
 
-app = {'version': '0.0.1'} 
+app = {'version': '0.0.2'} 
 
 physicsSetup = {'pixelPerMeter': 32.0,
                 'measureInPixels': True}
@@ -66,6 +66,34 @@ def toJSON(data: dict) -> str:
 def fromJSON(data:str) -> dict:
     return json.loads(data)
 
+
+def hexToString(value:int, default:str) -> str:
+    try:
+        return f'{value:X}'
+    except:
+        return default
+
+
+def hexFromString(value: str, default:int) -> float:
+    try:
+        return int(value, 16)
+    except:
+        return default
+
+
+def intToString(value:int, default:str) -> str:
+    try:
+        return f'{value}'
+    except:
+        return default
+
+
+def intFromString(value: str, default:int) -> float:
+    try:
+        return int(value)
+    except:
+        return default
+    
 
 def floatToString(value:float, default:str) -> str:
     try:

@@ -3,13 +3,14 @@ from typing import List, Optional, Callable, Union
 import arcade.gui
 
 from .guiButtons import Button, Label, TextButton, ScrollableLayout, ScrollableCBLabel, ScrollableConstant, editorButtonSetup
-from .guiPanels import SettableOkResetButton, AddNewPanel, SettableOkButton, SettableCoordOkButton, ScrollableConstantPanel, CursorPanel
+from .guiPanels import SettableOkResetButton, AddNewPanel, SettableOkButton, SettableCoordOkButton, ScrollableConstantPanel, CursorPanel, SettableBoolButton
 from .editorConstraintView import EditorConstraintView
 from .editorCursor import Cursor
 from .commandExec import CommandExec, ComRenameConstraint, ComSetConstraintAsCurrent, ComAddConstraint, ComConstraintSetNewBodyA, ComConstraintSetNewBodyB
 from .commandExec import ComDelConstraint, ComConstraintClone, ComShiftConstraintDown, ComShiftConstraintUp, ComSetRestAngle, ComSetStiffness, ComSetDamping
 from .commandExec import ComSetRestLength, ComSetAnchorA, ComSetAnchorB, ComSetPhase, ComSetRatio, ComSetGrooveA, ComSetGrooveB, ComSetRatchet
 from .commandExec import ComSetRotaryMin, ComSetRotaryMax, ComSetRate, ComSetSlideMin, ComSetSlideMax, ComConstraintSwapBodies
+from .commandExec import ComSetSelfCollision, ComSetMaxBias, ComSetMaxForce, ComSetErrorBias
 from .database import Database
 from .editorState import EditorState
 
@@ -20,6 +21,47 @@ from .constraintInternals.editorConstraintI import ConstraintI
 from .constraintInternals.editorConstraint import DampedRotarySpring, DampedSpring, GearJoint, GrooveJoint, PinJoint, PivotJoint
 from .constraintInternals.editorConstraint import RatchetJoint, RotaryLimitJoint, SimpleMotor, SlideJoint
 from .shapeInternals.editorBodyI import BodyI
+
+
+
+class ConstraintPhysicsData(arcade.gui.UIBoxLayout):
+    def __init__(self):
+        super().__init__(vertical = True)
+        self.inf = float("inf")
+        self.current:ConstraintI = None
+        self.sCollide:SettableBoolButton = SettableBoolButton("SelfColl", False, self.setSelfCollision)
+        self.mBias = SettableOkButton('Max bias', "inf", self.setMBias)
+        self.mForce = SettableOkButton('Max force', "inf", self.setMForce)
+        self.eBias = SettableOkButton('Error bias', "0.001", self.setEBias)
+
+        self.add(self.sCollide)
+        self.add(self.mBias)
+        self.add(self.mForce)
+        self.add(self.eBias)
+
+    def refresh(self, constraint:ConstraintI):
+        self.current = constraint
+        if constraint:
+            self.sCollide.setNewVal(constraint.selfCollide)
+            self.mBias.setNewVal(floatToString(constraint.maxBias, "inf"))
+            self.mForce.setNewVal(floatToString(constraint.maxForce, "inf"))
+            self.eBias.setNewVal(floatToString(constraint.errorBias, "0.001"))
+
+    def setSelfCollision(self):
+        if self.current:
+            CommandExec.addCommand(ComSetSelfCollision(self.current, self.sCollide.getVal()))
+
+    def setMBias(self):
+        if self.current:
+            CommandExec.addCommand(ComSetMaxBias(self.current, floatFromString(self.mBias.getVal(), self.inf)))
+
+    def setMForce(self):
+        if self.current:
+            CommandExec.addCommand(ComSetMaxForce(self.current, floatFromString(self.mForce.getVal(), self.inf)))
+
+    def setEBias(self):
+        if self.current:
+            CommandExec.addCommand(ComSetErrorBias(self.current, floatFromString(self.eBias.getVal(), 0.001)))
 
 
 class ConstraintBodiesSelector(arcade.gui.UIBoxLayout):
@@ -493,6 +535,8 @@ class DetailsPanel(arcade.gui.UIBoxLayout):
         
         self.nonePanel:NoneConstraintPanel = NoneConstraintPanel()
         self.bodySelectorPanel = ConstraintBodiesSelector()
+
+        self.constraintPhysicsData = ConstraintPhysicsData()
         
         self.currentPanel = self.nonePanel
 
@@ -510,6 +554,7 @@ class DetailsPanel(arcade.gui.UIBoxLayout):
             return
         self.remove(self.currentPanel)
         if self.currentPanel != self.nonePanel:
+            self.remove(self.constraintPhysicsData)
             self.remove(self.bodySelectorPanel)
 
         if not constraint:
@@ -539,6 +584,7 @@ class DetailsPanel(arcade.gui.UIBoxLayout):
 
         self.add(self.currentPanel)
         if self.currentPanel != self.nonePanel:
+            self.add(self.constraintPhysicsData)
             self.add(self.bodySelectorPanel)
     
     def refresh(self, constraint:ConstraintI):
@@ -546,6 +592,7 @@ class DetailsPanel(arcade.gui.UIBoxLayout):
             self.possibleModes.setLabel(self.view.mode)
             self.currentPanel.refresh(constraint)
             self.bodySelectorPanel.refresh(constraint)
+            self.constraintPhysicsData.refresh(constraint)
 
     def nextViewMode(self):
         self.view.nextMode()

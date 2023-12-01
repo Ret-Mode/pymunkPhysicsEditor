@@ -32,6 +32,10 @@ class DampedRotarySpring(ConstraintI):
     def getJSONDict(self, parent:dict):
         assert self.label not in parent
         this = {}
+        this['maxBias'] = self.maxBias
+        this['maxForce'] = self.maxForce
+        this['errorBias'] = self.errorBias
+        this['selfCollide'] = self.selfCollide
         this['restAngle'] = self.restAngle.angle
         this['stiffness'] = self.stiffness
         this['damping'] = self.damping
@@ -74,6 +78,10 @@ class DampedSpring(ConstraintI):
     def getJSONDict(self, parent:dict):
         assert self.label not in parent
         this = {}
+        this['maxBias'] = self.maxBias
+        this['maxForce'] = self.maxForce
+        this['errorBias'] = self.errorBias
+        this['selfCollide'] = self.selfCollide
         this['restLength'] = self.restLength
         this['stiffness'] = self.stiffness
         this['damping'] = self.damping
@@ -116,6 +124,10 @@ class GearJoint(ConstraintI):
     def getJSONDict(self, parent:dict):
         assert self.label not in parent
         this = {}
+        this['maxBias'] = self.maxBias
+        this['maxForce'] = self.maxForce
+        this['errorBias'] = self.errorBias
+        this['selfCollide'] = self.selfCollide
         this['phase'] = self.phase.angle
         this['ratio'] = self.ratio
         this['type'] = self.type
@@ -160,6 +172,10 @@ class GrooveJoint(ConstraintI):
     def getJSONDict(self, parent:dict):
         assert self.label not in parent
         this = {}
+        this['maxBias'] = self.maxBias
+        this['maxForce'] = self.maxForce
+        this['errorBias'] = self.errorBias
+        this['selfCollide'] = self.selfCollide
         this['grooveA'] = [self.grooveA.final.x, self.grooveA.final.y]
         this['grooveB'] = [self.grooveB.final.x, self.grooveB.final.y]
         this['anchorB'] = [self.anchorB.final.x, self.anchorB.final.y]
@@ -200,6 +216,10 @@ class PinJoint(ConstraintI):
     def getJSONDict(self, parent:dict):
         assert self.label not in parent
         this = {}
+        this['maxBias'] = self.maxBias
+        this['maxForce'] = self.maxForce
+        this['errorBias'] = self.errorBias
+        this['selfCollide'] = self.selfCollide
         this['anchorA'] = [self.anchorA.final.x, self.anchorA.final.y]
         this['anchorB'] = [self.anchorB.final.x, self.anchorB.final.y]
         this['type'] = self.type
@@ -239,6 +259,10 @@ class PivotJoint(ConstraintI):
     def getJSONDict(self, parent:dict):
         assert self.label not in parent
         this = {}
+        this['maxBias'] = self.maxBias
+        this['maxForce'] = self.maxForce
+        this['errorBias'] = self.errorBias
+        this['selfCollide'] = self.selfCollide
         this['anchorA'] = [self.anchorA.final.x, self.anchorA.final.y]
         this['anchorB'] = [self.anchorB.final.x, self.anchorB.final.y]
         this['type'] = self.type
@@ -278,6 +302,10 @@ class RatchetJoint(ConstraintI):
     def getJSONDict(self, parent:dict):
         assert self.label not in parent
         this = {}
+        this['maxBias'] = self.maxBias
+        this['maxForce'] = self.maxForce
+        this['errorBias'] = self.errorBias
+        this['selfCollide'] = self.selfCollide
         this['phase'] = self.phase.angle
         this['ratchet'] = self.ratchet.angle
         this['type'] = self.type
@@ -311,6 +339,10 @@ class RotaryLimitJoint(ConstraintI):
     def getJSONDict(self, parent:dict):
         assert self.label not in parent
         this = {}
+        this['maxBias'] = self.maxBias
+        this['maxForce'] = self.maxForce
+        this['errorBias'] = self.errorBias
+        this['selfCollide'] = self.selfCollide
         this['min'] = self.min.angle
         this['max'] = self.max.angle
         this['type'] = self.type
@@ -343,6 +375,10 @@ class SimpleMotor(ConstraintI):
     def getJSONDict(self, parent:dict):
         assert self.label not in parent
         this = {}
+        this['maxBias'] = self.maxBias
+        this['maxForce'] = self.maxForce
+        this['errorBias'] = self.errorBias
+        this['selfCollide'] = self.selfCollide
         this['rate'] = self.rate.angle
         this['type'] = self.type
         this['bodyA'] = self.bodyA.label
@@ -383,6 +419,10 @@ class SlideJoint(ConstraintI):
     def getJSONDict(self, parent:dict):
         assert self.label not in parent
         this = {}
+        this['maxBias'] = self.maxBias
+        this['maxForce'] = self.maxForce
+        this['errorBias'] = self.errorBias
+        this['selfCollide'] = self.selfCollide
         this['min'] = self.min
         this['max'] = self.max
         this['type'] = self.type
