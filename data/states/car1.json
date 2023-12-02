@@ -1,0 +1,474 @@
+{
+  "Bodies": {
+    "BODY": {
+      "physics": {
+        "hasCustomMass": true,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 100.0,
+        "customMoment": 6.519824724111187,
+        "cog": [
+          0.21685560276301571,
+          0.5328548562450708
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 1.9784924350375295,
+            "customDensity": 1.0,
+            "customMoment": 5.356621404122312,
+            "cog": [
+              -0.013388660894066309,
+              0.35517180921654734
+            ],
+            "elasticity": 0.0,
+            "friction": 1.0,
+            "isSensor": false,
+            "filterGroup": 0,
+            "filterCategory": 4294967295,
+            "filterMask": 4294967295
+          },
+          "type": "Polygon",
+          "internal": {
+            "points": [
+              [
+                -2.782142857142857,
+                0.5374999999999996
+              ],
+              [
+                2.7357142857142858,
+                0.5017857142857141
+              ],
+              [
+                2.878571428571428,
+                0.3624999999999998
+              ],
+              [
+                2.882142857142857,
+                0.18035714285714266
+              ],
+              [
+                -2.8714285714285714,
+                0.2053571428571428
+              ],
+              [
+                -2.8607142857142858,
+                0.3482142857142856
+              ]
+            ],
+            "radius": 0.01
+          }
+        },
+        "SHAPE_1": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 1.1632411995317382,
+            "customDensity": 1.0,
+            "customMoment": 0.3746930093141183,
+            "cog": [
+              0.3727551990289039,
+              0.8272341400716758
+            ],
+            "elasticity": 0.0,
+            "friction": 1.0,
+            "isSensor": false,
+            "filterGroup": 0,
+            "filterCategory": 4294967295,
+            "filterMask": 4294967295
+          },
+          "type": "Polygon",
+          "internal": {
+            "points": [
+              [
+                -0.5678571428571431,
+                0.5517857142857143
+              ],
+              [
+                -0.5607142857142859,
+                0.9267857142857143
+              ],
+              [
+                -0.4821428571428572,
+                1.158928571428571
+              ],
+              [
+                0.8964285714285714,
+                1.1482142857142854
+              ],
+              [
+                1.5,
+                0.7124999999999999
+              ],
+              [
+                1.375,
+                0.526785714285714
+              ]
+            ],
+            "radius": 0.01
+          }
+        },
+        "SHAPE_2": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 0.15808326744051998,
+            "customDensity": 1.0,
+            "customMoment": 0.01599420257130043,
+            "cog": [
+              1.9513067241800426,
+              0.5904855801800056
+            ],
+            "elasticity": 0.0,
+            "friction": 1.0,
+            "isSensor": false,
+            "filterGroup": 0,
+            "filterCategory": 4294967295,
+            "filterMask": 4294967295
+          },
+          "type": "Polygon",
+          "internal": {
+            "points": [
+              [
+                1.4178571428571427,
+                0.5303571428571425
+              ],
+              [
+                1.5249999999999995,
+                0.6946428571428571
+              ],
+              [
+                2.5285714285714285,
+                0.6017857142857141
+              ],
+              [
+                2.6607142857142856,
+                0.5303571428571425
+              ]
+            ],
+            "radius": 0.01
+          }
+        }
+      }
+    },
+    "BODY_1": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 20.0,
+        "customMoment": 10.0,
+        "cog": [
+          -1.9959210631364268,
+          -1.1827680374141787
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE_3": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": true,
+            "customMass": 20.0,
+            "customDensity": 1.0,
+            "customMoment": 10.0,
+            "cog": [
+              -1.9959210631364268,
+              -1.1827680374141787
+            ],
+            "elasticity": 0.0,
+            "friction": 1.0,
+            "isSensor": false,
+            "filterGroup": 0,
+            "filterCategory": 4294967295,
+            "filterMask": 4294967295
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              -1.9959210631364268,
+              -1.1827680374141787
+            ],
+            "radius": 1.0
+          }
+        }
+      }
+    },
+    "BODY_2": {
+      "physics": {
+        "hasCustomMass": false,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 20.0,
+        "customMoment": 10.0,
+        "cog": [
+          1.969039971377014,
+          -1.1894883103540321
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE_4": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": true,
+            "customMass": 20.0,
+            "customDensity": 1.0,
+            "customMoment": 10.0,
+            "cog": [
+              1.969039971377014,
+              -1.1894883103540321
+            ],
+            "elasticity": 0.0,
+            "friction": 1.0,
+            "isSensor": false,
+            "filterGroup": 0,
+            "filterCategory": 4294967295,
+            "filterMask": 4294967295
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              1.969039971377014,
+              -1.1894883103540321
+            ],
+            "radius": 1.0
+          }
+        }
+      }
+    }
+  },
+  "Constraints": {
+    "CNSTRNT": {
+      "maxBias": Infinity,
+      "maxForce": Infinity,
+      "errorBias": 0.001797010299914434,
+      "selfCollide": false,
+      "grooveA": [
+        -1.9940423280423278,
+        -1.1852374779541455
+      ],
+      "grooveB": [
+        -1.9940423280423278,
+        0.20506966490299705
+      ],
+      "anchorB": [
+        -1.9959210631364268,
+        -1.1827680374141787
+      ],
+      "type": "Groove",
+      "bodyA": "BODY",
+      "bodyB": "BODY_1"
+    },
+    "CNSTRNT_1": {
+      "maxBias": Infinity,
+      "maxForce": Infinity,
+      "errorBias": 0.001797010299914434,
+      "selfCollide": false,
+      "grooveA": [
+        1.9626373897707232,
+        -1.1880206349206373
+      ],
+      "grooveB": [
+        1.9697802469135803,
+        0.21912222222221978
+      ],
+      "anchorB": [
+        1.969039971377014,
+        -1.1894883103540321
+      ],
+      "type": "Groove",
+      "bodyA": "BODY",
+      "bodyB": "BODY_2"
+    },
+    "CNSTRNT_2": {
+      "maxBias": Infinity,
+      "maxForce": Infinity,
+      "errorBias": 0.9,
+      "selfCollide": false,
+      "restLength": 0.0,
+      "stiffness": 10000.0,
+      "damping": 10000.0,
+      "anchorA": [
+        -1.9957780014276545,
+        -1.1500173080266725
+      ],
+      "anchorB": [
+        -1.9959210631364268,
+        -1.1827680374141787
+      ],
+      "type": "Damped Spring",
+      "bodyA": "BODY",
+      "bodyB": "BODY_1"
+    },
+    "CNSTRNT_3": {
+      "maxBias": Infinity,
+      "maxForce": Infinity,
+      "errorBias": 0.9,
+      "selfCollide": false,
+      "restLength": 0.0,
+      "stiffness": 10000.0,
+      "damping": 10000.0,
+      "anchorA": [
+        1.9689838141526066,
+        -1.1688250249842187
+      ],
+      "anchorB": [
+        1.969039971377014,
+        -1.1894883103540321
+      ],
+      "type": "Damped Spring",
+      "bodyA": "BODY",
+      "bodyB": "BODY_2"
+    }
+  },
+  "Mappings": {
+    "MAP:0": {
+      "textureChannel": "0",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        192,
+        96
+      ],
+      "anchor": [
+        96.0,
+        48.0
+      ],
+      "subAnchor": [
+        0.0,
+        0.0
+      ],
+      "subScale": 0.03125,
+      "subRotate": 0.0,
+      "body": "BODY",
+      "GLmapping": [
+        -3.0,
+        -1.5,
+        3.0,
+        -1.5,
+        -3.0,
+        1.5,
+        3.0,
+        1.5
+      ],
+      "GLuv": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "MAP:1": {
+      "textureChannel": "1",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        -1.9959210631364268,
+        -1.1827680374141787
+      ],
+      "subScale": 0.03125,
+      "subRotate": 0.0,
+      "body": "BODY_1",
+      "GLmapping": [
+        -2.995921063136427,
+        -2.1827680374141787,
+        -0.9959210631364268,
+        -2.1827680374141787,
+        -2.995921063136427,
+        -0.18276803741417869,
+        -0.9959210631364268,
+        -0.18276803741417869
+      ],
+      "GLuv": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "MAP:1_1": {
+      "textureChannel": "1",
+      "offset": [
+        0,
+        0
+      ],
+      "size": [
+        64,
+        64
+      ],
+      "anchor": [
+        32.0,
+        32.0
+      ],
+      "subAnchor": [
+        1.969039971377014,
+        -1.1894883103540321
+      ],
+      "subScale": 0.03125,
+      "subRotate": 0.0,
+      "body": "BODY_2",
+      "GLmapping": [
+        0.9690399713770139,
+        -2.189488310354032,
+        2.969039971377014,
+        -2.189488310354032,
+        0.9690399713770139,
+        -0.18948831035403213,
+        2.969039971377014,
+        -0.18948831035403213
+      ],
+      "GLuv": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "Textures": {
+    "0": {
+      "path": "data/textures/truck.png",
+      "size": [
+        192,
+        96
+      ]
+    },
+    "1": {
+      "path": "data/textures/wheel1.png",
+      "size": [
+        64,
+        64
+      ]
+    }
+  },
+  "Version": "0.0.2"
+}

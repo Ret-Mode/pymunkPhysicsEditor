@@ -216,3 +216,19 @@ class TextureMapping:
                         self.uv[3].x, self.uv[3].y,]
         parent[self.label] = this
     
+    def clone(self, source: "TextureMapping") -> "TextureMapping":
+        self.body = source.body
+        self.transform.clone(source.transform)
+        for dest,src in zip(self.mappingRect, source.mappingRect):
+            dest.setFromEP(src)
+        for dest,src in zip(self.uv, source.uv):
+            dest.setFromV(src)
+
+        for i in range(2):
+            self.textureSize[i] = source.textureSize[i]
+            self.anchor[i] = source.anchor[i]
+            self.mappingSize[i] = source.mappingSize[i]
+            self.mappingOffset[i] = source.mappingOffset[i]
+
+        self.cog.setFromV(self.cog)
+        self.subAnchor.setFromEP(source.subAnchor)

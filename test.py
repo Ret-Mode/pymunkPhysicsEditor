@@ -72,8 +72,13 @@ class Runner(arcade.Window):
         self.level.loadFile('data/states/level.json')
         self.level.addAll()
         self.vehicle = SpriteLoader(self.space)
-        self.vehicle.loadFile('data/states/export.json')
+        self.vehicle.loadFile('data/states/car1.json')
         self.vehicle.addAll()
+
+        self.ttest = SpriteLoader(self.space)
+        self.ttest.loadFile('data/states/test.json')
+        #self.ttest.addAll()
+
         self.camera = Camera()
         self.camera.setWidthInMeters(40.0)
         self.camera.update()
@@ -93,17 +98,19 @@ class Runner(arcade.Window):
         self.keys.unsetKey(key)
 
     def on_update(self, delta_time: float):
-        if 'WHeelL' not in self.vehicle.bodies:
+        if 'BODY_1' not in self.vehicle.bodies:
             print(self.vehicle.bodies.keys())
-        self.vehicle.bodies['WHeelL'].angular_velocity *= 0.95
+        wheel = self.vehicle.bodies['BODY_1']
+        wheel.angular_velocity *= 0.95
         if self.keys.isPressed(arcade.key.W):
-            self.vehicle.bodies['WHeelL'].angular_velocity = min(-20.0, self.vehicle.bodies['WHeelL'].angular_velocity - 1.5)
+            wheel.angular_velocity = min(-20.0, wheel.angular_velocity - 1.5)
         if self.keys.isPressed(arcade.key.S):
-            self.vehicle.bodies['WHeelL'].angular_velocity = max(7.0, self.vehicle.bodies['WHeelL'].angular_velocity + 0.5)
+            wheel.angular_velocity = max(7.0, wheel.angular_velocity + 0.5)
         self.space.step(0.016)
         self.level.update()
         self.vehicle.update()
-        self.vec = self.vehicle.bodies['Main'].position
+        #self.ttest.update()
+        self.vec = self.vehicle.bodies["BODY"].position
         self.camera.move(self.vec)
         self.camera.update()
         return super().on_update(delta_time)
@@ -113,6 +120,7 @@ class Runner(arcade.Window):
         self.camera.use()
         self.level.draw()
         self.vehicle.draw()
+        #self.ttest.draw()
         #arcade.draw_circle_outline(self.camera.cursorCoords.x, self.camera.cursorCoords.y, 1.0, (255,0,0), border_width=0.1, num_segments=16)
         #print(self.vehicle.constraints['CNSTRNT_3'].max_bias, self.vehicle.constraints['CNSTRNT_3'].max_force, self.vehicle.constraints['CNSTRNT_3'].error_bias)
 
