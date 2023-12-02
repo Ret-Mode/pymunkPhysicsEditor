@@ -17,7 +17,8 @@ Missing features (ordered somewhat as they are planned to be developed):
 - [x] Add transforms to texture views
 - [x] Add constraints to simple loader
 - [x] Saving/loading (JSON)
-- [x] Supporting all parameters of pymunk objects
+- [x] Supporting all parameters of pymunk objects (without a radius)
+- [ ] Add possibility of changing a shape radius
 - [ ] Cloning of objects
 - [ ] Additional buttons (CoG to Pivot, etc)
 - [ ] Snapping to points

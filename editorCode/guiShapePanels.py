@@ -230,7 +230,8 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
         self.view.swapHideState()
 
     def clone_cb(self) -> None:
-        CommandExec.addCommand(ComNewShapeClone(self.current))
+        if self.current:
+            CommandExec.addCommand(ComNewShapeClone(self.current))
 
     def rename(self):
         if self.current:

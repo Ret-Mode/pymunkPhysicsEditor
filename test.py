@@ -113,8 +113,8 @@ class Runner(arcade.Window):
         self.camera.use()
         self.level.draw()
         self.vehicle.draw()
-        arcade.draw_circle_outline(self.camera.cursorCoords.x, self.camera.cursorCoords.y, 1.0, (255,0,0), border_width=0.1, num_segments=16)
-        print(self.vehicle.constraints['CNSTRNT_3'].max_bias, self.vehicle.constraints['CNSTRNT_3'].max_force, self.vehicle.constraints['CNSTRNT_3'].error_bias)
+        #arcade.draw_circle_outline(self.camera.cursorCoords.x, self.camera.cursorCoords.y, 1.0, (255,0,0), border_width=0.1, num_segments=16)
+        #print(self.vehicle.constraints['CNSTRNT_3'].max_bias, self.vehicle.constraints['CNSTRNT_3'].max_force, self.vehicle.constraints['CNSTRNT_3'].error_bias)
 
 
 
