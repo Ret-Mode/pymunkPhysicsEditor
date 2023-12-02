@@ -425,7 +425,6 @@ class ComNewShapeClone(CommandUndo):
     def __init__(self, shape:ShapeI):
         self.database = Database.getInstance()
         self.state = EditorState.getInstance()
-        self.currentShape = self.state.getCurrentShape()
         self.baseShape = shape
         self.body = self.database.getNewShapeParent(shape)
         self.index = self.database.getNewShapeBodyIndex(shape)
@@ -438,10 +437,7 @@ class ComNewShapeClone(CommandUndo):
 
     def undo(self):        
         self.database.deleteNewShape(self.newShape.label)
-        if self.currentShape:
-            self.state.setCurrentShapeByLabel(self.currentShape.label)
-        else:
-            self.state.setAnyShapeAsCurrent()
+        self.state.setAnyShapeAsCurrent()
 
 
 class ComAddNewShape(CommandUndo):
