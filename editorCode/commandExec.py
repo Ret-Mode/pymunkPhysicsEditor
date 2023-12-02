@@ -1697,13 +1697,72 @@ class ComLoadTexture(CommandUndo):
 
 # MAPPING Commands
 
+class ComRenameMapping(CommandUndo):
+
+    def __init__(self, mapping: TextureMapping, newName: str):
+        self.mapping = mapping
+        self.database = Database.getInstance()
+        self.newName = newName
+        self.oldName = mapping.label
+    
+    def execute(self):
+        self.database.renameMapping(self.mapping, self.newName)
+
+    def undo(self):
+        self.database.renameMapping(self.mapping, self.oldName)
+
+
+class ComMappingClone(CommandUndo):
+
+    def __init__(self, mapping:TextureMapping):
+        self.database = Database.getInstance()
+        self.state = EditorState.getInstance()
+        self.baseMapping = mapping
+        self.channel = self.baseMapping.channel
+        baseLabel = self.baseMapping.label[:self.baseMapping.label.find(':')]
+        self.newMapping = self.database.createMapping(self.channel, tuple(self.baseMapping.textureSize), baseLabel)
+        self.newMapping.clone(self.baseMapping)
+        self.index = self.database.getConstraintIndex(self.baseMapping)
+
+    def execute(self):
+        self.database.addMapping(self.newMapping, self.index+1)
+        self.state.setCurrentMappingByLabel(self.newMapping.label)
+
+    def undo(self):        
+        self.database.deleteMapping(self.newMapping.label)
+        self.state.setAnyMappingFromChannelAsCurrent(self.channel)
+
+
+class ComShiftMappingUp(Command):
+
+    def __init__(self):
+        self.database = Database.getInstance()
+        self.state = EditorState.getInstance()
+        self.mapping = self.state.getCurrentMapping()
+
+    def execute(self):
+        if self.mapping:
+            self.database.shiftMappingUp(self.mapping)
+
+
+class ComShiftMappingDown(Command):
+
+    def __init__(self):
+        self.database = Database.getInstance()
+        self.state = EditorState.getInstance()
+        self.mapping = self.state.getCurrentMapping()
+
+    def execute(self):
+        if self.mapping:
+            self.database.shiftMappingDown(self.mapping)
+
 
 class ComCreateMapping(CommandUndo):
 
-    def __init__(self, channel:int, size:Tuple[int]):
+    def __init__(self, channel:int, size:Tuple[int], label:str):
         self.state = EditorState.getInstance()
         self.database = Database.getInstance()
-        self.mapping = self.database.createMapping(channel, size)
+        self.mapping = self.database.createMapping(channel, size, label)
         self.prevMapping = self.state.getCurrentMapping()
 
     def execute(self):
@@ -1730,7 +1789,7 @@ class ComDeleteMapping(CommandUndo):
     def execute(self):
         if self.state.getCurrentMapping() == self.mapping:
             self.current = True
-        self.database.deleteMapping(self.mapping)
+        self.database.deleteMapping(self.mapping.label)
         if self.current:
             channel = self.state.getCurrentMappingChannel()
             self.state.setAnyMappingFromChannelAsCurrent(channel)

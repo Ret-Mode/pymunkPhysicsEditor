@@ -5,7 +5,7 @@
         "hasCustomMass": true,
         "hasCustomMoment": false,
         "hasCustomCog": false,
-        "customMass": 100.0,
+        "customMass": 10.0,
         "customMoment": 6.519824724111187,
         "cog": [
           0.21685560276301571,
@@ -25,7 +25,7 @@
               -0.013388660894066309,
               0.35517180921654734
             ],
-            "elasticity": 0.0,
+            "elasticity": 1.0,
             "friction": 1.0,
             "isSensor": false,
             "filterGroup": 0,
@@ -74,7 +74,7 @@
               0.3727551990289039,
               0.8272341400716758
             ],
-            "elasticity": 0.0,
+            "elasticity": 1.0,
             "friction": 1.0,
             "isSensor": false,
             "filterGroup": 0,
@@ -123,7 +123,7 @@
               1.9513067241800426,
               0.5904855801800056
             ],
-            "elasticity": 0.0,
+            "elasticity": 1.0,
             "friction": 1.0,
             "isSensor": false,
             "filterGroup": 0,
@@ -180,8 +180,8 @@
               -1.9959210631364268,
               -1.1827680374141787
             ],
-            "elasticity": 0.0,
-            "friction": 1.0,
+            "elasticity": 1.0,
+            "friction": 5.0,
             "isSensor": false,
             "filterGroup": 0,
             "filterCategory": 4294967295,
@@ -223,8 +223,8 @@
               1.969039971377014,
               -1.1894883103540321
             ],
-            "elasticity": 0.0,
-            "friction": 1.0,
+            "elasticity": 1.0,
+            "friction": 5.0,
             "isSensor": false,
             "filterGroup": 0,
             "filterCategory": 4294967295,
@@ -292,7 +292,27 @@
       "selfCollide": false,
       "restLength": 0.0,
       "stiffness": 10000.0,
-      "damping": 10000.0,
+      "damping": 100.0,
+      "anchorA": [
+        -1.9957780014276545,
+        -1.1500173080266725
+      ],
+      "anchorB": [
+        -1.9959210631364268,
+        -1.1827680374141787
+      ],
+      "type": "Damped Spring",
+      "bodyA": "BODY",
+      "bodyB": "BODY_1"
+    },
+    "CNSTRNT_4": {
+      "maxBias": Infinity,
+      "maxForce": Infinity,
+      "errorBias": 0.9,
+      "selfCollide": false,
+      "restLength": 0.0,
+      "stiffness": 10000.0,
+      "damping": 100.0,
       "anchorA": [
         -1.9957780014276545,
         -1.1500173080266725
@@ -312,7 +332,27 @@
       "selfCollide": false,
       "restLength": 0.0,
       "stiffness": 10000.0,
-      "damping": 10000.0,
+      "damping": 100.0,
+      "anchorA": [
+        1.9689838141526066,
+        -1.1688250249842187
+      ],
+      "anchorB": [
+        1.969039971377014,
+        -1.1894883103540321
+      ],
+      "type": "Damped Spring",
+      "bodyA": "BODY",
+      "bodyB": "BODY_2"
+    },
+    "CNSTRNT_5": {
+      "maxBias": Infinity,
+      "maxForce": Infinity,
+      "errorBias": 0.9,
+      "selfCollide": false,
+      "restLength": 0.0,
+      "stiffness": 10000.0,
+      "damping": 100.0,
       "anchorA": [
         1.9689838141526066,
         -1.1688250249842187

@@ -8,12 +8,13 @@ from .editorTextureView import EditorTextureView
 from .shapeInternals.editorBodyI import BodyI
 from .guiButtons import ScrollableLayout, TexturePreview
 from .guiButtons import Button, Label
-from .guiPanels import ScrollableCBLabelPanel, EmptyPanel
+from .guiPanels import ScrollableCBLabelPanel, EmptyPanel, SettableOkResetButton
 from .editorFilesystem import EditorDir
 from .textureContainerI import TextureContainerI
 from .textureMapping import TextureMapping
 from .editorState import EditorState
-from .commandExec import CommandExec, ComLoadTexture, ComFitViewToTexture, ComCreateMapping
+from .commandExec import CommandExec, ComLoadTexture, ComFitViewToTexture, ComCreateMapping, ComDeleteMapping
+from .commandExec import ComShiftMappingUp, ComShiftMappingDown, ComMappingClone, ComRenameMapping
 
 class ChannelSelector(ScrollableCBLabelPanel):
 
@@ -208,8 +209,6 @@ class TextureSelectPanel(arcade.gui.UIBoxLayout):
 
 # MAPPING PANELS
 
-
-
 class BodySelectPanel(arcade.gui.UIBoxLayout):
 
     def __init__(self):
@@ -307,6 +306,63 @@ class MappingDetailsPanel(arcade.gui.UIBoxLayout):
         self.currentMapping = mapping
 
 
+class MappingOptsPanel(arcade.gui.UIBoxLayout):
+
+    def __init__(self) -> None:
+        super().__init__(vertical=True)
+
+        row1 = arcade.gui.UIBoxLayout(vertical=False)
+        row2 = arcade.gui.UIBoxLayout(vertical=False)
+
+        row1.add(Button(text="FIT", width='thirdWidth', callback=self.fit_cb))
+
+        row1.add(Button(text="DEL", width='thirdWidth', callback=self.del_btn))
+    
+        row1.add(Button(text="UP", width='thirdWidth', callback=self.up_btn_cb))
+    
+        row2.add(Button(text="SH/HID", width='thirdWidth', callback=self.swap_cb))
+
+        row2.add(Button(text="CLONE", width='thirdWidth', callback=self.clone_cb))
+    
+        row2.add(Button(text="DOWN", width='thirdWidth', callback=self.down_btn_cb))
+
+
+        self.add(row1)
+        self.add(row2)
+
+    def fit_cb(self):
+        current:TextureMapping = EditorState.getInstance().getCurrentMapping()
+        if current:
+            pass
+            #self.view.viewOffset.fitToBox(current.box)
+
+    def del_btn(self) -> None:
+        current = EditorState.getInstance().getCurrentMapping()
+        if current:
+            CommandExec.addCommand(ComDeleteMapping(current.label))
+
+    def up_btn_cb(self) -> None:
+        current = EditorState.getInstance().getCurrentMapping()
+        if current:
+            CommandExec.addCommand(ComShiftMappingUp())
+
+    def down_btn_cb(self) -> None:
+        current = EditorState.getInstance().getCurrentMapping()
+        if current:
+            CommandExec.addCommand(ComShiftMappingDown())
+
+    def swap_cb(self) -> None:
+        current = EditorState.getInstance().getCurrentMapping()
+        if current:
+            pass
+            #self.view.swapHideState()
+
+    def clone_cb(self) -> None:
+        current = EditorState.getInstance().getCurrentMapping()
+        if current:
+            CommandExec.addCommand(ComMappingClone(current))
+
+
 class MappingsPanel(arcade.gui.UIBoxLayout):
 
     def __init__(self) -> None:
@@ -318,6 +374,10 @@ class MappingsPanel(arcade.gui.UIBoxLayout):
         self.currentChannelPath = Label('--', align='left')
         self.mappings = ScrollableLayout(max=8, callback=self.loadMapping)
 
+        self.opts = MappingOptsPanel()
+
+        self.labelLine = SettableOkResetButton('Label', 'MAP', self.rename, self.refreshLabel)
+
         self.mappingDetails = MappingDetailsPanel()
         self.empty = EmptyPanel('Select mapping')
 
@@ -328,14 +388,17 @@ class MappingsPanel(arcade.gui.UIBoxLayout):
 
         self.add(upperLine)
         self.add(self.currentChannelPath)
+        self.add(self.opts)
         self.add(self.mappings)
+        self.add(self.labelLine)
         self.add(self.currentPanel)
 
     def addMapping(self):
         textures = TextureContainerI.getInstance()
         channel = EditorState.getInstance().getCurrentMappingChannel()
         if textures.getTexture(channel):
-            CommandExec.getInstance().addCommand(ComCreateMapping(channel, textures.getSize(channel)))
+            label = self.labelLine.getVal()
+            CommandExec.getInstance().addCommand(ComCreateMapping(channel, textures.getSize(channel), label))
 
     def updateMappingDetails(self):
         mapping = EditorState.getInstance().getCurrentMapping()
@@ -351,8 +414,10 @@ class MappingsPanel(arcade.gui.UIBoxLayout):
                 self.add(self.currentPanel)
 
     def loadMapping(self, label):
-        state = EditorState.getInstance()
-        state.setCurrentMappingByLabel(label)
+        if label != '--':
+            state = EditorState.getInstance()
+            state.setCurrentMappingByLabel(label)
+            self.labelLine.setNewVal(label)
  
     def on_update(self, dt):
         retVal = super().on_update(dt)
@@ -368,6 +433,21 @@ class MappingsPanel(arcade.gui.UIBoxLayout):
         if self.currentPanel == self.mappingDetails:
             self.mappingDetails.updateAll()
     
+    def rename(self):
+        current = EditorState.getInstance().getCurrentMapping()
+        if current:
+            newName = self.labelLine.getVal()
+            oldName = current.label
+            if newName != oldName:
+                CommandExec.addCommand(ComRenameMapping(current, newName))
+
+    def refreshLabel(self):
+        current = EditorState.getInstance().getCurrentMapping()
+        if current:
+            self.labelLine.setNewVal(current.label)
+            self.labelLine.refresh()
+
+
 # end of MAPPING PANELS
 
 class TextureButtons(arcade.gui.UIBoxLayout):

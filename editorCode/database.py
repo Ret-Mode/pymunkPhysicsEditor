@@ -278,9 +278,9 @@ class Database:
 
     # TEXTURE management
 
-    def createMapping(self, channel:int, textureSize:Tuple[int]):
-        label = f'MAP:{channel}'
-        newLabel = _getUniqueLabel(label, self.getAllMappingLabels(), f'MAP:{channel}')
+    def createMapping(self, channel:int, textureSize:Tuple[int], label:str="MAP"):
+        oldLabel = f'{label}:{channel}'
+        newLabel = _getUniqueLabel(oldLabel, self.getAllMappingLabels(), f'MAP:{channel}')
         return TextureMapping(newLabel, channel, textureSize)
 
     def addMapping(self, mapping:TextureMapping, at: int = -1):
@@ -311,6 +311,28 @@ class Database:
         if mapping in self.mappings:
             return self.mappings.index(mapping)
         return -1
+
+    def shiftMappingUp(self, mapping:TextureMapping):
+        if mapping:
+            channel = mapping.channel
+            otherMappings = self.getAllMappingsOfChannel(channel)
+            if len(otherMappings) > 1:
+                channelIndex = otherMappings.index(mapping)
+                otherMapping = otherMappings[channelIndex - 1]
+                index1 = self.getMappingIndex(mapping)
+                index2 = self.getMappingIndex(otherMapping)
+                self.swap(index1, index2, self.mappings)
+
+    def shiftMappingDown(self, mapping:TextureMapping):
+        if mapping:
+            channel = mapping.channel
+            otherMappings = self.getAllMappingsOfChannel(channel)
+            if len(otherMappings) > 1:
+                channelIndex = otherMappings.index(mapping)
+                otherMapping = otherMappings[(channelIndex + 1) % len(otherMappings)]
+                index1 = self.getMappingIndex(mapping)
+                index2 = self.getMappingIndex(otherMapping)
+                self.swap(index1, index2, self.mappings)
 
     def deleteMapping(self, label):
         mapping = self.getMappingByLabel(label)

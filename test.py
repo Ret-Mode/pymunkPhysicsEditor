@@ -75,8 +75,8 @@ class Runner(arcade.Window):
         self.vehicle.loadFile('data/states/car1.json')
         self.vehicle.addAll()
 
-        self.ttest = SpriteLoader(self.space)
-        self.ttest.loadFile('data/states/test.json')
+        #self.ttest = SpriteLoader(self.space)
+        #self.ttest.loadFile('data/states/test.json')
         #self.ttest.addAll()
 
         self.camera = Camera()
