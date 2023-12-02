@@ -2,7 +2,7 @@ from ..editorTypes import UnboundAngle, OffsetPoint
 from ..shapeBuffer import ShapeBuffer
 
 from .editorConstraintI import ConstraintI
-
+from ..shapeInternals.editorBodyI import BodyI
 
 class DampedRotarySpring(ConstraintI):
 
@@ -44,6 +44,19 @@ class DampedRotarySpring(ConstraintI):
         this['bodyB'] = self.bodyB.label
         parent[self.label] = this
 
+    def clone(self, source:"DampedRotarySpring") -> "DampedRotarySpring":
+        self.restAngle.clone(source.restAngle)
+        self.stiffness = source.stiffness
+        self.damping = source.damping
+
+        self.bodyA = source.bodyA
+        self.bodyB = source.bodyB
+        self.selfCollide = source.selfCollide
+        self.maxForce = source.maxForce
+        self.maxBias = source.maxBias
+        self.errorBias = source.errorBias
+    
+    
 class DampedSpring(ConstraintI):
 
     def __init__(self, label:str):
@@ -91,7 +104,20 @@ class DampedSpring(ConstraintI):
         this['bodyA'] = self.bodyA.label
         this['bodyB'] = self.bodyB.label
         parent[self.label] = this
-    
+
+    def clone(self, source:"DampedSpring") -> "DampedSpring":
+        self.restLength = source.restLength
+        self.stiffness = source.stiffness
+        self.damping = source.damping
+        self.anchorA.clone(source.anchorA)
+        self.anchorB.clone(source.anchorB)
+
+        self.bodyA = source.bodyA
+        self.bodyB = source.bodyB
+        self.selfCollide = source.selfCollide
+        self.maxForce = source.maxForce
+        self.maxBias = source.maxBias
+        self.errorBias = source.errorBias
 
 class GearJoint(ConstraintI):
 
@@ -135,6 +161,17 @@ class GearJoint(ConstraintI):
         this['bodyB'] = self.bodyB.label
         parent[self.label] = this
     
+    def clone(self, source:"GearJoint") -> "GearJoint":
+        self.phase.clone(source.phase)
+        self.ratio = source.ratio
+
+        self.bodyA = source.bodyA
+        self.bodyB = source.bodyB
+        self.selfCollide = source.selfCollide
+        self.maxForce = source.maxForce
+        self.maxBias = source.maxBias
+        self.errorBias = source.errorBias
+
 
 class GrooveJoint(ConstraintI):
 
@@ -184,6 +221,18 @@ class GrooveJoint(ConstraintI):
         this['bodyB'] = self.bodyB.label
         parent[self.label] = this
 
+    def clone(self, source:"GrooveJoint") -> "GrooveJoint":
+        self.grooveA.clone(source.grooveA)
+        self.grooveB.clone(source.grooveB)
+        self.anchorB.clone(source.anchorB)
+
+        self.bodyA = source.bodyA
+        self.bodyB = source.bodyB
+        self.selfCollide = source.selfCollide
+        self.maxForce = source.maxForce
+        self.maxBias = source.maxBias
+        self.errorBias = source.errorBias
+
 
 class PinJoint(ConstraintI):
 
@@ -227,6 +276,17 @@ class PinJoint(ConstraintI):
         this['bodyB'] = self.bodyB.label
         parent[self.label] = this
     
+    def clone(self, source:"PinJoint") -> "PinJoint":
+        self.anchorA.clone(source.anchorA)
+        self.anchorB.clone(source.anchorB)
+
+        self.bodyA = source.bodyA
+        self.bodyB = source.bodyB
+        self.selfCollide = source.selfCollide
+        self.maxForce = source.maxForce
+        self.maxBias = source.maxBias
+        self.errorBias = source.errorBias
+
 
 class PivotJoint(ConstraintI):
 
@@ -269,6 +329,17 @@ class PivotJoint(ConstraintI):
         this['bodyA'] = self.bodyA.label
         this['bodyB'] = self.bodyB.label
         parent[self.label] = this
+
+    def clone(self, source:"PivotJoint") -> "PivotJoint":
+        self.anchorA.clone(source.anchorA)
+        self.anchorB.clone(source.anchorB)
+
+        self.bodyA = source.bodyA
+        self.bodyB = source.bodyB
+        self.selfCollide = source.selfCollide
+        self.maxForce = source.maxForce
+        self.maxBias = source.maxBias
+        self.errorBias = source.errorBias
 
 
 class RatchetJoint(ConstraintI):
@@ -313,6 +384,17 @@ class RatchetJoint(ConstraintI):
         this['bodyB'] = self.bodyB.label
         parent[self.label] = this
 
+    def clone(self, source:"RatchetJoint") -> "RatchetJoint":
+        self.phase.clone(source.phase)
+        self.ratchet.clone(source.ratchet)
+
+        self.bodyA = source.bodyA
+        self.bodyB = source.bodyB
+        self.selfCollide = source.selfCollide
+        self.maxForce = source.maxForce
+        self.maxBias = source.maxBias
+        self.errorBias = source.errorBias
+
 
 class RotaryLimitJoint(ConstraintI):
 
@@ -350,6 +432,17 @@ class RotaryLimitJoint(ConstraintI):
         this['bodyB'] = self.bodyB.label
         parent[self.label] = this
     
+    def clone(self, source:"RotaryLimitJoint") -> "RotaryLimitJoint":
+        self.min.clone(source.min)
+        self.max.clone(source.max)
+
+        self.bodyA = source.bodyA
+        self.bodyB = source.bodyB
+        self.selfCollide = source.selfCollide
+        self.maxForce = source.maxForce
+        self.maxBias = source.maxBias
+        self.errorBias = source.errorBias
+
 
 class SimpleMotor(ConstraintI):
 
@@ -385,6 +478,16 @@ class SimpleMotor(ConstraintI):
         this['bodyB'] = self.bodyB.label
         parent[self.label] = this
     
+    def clone(self, source:"SimpleMotor") -> "SimpleMotor":
+        self.rate.clone(source.rate)
+
+        self.bodyA = source.bodyA
+        self.bodyB = source.bodyB
+        self.selfCollide = source.selfCollide
+        self.maxForce = source.maxForce
+        self.maxBias = source.maxBias
+        self.errorBias = source.errorBias
+
 
 class SlideJoint(ConstraintI):
 
@@ -429,3 +532,16 @@ class SlideJoint(ConstraintI):
         this['bodyA'] = self.bodyA.label
         this['bodyB'] = self.bodyB.label
         parent[self.label] = this
+
+    def clone(self, source:"SlideJoint") -> "SlideJoint":
+        self.anchorA.clone(source.anchorA)
+        self.anchorB.clone(source.anchorB)
+        self.min = source.min
+        self.max = source.max
+
+        self.bodyA = source.bodyA
+        self.bodyB = source.bodyB
+        self.selfCollide = source.selfCollide
+        self.maxForce = source.maxForce
+        self.maxBias = source.maxBias
+        self.errorBias = source.errorBias

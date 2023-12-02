@@ -488,8 +488,13 @@ class OffsetPoint:
     def calcOffset(self, mat:Mat, center:V2):
         mat.mulRSV(self.offset, self.local)
         self.final.setFromV(self.local).tV(center)
-    
 
+    def clone(self, source:"OffsetPoint") -> "OffsetPoint":
+        self.offset.setFromV(source.offset)
+        self.local.setFromV(source.local)
+        self.final.setFromV(source.final)
+
+    
 class BoundingBox:
 
     def __init__(self) -> None:

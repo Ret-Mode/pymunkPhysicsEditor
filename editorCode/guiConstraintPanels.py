@@ -719,7 +719,8 @@ class ConstraintButtons(arcade.gui.UIBoxLayout):
         self.view.swapHideState()
 
     def clone_cb(self) -> None:
-        CommandExec.addCommand(ComConstraintClone(self.current))
+        if self.current:
+            CommandExec.addCommand(ComConstraintClone(self.current))
 
     def rename(self):
         if self.current:

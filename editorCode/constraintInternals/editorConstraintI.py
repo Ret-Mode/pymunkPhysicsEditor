@@ -73,6 +73,9 @@ class ConstraintI:
     def getJSONDict(self, parent:dict):
         raise NotImplementedError
     
+    def clone(self, source:"ConstraintI") -> "ConstraintI":
+        raise NotImplementedError
+
     @staticmethod
     def getTypes() -> List[str]:
         return [ConstraintI.DAMPEDROTARYSPRING, ConstraintI.DAMPEDSPRING, ConstraintI.GEARJOINT,

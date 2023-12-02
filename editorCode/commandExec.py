@@ -700,17 +700,20 @@ class ComSetLastConstraintAsCurrent(Command):
 class ComConstraintClone(CommandUndo):
 
     def __init__(self, entity:ConstraintI):
-        self.entity = entity
         self.database = Database.getInstance()
-        self.newEntity = None
+        self.state = EditorState.getInstance()
+        self.baseConstraint = entity
+        self.newConstraint = self.database.createConstraint(self.baseConstraint.label, self.baseConstraint.type)
+        self.newConstraint.clone(self.baseConstraint)
+        self.index = self.database.getConstraintIndex(self.baseConstraint)
 
     def execute(self):
-        if self.entity:
-            pass
+        self.database.addConstraint(self.newConstraint, self.index+1)
+        self.state.setCurrentConstraintByLabel(self.newConstraint.label)
 
-    def undo(self):
-        if self.newEntity:
-            pass
+    def undo(self):        
+        self.database.deleteConstraint(self.newConstraint.label)
+        self.state.setAnyConstraintAsCurrent()
 
 
 class ComRenameConstraint(CommandUndo):
