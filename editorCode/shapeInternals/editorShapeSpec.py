@@ -44,6 +44,16 @@ class PolygonSpec(ShapeSpec):
             return
         box.setFinal(0.0, 0.0, 0.0, 0.0)
 
+    def clone(self, source:"PolygonSpec"):
+        self.points.clear()
+        for point in source.points:
+            self.points.append(EditorPoint().setFromEP(point))
+        self.currentPoint = None
+        if source.currentPoint and source.currentPoint in source.points:
+            index = source.points.index(source.currentPoint)
+            self.currentPoint = self.points[index]
+        self.radius.clone(source.radius)
+
 
 class CircleSpec(ShapeSpec):
 
@@ -86,6 +96,15 @@ class CircleSpec(ShapeSpec):
         #halfWH = self.halfWH
         length = self.radius.final
         box.setFinal(center.final.x - length, center.final.y - length, center.final.x + length, center.final.y + length)
+
+    def clone(self, source:"CircleSpec"):
+        self.points.clear()
+        for point in source.points:
+            self.points.append(EditorPoint().setFromEP(point))
+        self.center = self.points[0]
+        self.radiusVector.setFromV(source.radiusVector)
+        self.radius.clone(source.radius)
+        self.drawLines = source.drawLines
 
 
 class BoxSpec(ShapeSpec):
@@ -160,6 +179,12 @@ class BoxSpec(ShapeSpec):
             yMin = min(yMin, point.final.y)
         box.setFinal(xMin, yMin, xMax, yMax)
 
+    def clone(self, source:"BoxSpec"):
+        self.points[0].setFromEP(source.points[0])
+        self.halfWH.setFromEP(source.halfWH)
+        self.radius.clone(source.radius)
+        self._setVerts()
+
 
 class RectSpec(ShapeSpec):
 
@@ -233,6 +258,14 @@ class RectSpec(ShapeSpec):
             yMin = min(yMin, point.final.y)
         box.setFinal(xMin, yMin, xMax, yMax)
 
+    def clone(self, source:"RectSpec"):
+        self.points[0].setFromEP(source.points[0])
+        self.halfWH.setFromEP(source.halfWH)
+        self.right.setFromV(source.right)
+        self.up.setFromV(self.up)
+        self.radius.clone(source.radius)
+        self._setVerts()
+
 
 class LineSpec(ShapeSpec):
 
@@ -278,3 +311,13 @@ class LineSpec(ShapeSpec):
             box.setFinal(xMin, yMin, xMax, yMax)
             return
         box.setFinal(0.0, 0.0, 0.0, 0.0)
+
+    def clone(self, source:"LineSpec"):
+        self.points.clear()
+        for point in source.points:
+            self.points.append(EditorPoint().setFromEP(point))
+        self.currentPoint = None
+        if source.currentPoint and source.currentPoint in source.points:
+            index = source.points.index(source.currentPoint)
+            self.currentPoint = self.points[index]
+        self.radius.clone(source.radius)

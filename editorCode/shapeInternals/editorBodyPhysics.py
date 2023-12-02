@@ -21,18 +21,10 @@ class BodyPhysics(PhysicsProp):
 
         # TODO fix mass settings - for body it seems that only mass 
         # should be set by user
-        if self.density.userDefined:
-            self.density.final = self.density.user
-            if self.mass.userDefined:
-                self.mass.final = self.mass.user * self.density.final
-            else:
-                self.mass.final = self.mass.calc * self.density.final
+        if self.mass.userDefined:
+            self.mass.final = self.mass.user * transform.objectScale * transform.objectScale
         else:
-            self.density.final = 1.0
-            if self.mass.userDefined:
-                self.mass.final = self.mass.user
-            else:
-                self.mass.final = self.mass.calc
+            self.mass.final = self.mass.calc
 
         self.recalcMoment(internal)
 

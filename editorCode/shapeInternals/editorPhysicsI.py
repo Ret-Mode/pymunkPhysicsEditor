@@ -18,3 +18,11 @@ class PhysicsProp:
     
     def recalcMoment(self, internal):
         raise NotImplementedError
+    
+    def clone(self, source:"PhysicsProp") -> "PhysicsProp":
+        self.cog.clone(source.cog)
+        self.area = source.area
+        self.density.clone(source.density)
+        self.mass.clone(source.mass)
+        self.moment.clone(source.moment)
+        return self

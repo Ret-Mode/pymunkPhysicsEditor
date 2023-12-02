@@ -20,6 +20,14 @@ class UserSettableFloat:
     def get(self) -> float:
         return self.final
     
+    def clone(self,source:"UserSettableFloat"):
+        self.calc = source.calc
+        self.user = source.user
+        self.final = source.final
+        self.userDefined = source.userDefined
+        return self
+
+    
 
 class Angle:
 
@@ -47,7 +55,6 @@ class Angle:
         self.recalc()
         return self
         
-
     def set(self, angle:float) -> "Angle":
         self.angle = angle
         self.recalc()
@@ -71,8 +78,11 @@ class Angle:
         self.set(deg * math.pi / 180.0)
         return self
 
-    def clone(self) -> "Angle":
-        return Angle(self.angle)
+    def clone(self, source:"Angle") -> "Angle":
+        self.angle = source.angle
+        self.sin = source.sin
+        self.cos = source.cos
+        return self
     
     def __str__(self) -> str:
         return f'{self.angle}'
@@ -237,8 +247,10 @@ class V2:
     def lengthSqr(self) -> float:
         return self.x * self.x + self.y * self.y
 
-    def clone(self) -> "V2":
-        return V2(self.x, self.y)
+    def clone(self, source:"V2") -> "V2":
+        self.x = source.x
+        self.y = source.y
+        return self
     
     def __str__(self) -> str:
         return f'{self.x} {self.y}'
@@ -255,6 +267,10 @@ class Radius:
     def set(self, value:float):
         self.final = value
 
+    def clone(self,source:"Radius"):
+        self.final = source.final
+        return self
+
 
 class CircleRadius(Radius):
 
@@ -269,6 +285,10 @@ class CircleRadius(Radius):
     def set(self, value:float):
         self.base = value
 
+    def clone(self,source:"CircleRadius"):
+        self.final = source.final
+        self.base = source.base
+        return self
 
 class Mat:
 
@@ -419,6 +439,13 @@ class ContainerTransform:
         self.objectScale /=  scale
         self.objectAnchor.unTV(pivot).unSS(scale).tV(pivot)
 
+    def clone(self, source:"ContainerTransform"):
+        self.mat.set(source.mat)
+        self.objectAnchor.setFromV(source.objectAnchor)
+        self.objectAngle.setA(source.objectAngle)
+        self.objectScale = source.objectScale
+        return self
+
     def getMat(self) -> Mat:
         return self.mat.setFromAAS(self.objectAnchor, self.objectAngle, self.objectScale)
     
@@ -445,7 +472,7 @@ class EditorPoint:
         dy: float = sy - self.final.y
         return (dx*dx < distance*distance) and (dy*dy < distance*distance)
     
-    def setFromEP(self, editorPoint: "EditorPoint") -> None:
+    def setFromEP(self, editorPoint: "EditorPoint") -> "EditorPoint":
         self.local.setFromV(editorPoint.local)
         self.final.setFromV(editorPoint.final)
         return self
@@ -473,6 +500,10 @@ class BoundingBox:
         self.halfWH.final.setFromXY((xMax-xMin)/2.0, (yMax-yMin)/2.0)
         self.center.final.setFromXY((xMax-xMin)/2 + xMin, (yMax-yMin)/2.0 + yMin)
 
+    def clone(self, source:"BoundingBox") -> "BoundingBox":
+        self.center.setFromEP(source.center)
+        self.halfWH.setFromEP(source.halfWH)
+
 
 class CenterOfGravity:
 
@@ -493,6 +524,13 @@ class CenterOfGravity:
 
     def resetToCalc(self) -> None:
         self.userDefined = False
+
+    def clone(self, source:"CenterOfGravity") -> "CenterOfGravity":
+        self.calc.clone(source.calc)
+        self.user.clone(source.user)
+        self.final.clone(source.final)
+        self.userDefined = source.userDefined
+        return self
 
     def get(self) -> V2:
         return self.final

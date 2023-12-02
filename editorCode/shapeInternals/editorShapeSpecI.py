@@ -30,7 +30,7 @@ class ShapeSpec:
     def updatePos(self, final: Mat):
         raise NotImplementedError
     
-    def clone(self) -> 'ShapeSpec':
+    def clone(self, source:'ShapeSpec') -> 'ShapeSpec':
         raise NotImplementedError
 
     def getJSONDict(self, parent:dict):

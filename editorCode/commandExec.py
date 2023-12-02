@@ -425,28 +425,23 @@ class ComNewShapeClone(CommandUndo):
     def __init__(self, shape:ShapeI):
         self.database = Database.getInstance()
         self.state = EditorState.getInstance()
-        self.shape = shape
+        self.currentShape = self.state.getCurrentShape()
+        self.baseShape = shape
         self.body = self.database.getNewShapeParent(shape)
-        self.newShape = None
+        self.index = self.database.getNewShapeBodyIndex(shape)
+        self.newShape = self.database.createNewShape(self.baseShape.label, self.baseShape.type)
+        self.newShape.clone(self.baseShape)
 
     def execute(self):
-        pass
-        # if self.shape:
-        #     self.newShape = self.view.database.createShape(self.shape.label + '_a')
-        #     newIndex = self.view.database.getShapeIndex(self.shape) + 1
-        #     self.view.database.addShape(self.newShape, self.body, newIndex)
-        #     for point in self.shape.points:
-        #         newPoint = self.view.database.createPoint(point.world.x, point.world.y)
-        #         self.view.database.addPoint(newPoint, self.newShape)
-        #     self.view.current = self.newShape
+        self.database.addNewShape(self.newShape, self.body, self.index+1)
+        self.state.setCurrentShapeByLabel(self.newShape.label)
 
-    def undo(self):
-        pass
-        # if self.newShape:
-        #     self.view.current = self.shape
-        #     for point in self.newShape.points[:]:
-        #         self.view.database.deletePoint(point)
-        #     self.view.database.deleteShape(self.newShape.label)
+    def undo(self):        
+        self.database.deleteNewShape(self.newShape.label)
+        if self.currentShape:
+            self.state.setCurrentShapeByLabel(self.currentShape.label)
+        else:
+            self.state.setAnyShapeAsCurrent()
 
 
 class ComAddNewShape(CommandUndo):
@@ -1488,8 +1483,8 @@ class ComSetPivot(CommandUndo):
 
     def __init__(self, pivot:V2, point:V2):
         self.pivot = pivot
-        self.newWorld = point.clone()
-        self.oldWorld = pivot.clone()
+        self.newWorld = V2().clone(point)
+        self.oldWorld = V2().clone(pivot)
 
     def execute(self):
         self.pivot.setFromV(self.newWorld)
@@ -1503,7 +1498,7 @@ class ComSetPivotXY(CommandUndo):
     def __init__(self, pivot:V2, x:float, y:float):
         self.pivot = pivot
         self.newWorld = V2(x, y)
-        self.oldWorld = pivot.clone()
+        self.oldWorld = V2().clone(pivot)
 
     def execute(self):
         self.pivot.setFromV(self.newWorld)
@@ -1517,7 +1512,7 @@ class ComSetPivotRelativeXY(CommandUndo):
     def __init__(self, pivot:V2, dx:float, dy:float):
         self.pivot = pivot
         self.newWorld = V2(dx, dy).tV(pivot)
-        self.oldWorld = pivot.clone()
+        self.oldWorld = V2().clone(pivot)
         
 
     def execute(self):
@@ -1536,7 +1531,7 @@ class ComSetContainerPosXY(CommandUndo):
         self.object = obj
         cog = obj.physics.cog.get()
         self.newAnchor = V2().unTV(cog).tD(x, y)
-        self.oldAnchor = self.object.transform.objectAnchor.clone()
+        self.oldAnchor = V2().clone(self.object.transform.objectAnchor)
 
     def execute(self):
         self.object.transform.objectAnchor.setFromV(self.newAnchor)
@@ -1551,8 +1546,8 @@ class ComApplyContainerPosXY(CommandUndo):
 
     def __init__(self, obj: Container, dx:float, dy:float):
         self.object = obj
-        self.newAnchor = self.object.transform.objectAnchor.clone().tD(dx,dy)
-        self.oldAnchor = self.object.transform.objectAnchor.clone()
+        self.newAnchor = V2().clone(self.object.transform.objectAnchor).tD(dx,dy)
+        self.oldAnchor = V2().clone(self.object.transform.objectAnchor)
 
     def execute(self):
         self.object.transform.objectAnchor.setFromV(self.newAnchor)
@@ -1567,7 +1562,7 @@ class ComSetContainerAngle(CommandUndo):
 
     def __init__(self, obj:Container, pivot: V2, angle:float):
         self.object = obj
-        self.pivot = pivot.clone()
+        self.pivot = V2().clone(pivot)
         self.angle = Angle().set(angle).sub(obj.transform.objectAngle.angle)
         self.negAngle = Angle().set( - self.angle.angle)
         
@@ -1586,7 +1581,7 @@ class ComApplyContainerRotate(CommandUndo):
     def __init__(self, obj: Container, pivot: V2, angle:float):
 
         self.object = obj
-        self.pivot = pivot.clone()
+        self.pivot = V2().clone(pivot)
         self.angle = Angle().set( angle)
         self.negAngle = Angle().set( - angle)
 
@@ -1603,7 +1598,7 @@ class ComSetContainerAngleDeg(CommandUndo):
 
     def __init__(self, obj:Container, pivot: V2, angleDeg:float):
         self.object = obj
-        self.pivot = pivot.clone()
+        self.pivot = V2().clone(pivot)
         self.angle = Angle().fromDeg(angleDeg).sub(obj.transform.objectAngle.angle)
         self.negAngle = Angle().set( - self.angle.angle)
         
@@ -1622,7 +1617,7 @@ class ComApplyContainerRotateDeg(CommandUndo):
     def __init__(self, obj: Container, pivot: V2, angleDeg:float):
 
         self.object = obj
-        self.pivot = pivot.clone()
+        self.pivot = V2().clone(pivot)
         self.angle = Angle().fromDeg(angleDeg)
         self.negAngle = Angle().set( - self.angle.angle)
 
@@ -1800,14 +1795,14 @@ class ComStartTransform(CommandUndo):
         self.transform = transform
         
         self.newObj = obj
-        self.startPoint = startPoint.clone()
-        self.pivot = pivot.clone()
+        self.startPoint = V2().clone(startPoint)
+        self.pivot = V2().clone(pivot)
         self.mode = mode
         self.processed = False
 
         if self.newObj:
-            self.oldObjectAnchor = self.newObj.transform.objectAnchor.clone()
-            self.oldObjectAngle = self.newObj.transform.objectAngle.clone()
+            self.oldObjectAnchor = V2().clone(self.newObj.transform.objectAnchor)
+            self.oldObjectAngle = Angle().clone(self.newObj.transform.objectAngle)
             self.oldObjectScale = self.newObj.transform.objectScale
     
     def execute(self):
@@ -1824,8 +1819,8 @@ class ComStartTransform(CommandUndo):
     def undo(self):
         if self.newObj:
             if not self.processed:
-                self.newObjectAnchor = self.newObj.transform.objectAnchor.clone()
-                self.newObjectAngle = self.newObj.transform.objectAngle.clone()
+                self.newObjectAnchor = V2().clone(self.newObj.transform.objectAnchor)
+                self.newObjectAngle = Angle().clone(self.newObj.transform.objectAngle)
                 self.newObjectScale = self.newObj.transform.objectScale
                 self.processed = True
             self.newObj.transform.objectAnchor.setFromV(self.oldObjectAnchor)

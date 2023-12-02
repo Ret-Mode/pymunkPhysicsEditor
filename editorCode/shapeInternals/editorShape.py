@@ -16,6 +16,7 @@ class Polygon(ShapeI):
         buffer.addPolygon(self.internal.points)
 
 
+
 class Circle(ShapeI):
 
     def __init__(self, label):
@@ -28,6 +29,19 @@ class Circle(ShapeI):
         buffer.addCircle(self.internal.center.final, self.internal.radius.final,
                          self.internal.drawLines)
 
+
+    # def clone(self, source:"Circle"):
+    #     # self.box.clone(source.box)
+    #     # self.transform.clone(source.transform)
+    #     # self.internal.clone(source.internal)
+    #     # self.physics.clone(source.physics)
+    #     # self.elasticity = source.elasticity
+    #     # self.friction = source.friction
+    #     # self.isSensor = source.isSensor
+    #     # self.shapeFilterGroup = source.shapeFilterGroup
+    #     # self.shapeFilterCategory = source.shapeFilterCategory
+    #     # self.shapeFilterMask = source.shapeFilterMask
+    #     pass
 
 class Box(ShapeI):
 

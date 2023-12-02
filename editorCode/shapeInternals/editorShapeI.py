@@ -50,8 +50,17 @@ class ShapeI:
     def draw(self):
         self.internal.draw()
 
-    def clone(self, newLabel:str):
-        pass
+    def clone(self, source:"ShapeI"):
+        self.box.clone(source.box)
+        self.transform.clone(source.transform)
+        self.internal.clone(source.internal)
+        self.physics.clone(source.physics)
+        self.elasticity = source.elasticity
+        self.friction = source.friction
+        self.isSensor = source.isSensor
+        self.shapeFilterGroup = source.shapeFilterGroup
+        self.shapeFilterCategory = source.shapeFilterCategory
+        self.shapeFilterMask = source.shapeFilterMask
 
     def getJSONDict(self, parent:dict):
         assert self.label not in parent
