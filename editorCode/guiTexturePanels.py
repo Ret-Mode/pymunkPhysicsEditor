@@ -310,7 +310,7 @@ class MappingOptsPanel(arcade.gui.UIBoxLayout):
 
     def __init__(self) -> None:
         super().__init__(vertical=True)
-
+        self.view:EditorTextureView = None
         row1 = arcade.gui.UIBoxLayout(vertical=False)
         row2 = arcade.gui.UIBoxLayout(vertical=False)
 
@@ -332,9 +332,11 @@ class MappingOptsPanel(arcade.gui.UIBoxLayout):
 
     def fit_cb(self):
         current:TextureMapping = EditorState.getInstance().getCurrentMapping()
-        if current:
-            pass
-            #self.view.viewOffset.fitToBox(current.box)
+        if current and self.view:            
+            CommandExec.addCommand(ComFitViewToTexture(self.view.textureView, current.textureSize)) 
+        currentBody = EditorState.getInstance().getCurrentBody()
+        if currentBody and currentBody.shapes:
+            self.view.viewOffset.fitToBox(currentBody.box) 
 
     def del_btn(self) -> None:
         current = EditorState.getInstance().getCurrentMapping()
@@ -353,9 +355,8 @@ class MappingOptsPanel(arcade.gui.UIBoxLayout):
 
     def swap_cb(self) -> None:
         current = EditorState.getInstance().getCurrentMapping()
-        if current:
-            pass
-            #self.view.swapHideState()
+        if current and self.view:
+            self.view.swapHideState()
 
     def clone_cb(self) -> None:
         current = EditorState.getInstance().getCurrentMapping()
@@ -487,3 +488,4 @@ class TextureButtons(arcade.gui.UIBoxLayout):
 
     def setCommandPipeline(self, view: EditorTextureView):
         self.texturePanel.view = view
+        self.mappingPanel.opts.view = view

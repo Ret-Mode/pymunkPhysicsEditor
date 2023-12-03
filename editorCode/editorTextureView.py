@@ -34,7 +34,7 @@ class EditorTextureView:
         self.transform = ContinuousTransform()
         self.invTransformMat = Mat()
         self.selection = Selection()
-
+        self.hideOthers = False
 
     def startSelection(self):
         if self._selectView() == self.textureView and not self.selection.isActive():
@@ -221,6 +221,9 @@ class EditorTextureView:
         #buffer.addHelperPoint(self.texPivot)
         self.bodyShader.update(buffer.verts, buffer.colors, buffer.indices)
         self.bodyShader.draw()
+
+    def swapHideState(self):
+        self.hideOthers = not self.hideOthers
 
     def undo(self):
         CommandExec.undo()
