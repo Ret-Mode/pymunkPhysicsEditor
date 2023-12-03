@@ -207,52 +207,61 @@ class ComBodyClone(CommandUndo):
         self.database = Database.getInstance()
         self.newBody = self.database.createBody(self.baseBody.label, self.baseBody.type)
         self.newBody.clone(self.baseBody)
-
-        # TODO move this to execute :/
+        self.preRun = True
         self.shapes = []
-        for baseShape in self.baseBody.shapes:
-            newShape = self.database.createNewShape(baseShape.label, baseShape.type)
-            newShape.clone(baseShape)
-            self.shapes.append(newShape)
-
-        constraints = self.database.getConstraintsOfBody(self.baseBody.label)
         self.newConstraintsA = []
         self.newConstraintsB = []
-        constraint:ConstraintI
-        isBodyA: bool
-        for constraint, isBodyA in constraints:
-            newConstraint = self.database.createConstraint(constraint.label, constraint.type)
-            newConstraint.clone(constraint)
-            if isBodyA:
-                self.newConstraintsA.append(newConstraint)
-                newConstraint.bodyA = None
-            else:
-                self.newConstraintsB.append(newConstraint)
-                newConstraint.bodyB = None
-            
-        mappings = self.database.getAllMappingsOfBody(self.baseBody)
         self.newMappings = []
-        mapping:TextureMapping
-        for mapping in mappings:
-            newMapping = self.database.createMapping(mapping.channel, mapping.textureSize, mapping.label)
-            newMapping.clone(mapping)
-            newMapping.body = None
-            self.newMappings.append(newMapping)
-
+        
     def execute(self):
-        constraint:ConstraintI
-        self.database.addBody(self.newBody)
-        for shape in self.shapes:
-            self.database.addNewShape(shape, self.newBody)
-        for constraint in self.newConstraintsA:
-            constraint.bodyA = self.newBody
-            self.database.addConstraint(constraint)
-        for constraint in self.newConstraintsB:
-            constraint.bodyB = self.newBody
-            self.database.addConstraint(constraint)
-        for mapping in self.newMappings:
-            mapping.body = self.newBody
-            self.database.addMapping(mapping)
+        if self.preRun:
+            self.preRun = False
+            
+            self.database.addBody(self.newBody)
+
+            for baseShape in self.baseBody.shapes:
+                newShape = self.database.createNewShape(baseShape.label, baseShape.type)
+                newShape.clone(baseShape)
+                self.database.addNewShape(newShape, self.newBody)
+                self.shapes.append(newShape)
+
+            constraints = self.database.getConstraintsOfBody(self.baseBody.label)
+            constraint:ConstraintI
+            isBodyA: bool
+            for constraint, isBodyA in constraints:
+                newConstraint = self.database.createConstraint(constraint.label, constraint.type)
+                newConstraint.clone(constraint)
+                if isBodyA:
+                    newConstraint.bodyA = self.newBody
+                    self.database.addConstraint(newConstraint)
+                    self.newConstraintsA.append(newConstraint)
+                else:
+                    newConstraint.bodyB = self.newBody
+                    self.database.addConstraint(newConstraint)
+                    self.newConstraintsB.append(newConstraint)
+                
+            mappings = self.database.getAllMappingsOfBody(self.baseBody)
+            mapping:TextureMapping
+            for mapping in mappings:
+                newMapping = self.database.createMapping(mapping.channel, mapping.textureSize, mapping.label)
+                newMapping.clone(mapping)
+                newMapping.body = self.newBody
+                self.database.addMapping(newMapping)
+                self.newMappings.append(newMapping)
+                
+        else:
+            constraint:ConstraintI
+            mapping:TextureMapping
+            self.database.addBody(self.newBody)
+            for shape in self.shapes:
+                self.database.addNewShape(shape, self.newBody)
+            for constraint in self.newConstraintsA:
+                self.database.addConstraint(constraint)
+            for constraint in self.newConstraintsB:
+                self.database.addConstraint(constraint)
+            for mapping in self.newMappings:
+                self.database.addMapping(mapping)
+
         EditorState.getInstance().setCurrentBodyByLabel(self.newBody.label)
 
     def undo(self):

@@ -98,9 +98,9 @@ class Runner(arcade.Window):
         self.keys.unsetKey(key)
 
     def on_update(self, delta_time: float):
-        if 'BODY_1' not in self.vehicle.bodies:
+        if 'Wheel' not in self.vehicle.bodies:
             print(self.vehicle.bodies.keys())
-        wheel = self.vehicle.bodies['BODY_1']
+        wheel = self.vehicle.bodies['Wheel']
         wheel.angular_velocity *= 0.95
         if self.keys.isPressed(arcade.key.W):
             wheel.angular_velocity = min(-20.0, wheel.angular_velocity - 1.5)
@@ -110,7 +110,7 @@ class Runner(arcade.Window):
         self.level.update()
         self.vehicle.update()
         #self.ttest.update()
-        self.vec = self.vehicle.bodies["BODY"].position
+        self.vec = self.vehicle.bodies["MainFrame"].position
         self.camera.move(self.vec)
         self.camera.update()
         return super().on_update(delta_time)
