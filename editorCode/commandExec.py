@@ -203,33 +203,72 @@ class ComSetLastBodyAsCurrent(Command):
 class ComBodyClone(CommandUndo):
 
     def __init__(self, body:Container):
-        self.body = body
+        self.baseBody = body
         self.database = Database.getInstance()
-        self.newBody = None
+        self.newBody = self.database.createBody(self.baseBody.label, self.baseBody.type)
+        self.newBody.clone(self.baseBody)
+
+        # TODO move this to execute :/
+        self.shapes = []
+        for baseShape in self.baseBody.shapes:
+            newShape = self.database.createNewShape(baseShape.label, baseShape.type)
+            newShape.clone(baseShape)
+            self.shapes.append(newShape)
+
+        constraints = self.database.getConstraintsOfBody(self.baseBody.label)
+        self.newConstraintsA = []
+        self.newConstraintsB = []
+        constraint:ConstraintI
+        isBodyA: bool
+        for constraint, isBodyA in constraints:
+            newConstraint = self.database.createConstraint(constraint.label, constraint.type)
+            newConstraint.clone(constraint)
+            if isBodyA:
+                self.newConstraintsA.append(newConstraint)
+                newConstraint.bodyA = None
+            else:
+                self.newConstraintsB.append(newConstraint)
+                newConstraint.bodyB = None
+            
+        mappings = self.database.getAllMappingsOfBody(self.baseBody)
+        self.newMappings = []
+        mapping:TextureMapping
+        for mapping in mappings:
+            newMapping = self.database.createMapping(mapping.channel, mapping.textureSize, mapping.label)
+            newMapping.clone(mapping)
+            newMapping.body = None
+            self.newMappings.append(newMapping)
 
     def execute(self):
-        if self.body:
-            pass
-            # self.newBody = self.view.database.createBody(self.body.label + '_a')
-            # newIndex = self.view.database.getBodyIndex(self.body) + 1
-            # self.view.database.addBody(self.newBody, newIndex)
-            # for shape in self.body.shapes:
-            #     newShape = self.view.database.createShape(shape.label + '_a')
-            #     self.view.database.addShape(newShape, self.newBody)
-            #     for point in shape.points:
-            #         newPoint = self.view.database.createPoint(point.world.x, point.world.y)
-            #         self.view.database.addPoint(newPoint, newShape)
-            # self.view.current = self.newBody
+        constraint:ConstraintI
+        self.database.addBody(self.newBody)
+        for shape in self.shapes:
+            self.database.addNewShape(shape, self.newBody)
+        for constraint in self.newConstraintsA:
+            constraint.bodyA = self.newBody
+            self.database.addConstraint(constraint)
+        for constraint in self.newConstraintsB:
+            constraint.bodyB = self.newBody
+            self.database.addConstraint(constraint)
+        for mapping in self.newMappings:
+            mapping.body = self.newBody
+            self.database.addMapping(mapping)
+        EditorState.getInstance().setCurrentBodyByLabel(self.newBody.label)
 
     def undo(self):
-        if self.newBody:
-            pass
-            # self.view.current = self.body
-            # for shape in self.newBody.shapes[:]:
-            #     for point in shape.points[:]:
-            #         self.view.database.deletePoint(point)
-            #     self.view.database.deleteShape(shape.label)
-            # self.view.database.deleteBody(self.newBody.label)
+        mapping:TextureMapping
+        constraint:ConstraintI
+        shape:ShapeI
+        EditorState.getInstance().setCurrentBodyByLabel(self.baseBody.label)
+        for mapping in self.newMappings:
+            self.database.deleteMapping(mapping.label)
+        for constraint in self.newConstraintsA:
+            self.database.deleteConstraint(constraint.label)
+        for constraint in self.newConstraintsB:
+            self.database.deleteConstraint(constraint.label)
+        for shape in self.shapes:
+            self.database.deleteNewShape(shape.label)
+        self.database.deleteBody(self.newBody.label)
 
 
 class ComRenameBody(CommandUndo):
@@ -271,20 +310,35 @@ class ComDelBody(CommandUndo):
         self.database = Database.getInstance()
         self.state = EditorState.getInstance()
         self.object = self.database.getBodyByLabel(label)
-        self.objIndex = -1
+        self.objIndex = self.database.getBodyIndex(self.object)
+        
         self.deletedShapes: List[ShapeI] = []
-        if self.object:
-            self.constraintsOfDeletedBody = self.database.getConstraintsOfBody(label)
-        else:
-            self.constraintsOfDeletedBody = []
+        for shape in self.object.shapes:
+            self.deletedShapes.append(shape)
+
+        constraints = self.database.getConstraintsOfBody(self.object.label)
+        self.deletedConstraintsA = []
+        self.deletedConstraintsB = []
+        constraint:ConstraintI
+        isBodyA: bool
+        for constraint, isBodyA in constraints:
+            if isBodyA:
+                self.deletedConstraintsA.append(constraint)
+            else:
+                self.deletedConstraintsB.append(constraint)
+
+        self.deletedMappings = self.database.getAllMappingsOfBody(self.object)
 
     def execute(self):           
         if self.object:
-            # TODO remove this body from constraints
-            self.objIndex = self.database.getBodyIndex(self.object)
-            for shape in self.object.shapes:
-                self.deletedShapes.append(shape)
+            for shape in self.deletedShapes:
                 self.database.deleteNewShape(shape.label)
+            for constraint in self.deletedConstraintsA:
+                constraint.bodyA = None
+            for constraint in self.deletedConstraintsB:
+                constraint.bodyB = None
+            for mapping in self.deletedMappings:
+                self.database.deleteMapping(mapping.label)
             self.database.deleteBody(self.object.label)
             self.state.setAnyBodyAsCurrent()
         
@@ -293,9 +347,14 @@ class ComDelBody(CommandUndo):
         if self.object:
             self.database.addBody(self.object, self.objIndex)
             for shape in self.deletedShapes:
-                self.database.addNewShape(shape, self.object)
+                self.database.addNewShape(shape, self.object, self.objIndex)
+            for constraint in self.deletedConstraintsA:
+                constraint.bodyA = self.object
+            for constraint in self.deletedConstraintsB:
+                constraint.bodyB = self.object
+            for mapping in self.deletedMappings:
+                self.database.addMapping(mapping)
             self.state.setCurrentBodyByLabel(self.object.label)
-            # TODO add this body to constraints
 
 
 class ComSetBodyAsCurrent(CommandUndo):

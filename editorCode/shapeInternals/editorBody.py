@@ -2,7 +2,6 @@ from ..editorTypes import Mat, ContainerTransform, BoundingBox
 from .editorBodyPhysics import BodyPhysics, BodyStaticPhysics
 from .editorShapeI import ShapeI
 from .editorBodyI import BodyI
-
 from typing import List
 
 
@@ -63,13 +62,6 @@ class BodyDynamic(BodyI):
     def recalcPhysics(self):
         self.physics.recalcPhysics(self.shapes, self.transform)
 
-    def clone(self, newLabel:str):
-        pass
-
-    def bufferData(self, buffer):
-        for shape in self.shapes:
-            shape.bufferData(buffer)
-
 
 class BodyKinematic(BodyI):
     
@@ -126,9 +118,6 @@ class BodyKinematic(BodyI):
         parent[self.label] = this
 
     def recalcPhysics(self):
-        pass
-
-    def clone(self, newLabel:str):
         pass
 
 
@@ -189,7 +178,4 @@ class BodyStatic(BodyI):
         parent[self.label] = this
 
     def recalcPhysics(self):
-        pass
-
-    def clone(self, newLabel:str):
         pass

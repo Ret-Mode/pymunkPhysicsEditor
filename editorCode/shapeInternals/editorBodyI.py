@@ -41,8 +41,10 @@ class BodyI:
     def recalcPhysics(self):
         raise NotImplementedError
 
-    def clone(self, newLabel:str):
-        raise NotImplementedError
+    def clone(self, source:"BodyI") -> "BodyI":
+        self.box.clone(source.box)
+        self.transform.clone(source.transform)
+        self.physics.clone(source.physics)
 
     def bufferData(self, buffer:ShapeBuffer):
         for shape in self.shapes:

@@ -142,6 +142,7 @@ class EditorView(arcade.View):
         
     def on_key_press(self, key, modifiers):
         view = self._getActiveView()
+
         if self.currentMode == 'BODY':
             if key == ord('m'):
                 view.startMoveTransform()
