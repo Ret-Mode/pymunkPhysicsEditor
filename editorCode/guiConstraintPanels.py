@@ -10,6 +10,7 @@ from .commandExec import CommandExec, ComRenameConstraint, ComSetConstraintAsCur
 from .commandExec import ComDelConstraint, ComConstraintClone, ComShiftConstraintDown, ComShiftConstraintUp, ComSetRestAngle, ComSetStiffness, ComSetDamping
 from .commandExec import ComSetRestLength, ComSetAnchorA, ComSetAnchorB, ComSetPhase, ComSetRatio, ComSetGrooveA, ComSetGrooveB, ComSetRatchet
 from .commandExec import ComSetRotaryMin, ComSetRotaryMax, ComSetRate, ComSetSlideMin, ComSetSlideMax, ComConstraintSwapBodies
+from .commandExec import ComSetAnchorBFromCoords, ComSetAnchorAFromCoords
 from .commandExec import ComSetSelfCollision, ComSetMaxBias, ComSetMaxForce, ComSetErrorBias
 from .database import Database
 from .editorState import EditorState
@@ -189,6 +190,9 @@ class DampedSpringSpecPanel(arcade.gui.UIBoxLayout):
         super().__init__(vertical = True)
         self.current: ConstraintI = None
         self.label: Label = Label("Damped Spring")
+
+
+
         self.restLine: SettableOkButton = SettableOkButton('Rest Len.', '0.0', self.setRest)
         self.stiffnessLine: SettableOkButton = SettableOkButton('Stiffness', '0.0', self.setStiffness)
         self.dampingLine: SettableOkButton = SettableOkButton('Damping', '0.0', self.setDamping)
@@ -201,6 +205,19 @@ class DampedSpringSpecPanel(arcade.gui.UIBoxLayout):
         self.add(self.dampingLine)
         self.add(self.anchorALine)
         self.add(self.anchorBLine)
+
+        self.add(Button("A>B", "width", self.anchorAtoAnchorB))
+        self.add(Button("B>A", "width", self.anchorBtoAnchorA))
+
+    def anchorAtoAnchorB(self):
+        if self.current:
+            self.current: DampedSpring
+            CommandExec.addCommand(ComSetAnchorAFromCoords(self.current, self.current.anchorB.final))
+
+    def anchorBtoAnchorA(self):
+        if self.current:
+            self.current: DampedSpring
+            CommandExec.addCommand(ComSetAnchorBFromCoords(self.current, self.current.anchorA.final))
 
     def setRest(self):
         if self.current:

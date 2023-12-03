@@ -240,7 +240,11 @@ class EditorView(arcade.View):
                         view.defaultAction()
 
             elif self.currentMode == 'CNSTRNT':
-                view.defaultAction()
+                if button == arcade.MOUSE_BUTTON_RIGHT:
+                    view.setHelperPoint()
+                else:
+                    
+                    view.defaultAction()
 
             elif self.currentMode == 'TEX':
                 if button == arcade.MOUSE_BUTTON_RIGHT:

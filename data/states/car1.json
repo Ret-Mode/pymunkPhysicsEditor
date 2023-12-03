@@ -173,7 +173,48 @@
       "bodyA": "MainFrame",
       "bodyB": "Wheel"
     },
+    "CNSTRNT_4": {
+      "maxBias": Infinity,
+      "maxForce": Infinity,
+      "errorBias": 0.001797010299914434,
+      "selfCollide": false,
+      "restLength": 0.0,
+      "stiffness": 500.0,
+      "damping": 40.0,
+      "anchorA": [
+        -1.9899290139033203,
+        -1.1442870163928827
+      ],
+      "anchorB": [
+        -1.9899470443794143,
+        -1.184820161203239
+      ],
+      "type": "Damped Spring",
+      "bodyA": "MainFrame",
+      "bodyB": "Wheel"
+    },
     "CNSTRNT_1": {
+      "maxBias": Infinity,
+      "maxForce": Infinity,
+      "errorBias": 0.001797010299914434,
+      "selfCollide": false,
+      "grooveA": [
+        -1.9969126292184831,
+        0.10882963728844919
+      ],
+      "grooveB": [
+        -1.9923419149327692,
+        -1.1907575055686936
+      ],
+      "anchorB": [
+        -1.9899470443794143,
+        -1.184820161203239
+      ],
+      "type": "Groove",
+      "bodyA": "MainFrame",
+      "bodyB": "Wheel"
+    },
+    "CNSTRNT_5": {
       "maxBias": Infinity,
       "maxForce": Infinity,
       "errorBias": 0.001797010299914434,
@@ -214,7 +255,48 @@
       "bodyA": "MainFrame",
       "bodyB": "Wheel_1"
     },
+    "CNSTRNT_6": {
+      "maxBias": Infinity,
+      "maxForce": Infinity,
+      "errorBias": 0.001797010299914434,
+      "selfCollide": false,
+      "restLength": 0.0,
+      "stiffness": 500.0,
+      "damping": 40.0,
+      "anchorA": [
+        1.9587152839094406,
+        -1.084665959387955
+      ],
+      "anchorB": [
+        1.969009840514173,
+        -1.1140789782586191
+      ],
+      "type": "Damped Spring",
+      "bodyA": "MainFrame",
+      "bodyB": "Wheel_1"
+    },
     "CNSTRNT_3": {
+      "maxBias": Infinity,
+      "maxForce": Infinity,
+      "errorBias": 0.001797010299914434,
+      "selfCollide": false,
+      "grooveA": [
+        1.979737142857143,
+        0.026470000000000216
+      ],
+      "grooveB": [
+        1.970364285714286,
+        -1.1076457142857143
+      ],
+      "anchorB": [
+        1.9716538536640988,
+        -1.1182894590986914
+      ],
+      "type": "Groove",
+      "bodyA": "MainFrame",
+      "bodyB": "Wheel_1"
+    },
+    "CNSTRNT_7": {
       "maxBias": Infinity,
       "maxForce": Infinity,
       "errorBias": 0.001797010299914434,

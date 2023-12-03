@@ -184,6 +184,7 @@ class EditorConstraintView:
             constraint.bufferBodies(buffer)
             constraint.bufferInternals(buffer)
 
+            buffer.addHelperPoint(self.pivot.local)
             self.shader.update(buffer.verts, buffer.colors, buffer.indices)
 
             self.shader.draw()
@@ -199,6 +200,7 @@ class EditorConstraintView:
             constraint.bufferBodyA(buffer)
             constraint.bufferInternalA(buffer)
 
+            buffer.addHelperPoint(self.pivot.local)
             self.shader.update(buffer.verts, buffer.colors, buffer.indices)
 
             self.shader.draw()
@@ -212,6 +214,7 @@ class EditorConstraintView:
             constraint.bufferBodyB(buffer)
             constraint.bufferInternalB(buffer)
 
+            buffer.addHelperPoint(self.pivot.local)
             self.shader.update(buffer.verts, buffer.colors, buffer.indices)
 
             self.shader.draw()
