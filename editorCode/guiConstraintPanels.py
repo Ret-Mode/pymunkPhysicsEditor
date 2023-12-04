@@ -10,7 +10,7 @@ from .commandExec import CommandExec, ComRenameConstraint, ComSetConstraintAsCur
 from .commandExec import ComDelConstraint, ComConstraintClone, ComShiftConstraintDown, ComShiftConstraintUp, ComSetRestAngle, ComSetStiffness, ComSetDamping
 from .commandExec import ComSetRestLength, ComSetAnchorA, ComSetAnchorB, ComSetPhase, ComSetRatio, ComSetGrooveA, ComSetGrooveB, ComSetRatchet
 from .commandExec import ComSetRotaryMin, ComSetRotaryMax, ComSetRate, ComSetSlideMin, ComSetSlideMax, ComConstraintSwapBodies
-from .commandExec import ComSetAnchorBFromCoords, ComSetAnchorAFromCoords, ComSetPivot
+from .commandExec import ComSetAnchorBFromCoords, ComSetAnchorAFromCoords, ComSetPivot, ComSetGrooveAFromCoords, ComSetGrooveBFromCoords
 from .commandExec import ComSetSelfCollision, ComSetMaxBias, ComSetMaxForce, ComSetErrorBias
 from .database import Database
 from .editorState import EditorState
@@ -200,12 +200,12 @@ class DampedSpringSpecPanel(arcade.gui.UIBoxLayout):
 
         row1 = arcade.gui.UIBoxLayout(vertical=False)
 
-        # self.add(Button("A>COGA", "width", self.anchorAtoPivot))
-        # self.add(Button("B>COGA", "width", self.anchorAtoPivot))
-        # self.add(Button("P>COGA", "width", self.anchorAtoPivot))
-        # self.add(Button("A>COGB", "width", self.anchorAtoPivot))
-        # self.add(Button("B>COGB", "width", self.anchorAtoPivot))
-        # self.add(Button("P>COGB", "width", self.anchorAtoPivot))
+        row1.add(Button("A>B", "sixthWidth", self.anchorAtoAnchorB))
+        row1.add(Button("B>A", "sixthWidth", self.anchorBtoAnchorA))
+        row1.add(Button("B>P", "sixthWidth", self.anchorBtoPivot))
+        row1.add(Button("P>A", "sixthWidth", self.pivottoAnchorA))
+        row1.add(Button("P>B", "sixthWidth", self.pivottoAnchorB))
+        row1.add(Button("A>P", "sixthWidth", self.anchorAtoPivot))
 
         self.add(self.label)
         self.add(self.restLine)
@@ -215,12 +215,7 @@ class DampedSpringSpecPanel(arcade.gui.UIBoxLayout):
         self.add(self.anchorBLine)
         self.add(row1)
 
-        row1.add(Button("A>B", "sixthWidth", self.anchorAtoAnchorB))
-        row1.add(Button("B>A", "sixthWidth", self.anchorBtoAnchorA))
-        row1.add(Button("B>P", "sixthWidth", self.anchorBtoPivot))
-        row1.add(Button("P>A", "sixthWidth", self.pivottoAnchorA))
-        row1.add(Button("P>B", "sixthWidth", self.pivottoAnchorB))
-        row1.add(Button("A>P", "sixthWidth", self.anchorAtoPivot))
+
 
     def pivottoAnchorB(self):
         if self.current and self.current.bodyA and self.current.bodyB:
@@ -325,15 +320,71 @@ class GrooveJointSpecPanel(arcade.gui.UIBoxLayout):
     def __init__(self):
         super().__init__(vertical = True)
         self.current: ConstraintI = None
+        self.pivot = EditorState.getInstance().getPivot()
         self.label: Label = Label("Groove Joint")
         self.grooveALine: SettableCoordOkButton = SettableCoordOkButton('Grv A', '0.0', self.setGrooveA)
         self.grooveBLine: SettableCoordOkButton = SettableCoordOkButton('Grv B', '0.0', self.setGrooveB)
         self.anchorBLine: SettableCoordOkButton = SettableCoordOkButton('Anchr B', '0.0', self.setAnchorB)
 
+        row1 = arcade.gui.UIBoxLayout(vertical=False)
+        row2 = arcade.gui.UIBoxLayout(vertical=False)
+
+        row1.add(Button("GA>GB", "quartWidth", self.grooveAtoGrooveB))
+        row1.add(Button("GB>GA", "quartWidth", self.grooveBtoGrooveA))
+        row1.add(Button("GA>P", "quartWidth", self.grooveAtoPivot))
+        row1.add(Button("P>GA", "quartWidth", self.pivottoGrooveA))
+        row2.add(Button("GB>P", "quartWidth", self.grooveBtoPivot))
+        row2.add(Button("P>GB", "quartWidth", self.pivottoGrooveB))
+        row2.add(Button("B>P", "quartWidth", self.anchorBtoPivot))
+        row2.add(Button("P>B", "quartWidth", self.pivottoAnchorB))
+
+
         self.add(self.label)
         self.add(self.grooveALine)
         self.add(self.grooveBLine)
         self.add(self.anchorBLine)
+        self.add(row1)
+        self.add(row2)
+
+    def grooveAtoGrooveB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: GrooveJoint
+            CommandExec.addCommand(ComSetGrooveBFromCoords(self.current, self.current.grooveA.final))
+
+    def grooveBtoGrooveA(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: GrooveJoint
+            CommandExec.addCommand(ComSetGrooveAFromCoords(self.current, self.current.grooveB.final))
+
+    def grooveAtoPivot(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: GrooveJoint
+            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.grooveA.final))
+
+    def pivottoGrooveA(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: GrooveJoint
+            CommandExec.addCommand(ComSetGrooveAFromCoords(self.current, self.pivot))
+
+    def grooveBtoPivot(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: GrooveJoint
+            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.grooveB.final))
+
+    def pivottoGrooveB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: GrooveJoint
+            CommandExec.addCommand(ComSetGrooveBFromCoords(self.current, self.pivot))
+
+    def anchorBtoPivot(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: GrooveJoint
+            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.anchorB.final))
+
+    def pivottoAnchorB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: GrooveJoint
+            CommandExec.addCommand(ComSetAnchorBFromCoords(self.current, self.pivot))
 
     def setGrooveA(self):
         if self.current:
@@ -366,13 +417,54 @@ class PinJointSpecPanel(arcade.gui.UIBoxLayout):
     def __init__(self):
         super().__init__(vertical = True)
         self.current: ConstraintI = None
+        self.pivot = EditorState.getInstance().getPivot()
         self.label: Label = Label("Pin Joint")
         self.anchorALine: SettableCoordOkButton = SettableCoordOkButton('Anchr A', '0.0', self.setAnchorA)
         self.anchorBLine: SettableCoordOkButton = SettableCoordOkButton('Anchr B', '0.0', self.setAnchorB)
 
+        row1 = arcade.gui.UIBoxLayout(vertical=False)
+
+        row1.add(Button("A>B", "sixthWidth", self.anchorAtoAnchorB))
+        row1.add(Button("B>A", "sixthWidth", self.anchorBtoAnchorA))
+        row1.add(Button("B>P", "sixthWidth", self.anchorBtoPivot))
+        row1.add(Button("P>A", "sixthWidth", self.pivottoAnchorA))
+        row1.add(Button("P>B", "sixthWidth", self.pivottoAnchorB))
+        row1.add(Button("A>P", "sixthWidth", self.anchorAtoPivot))
+
         self.add(self.label)
         self.add(self.anchorALine)
         self.add(self.anchorBLine)
+        self.add(row1)
+
+    def pivottoAnchorB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: PinJoint
+            CommandExec.addCommand(ComSetAnchorBFromCoords(self.current, self.pivot))
+
+    def pivottoAnchorA(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: PinJoint
+            CommandExec.addCommand(ComSetAnchorAFromCoords(self.current, self.pivot))
+
+    def anchorAtoPivot(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: PinJoint
+            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.anchorA.final))
+
+    def anchorBtoPivot(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: PinJoint
+            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.anchorB.final))
+
+    def anchorAtoAnchorB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: PinJoint
+            CommandExec.addCommand(ComSetAnchorAFromCoords(self.current, self.current.anchorB.final))
+
+    def anchorBtoAnchorA(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: PinJoint
+            CommandExec.addCommand(ComSetAnchorBFromCoords(self.current, self.current.anchorA.final))
 
     def setAnchorA(self):
         if self.current:
@@ -399,15 +491,57 @@ class PivotJointSpecPanel(arcade.gui.UIBoxLayout):
     def __init__(self):
         super().__init__(vertical = True)
         self.current: ConstraintI = None
+        self.pivot = EditorState.getInstance().getPivot()
         self.label: Label = Label("Pivot Joint")
         self.anchorALine: SettableCoordOkButton = SettableCoordOkButton('Anchr A', '0.0', self.setAnchorA)
         self.anchorBLine: SettableCoordOkButton = SettableCoordOkButton('Anchr B', '0.0', self.setAnchorB)
         self.pivotLine: SettableCoordOkButton = SettableCoordOkButton('Pivot', '0.0', self.setPivot)
 
+        row1 = arcade.gui.UIBoxLayout(vertical=False)
+
+        row1.add(Button("A>B", "sixthWidth", self.anchorAtoAnchorB))
+        row1.add(Button("B>A", "sixthWidth", self.anchorBtoAnchorA))
+        row1.add(Button("B>P", "sixthWidth", self.anchorBtoPivot))
+        row1.add(Button("P>A", "sixthWidth", self.pivottoAnchorA))
+        row1.add(Button("P>B", "sixthWidth", self.pivottoAnchorB))
+        row1.add(Button("A>P", "sixthWidth", self.anchorAtoPivot))
+
         self.add(self.label)
         self.add(self.anchorALine)
         self.add(self.anchorBLine)
         self.add(self.pivotLine)
+
+        self.add(row1)
+
+    def pivottoAnchorB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: PivotJoint
+            CommandExec.addCommand(ComSetAnchorBFromCoords(self.current, self.pivot))
+
+    def pivottoAnchorA(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: PivotJoint
+            CommandExec.addCommand(ComSetAnchorAFromCoords(self.current, self.pivot))
+
+    def anchorAtoPivot(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: PivotJoint
+            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.anchorA.final))
+
+    def anchorBtoPivot(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: PivotJoint
+            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.anchorB.final))
+
+    def anchorAtoAnchorB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: PivotJoint
+            CommandExec.addCommand(ComSetAnchorAFromCoords(self.current, self.current.anchorB.final))
+
+    def anchorBtoAnchorA(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: PivotJoint
+            CommandExec.addCommand(ComSetAnchorBFromCoords(self.current, self.current.anchorA.final))
 
     def setAnchorA(self):
         if self.current:
@@ -520,17 +654,58 @@ class SlideJointSpecPanel(arcade.gui.UIBoxLayout):
     def __init__(self):
         super().__init__(vertical = True)
         self.current: ConstraintI = None
+        self.pivot = EditorState.getInstance().getPivot()
         self.label: Label = Label("Slide Joint")
         self.anchorALine: SettableCoordOkButton = SettableCoordOkButton('Anchr A', '0.0', self.setAnchorA)
         self.anchorBLine: SettableCoordOkButton = SettableCoordOkButton('Anchr B', '0.0', self.setAnchorB)
         self.minLine: SettableOkButton = SettableOkButton('Min', '0.0', self.setMin)
         self.maxLine: SettableOkButton = SettableOkButton('Max', '0.0', self.setMax)
 
+        row1 = arcade.gui.UIBoxLayout(vertical=False)
+
+        row1.add(Button("A>B", "sixthWidth", self.anchorAtoAnchorB))
+        row1.add(Button("B>A", "sixthWidth", self.anchorBtoAnchorA))
+        row1.add(Button("B>P", "sixthWidth", self.anchorBtoPivot))
+        row1.add(Button("P>A", "sixthWidth", self.pivottoAnchorA))
+        row1.add(Button("P>B", "sixthWidth", self.pivottoAnchorB))
+        row1.add(Button("A>P", "sixthWidth", self.anchorAtoPivot))
+
         self.add(self.label)
         self.add(self.anchorALine)
         self.add(self.anchorBLine)
         self.add(self.minLine)
         self.add(self.maxLine)
+        self.add(row1)
+
+    def pivottoAnchorB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: SlideJoint
+            CommandExec.addCommand(ComSetAnchorBFromCoords(self.current, self.pivot))
+
+    def pivottoAnchorA(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: SlideJoint
+            CommandExec.addCommand(ComSetAnchorAFromCoords(self.current, self.pivot))
+
+    def anchorAtoPivot(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: SlideJoint
+            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.anchorA.final))
+
+    def anchorBtoPivot(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: SlideJoint
+            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.anchorB.final))
+
+    def anchorAtoAnchorB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: SlideJoint
+            CommandExec.addCommand(ComSetAnchorAFromCoords(self.current, self.current.anchorB.final))
+
+    def anchorBtoAnchorA(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            self.current: SlideJoint
+            CommandExec.addCommand(ComSetAnchorBFromCoords(self.current, self.current.anchorA.final))
 
     def setAnchorA(self):
         if self.current:
