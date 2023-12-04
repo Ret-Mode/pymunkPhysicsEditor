@@ -178,6 +178,7 @@ class AnchorButtons(arcade.gui.UIBoxLayout):
         self.current: Union[DampedSpring, PinJoint, PivotJoint, SlideJoint] = None
         self.pivot = EditorState.getInstance().getPivot()
         row1 = arcade.gui.UIBoxLayout(vertical=False)
+        row2 = arcade.gui.UIBoxLayout(vertical=False)
 
         row1.add(Button("A>B", "sixthWidth", self.anchorAtoAnchorB))
         row1.add(Button("B>A", "sixthWidth", self.anchorBtoAnchorA))
@@ -186,14 +187,39 @@ class AnchorButtons(arcade.gui.UIBoxLayout):
         row1.add(Button("P>B", "sixthWidth", self.pivottoAnchorB))
         row1.add(Button("A>P", "sixthWidth", self.anchorAtoPivot))
 
-        # TODO
-        # pivot -> cogA
-        # anchA -> cogA
-        # anchb -> cogA
-        # pivot -> cogB
-        # anchA -> cogB
-        # anchb -> cogB
+        row2.add(Button("P>CA", "sixthWidth", self.pivottoCogA))
+        row2.add(Button("A>CA", "sixthWidth", self.anchorAtoCogA))
+        row2.add(Button("B>CA", "sixthWidth", self.anchorBtoCogA))
+        row2.add(Button("P>CB", "sixthWidth", self.pivottoCogB))
+        row2.add(Button("A>CB", "sixthWidth", self.anchorAtoCogB))
+        row2.add(Button("B>CB", "sixthWidth", self.anchorBtoCogB))
+
         self.add(row1)
+        self.add(row2)
+
+    def pivottoCogA(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.bodyA.physics.cog.final))
+
+    def anchorAtoCogA(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            CommandExec.addCommand(ComSetAnchorAFromCoords(self.current, self.current.bodyA.physics.cog.final))
+
+    def anchorBtoCogA(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            CommandExec.addCommand(ComSetAnchorBFromCoords(self.current, self.current.bodyA.physics.cog.final))
+
+    def pivottoCogB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.bodyB.physics.cog.final))
+
+    def anchorAtoCogB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            CommandExec.addCommand(ComSetAnchorAFromCoords(self.current, self.current.bodyB.physics.cog.final))
+
+    def anchorBtoCogB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            CommandExec.addCommand(ComSetAnchorBFromCoords(self.current, self.current.bodyB.physics.cog.final))
 
     def pivottoAnchorB(self):
         if self.current and self.current.bodyA and self.current.bodyB:
@@ -232,15 +258,9 @@ class GrooveButtons(arcade.gui.UIBoxLayout):
         
         row1 = arcade.gui.UIBoxLayout(vertical=False)
         row2 = arcade.gui.UIBoxLayout(vertical=False)
-        # TODO
-        # pivot -> cogA
-        # grvA -> cogA
-        # grvB -> cogA
-        # anchb -> cogA
-        # pivot -> cogB
-        # grvA -> cogB
-        # grvB -> cogB
-        # anchb -> cogB
+        row3 = arcade.gui.UIBoxLayout(vertical=False)
+        row4 = arcade.gui.UIBoxLayout(vertical=False)
+
         row1.add(Button("GA>GB", "quartWidth", self.grooveAtoGrooveB))
         row1.add(Button("GB>GA", "quartWidth", self.grooveBtoGrooveA))
         row1.add(Button("GA>P", "quartWidth", self.grooveAtoPivot))
@@ -250,8 +270,53 @@ class GrooveButtons(arcade.gui.UIBoxLayout):
         row2.add(Button("B>P", "quartWidth", self.anchorBtoPivot))
         row2.add(Button("P>B", "quartWidth", self.pivottoAnchorB))
 
+        row3.add(Button("P>CA", "quartWidth", self.pivottoCogA))
+        row3.add(Button("GA>CA", "quartWidth", self.grooveAtoCogA))
+        row3.add(Button("GB>CA", "quartWidth", self.grooveBtoCogA))
+        row3.add(Button("B>CA", "quartWidth", self.anchorBtoCogA))
+        row4.add(Button("P>CB", "quartWidth", self.pivottoCogB))
+        row4.add(Button("GA>CB", "quartWidth", self.grooveAtoCogB))
+        row4.add(Button("GB>CB", "quartWidth", self.grooveBtoCogB))
+        row4.add(Button("B>CB", "quartWidth", self.anchorBtoCogB))
+
         self.add(row1)
         self.add(row2)
+        self.add(row3)
+        self.add(row4)
+
+    def pivottoCogA(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.bodyA.physics.cog.final))
+
+    def grooveAtoCogA(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            CommandExec.addCommand(ComSetGrooveAFromCoords(self.current, self.current.bodyA.physics.cog.final))
+
+    def grooveBtoCogA(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            CommandExec.addCommand(ComSetGrooveBFromCoords(self.current, self.current.bodyA.physics.cog.final))
+
+    def anchorBtoCogA(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            CommandExec.addCommand(ComSetAnchorBFromCoords(self.current, self.current.bodyA.physics.cog.final))
+
+    def pivottoCogB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.bodyB.physics.cog.final))
+
+    def grooveAtoCogB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            CommandExec.addCommand(ComSetGrooveAFromCoords(self.current, self.current.bodyB.physics.cog.final))
+
+    def grooveBtoCogB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            CommandExec.addCommand(ComSetGrooveBFromCoords(self.current, self.current.bodyB.physics.cog.final))
+
+    def anchorBtoCogB(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
+            CommandExec.addCommand(ComSetAnchorBFromCoords(self.current, self.current.bodyB.physics.cog.final))
+
+
 
     def grooveAtoGrooveB(self):
         if self.current and self.current.bodyA and self.current.bodyB:
