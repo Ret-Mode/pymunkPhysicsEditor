@@ -18,21 +18,25 @@ Missing features (ordered somewhat as they are planned to be developed):
 - [x] Add constraints to simple loader
 - [x] Saving/loading (JSON)
 - [x] Supporting all parameters of pymunk objects (without a radius)
-- [ ] Add possibility of changing a shape radius
-- [ ] Cloning of objects
+- [x] Cloning of objects
 - [ ] Additional buttons (CoG to Pivot, etc)
+- [ ] Add possibility of changing a shape radius
 - [ ] Snapping to points
 - [ ] Add GL texture loader
+
+Below is a list of functionalities that will be considered as extensions / maintenance updates
+(when the list above is completed, app should be practically usable)
+- [ ] Adding documentation
 - [ ] Change transform panel (remove update)
 - [ ] Fix pickling (default save method i guess - move mappings and textures to the database)
 - [ ] Add texture utils and options (mipmaps, filtering, etc)
 - [ ] Lock mouse on transforms
 - [ ] Add transforms and textures to constraints view
 - [ ] Support for convex polygons
-- [ ] Support skewing
 - [ ] Snapping to edges
 - [ ] Adjusting GUI
 - [ ] Support for higher versions of Arcade / other libraries
 - [ ] Support for other 2d engines
-- [ ] Adding documentation
 
+Not planned:
+- [ ] Support skewing (maybe with opengl support)
