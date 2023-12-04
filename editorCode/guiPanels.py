@@ -507,9 +507,6 @@ class LabelledCoord(arcade.gui.UIBoxLayout):
         return self.yCoord.text
     
 
-
-
-
 class SettableOkResetButton(arcade.gui.UIBoxLayout):
 
     def __init__(self, label:str, default:str = '', okCB=None, resetCB=None) -> None:
@@ -589,8 +586,8 @@ class SettableBoolButton(arcade.gui.UIBoxLayout):
         super().__init__(vertical=False)
         initText = "YES" if default else "NO" 
         self.description = Label(text=label, width='thirdWidth', align='left')
-        self.value = Label(text=initText, width='thirdWidth', align='left')
-        self.okButton = Button(text="Change", width='thirdWidth', callback=self.exec)
+        self.value = Label(text=initText, width='halfWidth', align='left')
+        self.okButton = Button(text="Change", width='sixthWidth', callback=self.exec)
         self.internal = default
         self.callback = okCB
 
