@@ -43,6 +43,7 @@ class TextureContainerI:
             self.updateNonEmptyList()
 
     def load(self, path:str, textureIndex:int, size:Tuple[int]):
+        path = path.replace('\\\\','/').replace('\\','/')
         if 0 <= textureIndex < self.elems:
             texture = self._loadTexture(path)
             if texture:

@@ -68,7 +68,7 @@ class BodyButtons(arcade.gui.UIBoxLayout):
     def setCommandPipeline(self, view: EditorBodyView):
         self.view = view
         self.cursor = view.cursor
-        self.transform.pivot = view.pivot.local
+        self.transform.pivot = view.pivot
 
     def on_update(self, dt):
         retVal = super().on_update(dt)
@@ -92,7 +92,7 @@ class BodyButtons(arcade.gui.UIBoxLayout):
         else:
             self.typeLine.setText('--')
 
-        self.transform.updatePivot(self.view.pivot.local)
+        self.transform.updatePivot(self.view.pivot)
         
         return retVal
 

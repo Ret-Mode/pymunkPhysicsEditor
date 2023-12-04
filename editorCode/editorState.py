@@ -2,6 +2,7 @@ from .shapeInternals.editorShapeI import ShapeI
 from .shapeInternals.editorBodyI import BodyI
 from .constraintInternals.editorConstraintI import ConstraintI
 from .textureMapping import TextureMapping
+from .editorTypes import EditorPoint, V2
 from .database import Database
 
 class EditorState:
@@ -14,6 +15,12 @@ class EditorState:
             EditorState._instance = EditorState()
         return EditorState._instance
     
+    def setPivotV(self, coords:V2):
+        self.pivot.setFromV(coords)
+
+    def getPivot(self):
+        return self.pivot
+
     def __init__(self):
         self.currentBody: BodyI = None
         self.currentShape: ShapeI = None
@@ -21,6 +28,7 @@ class EditorState:
         self.currentMapping: TextureMapping = None
         self.currentMappingChannel: int = 0
         self.database:Database = Database.getInstance()
+        self.pivot = V2()
 
     def clear(self):
         self.currentBody = None
@@ -29,6 +37,7 @@ class EditorState:
         self.currentMapping = None
         self.currentMappingChannel = 0
         self.database = Database.getInstance()
+        self.pivot.setFromXY(0.0, 0.0)
 
         self.setAnyBodyAsCurrent()
         self.setAnyShapeAsCurrent()

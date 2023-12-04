@@ -8,7 +8,7 @@ from .shapeInternals.editorBodyI import BodyI
 from .constraintInternals.editorConstraintI import ConstraintI
 from .textureMapping import TextureMapping
 from .textureContainerI import TextureContainerI
-from .editorTypes import V2, Angle, EditorPoint, Selection, CircleRadius, UnboundAngle
+from .editorTypes import V2, Angle, EditorPoint, Selection, CircleRadius, UserSettableFloat, CenterOfGravity
 from .editorCursor import Cursor
 from .database import Database
 from .editorState import EditorState
@@ -1485,7 +1485,7 @@ class ComSetSlideMaxFromCoords(CommandUndo):
 
 class ComSetUserParam(CommandUndo):
 
-    def __init__(self, param, value):
+    def __init__(self, param:UserSettableFloat, value:float):
         self.param = param
         self.oldUserFlag = self.param.userDefined
         self.oldUserVal = self.param.user
@@ -1501,7 +1501,7 @@ class ComSetUserParam(CommandUndo):
 
 class ComResetUserParam(CommandUndo):
 
-    def __init__(self, param):
+    def __init__(self, param:UserSettableFloat):
         self.param = param
         self.oldUserFlag = self.param.userDefined
     
@@ -1515,10 +1515,10 @@ class ComResetUserParam(CommandUndo):
 
 class ComSetUserCoords(CommandUndo):
 
-    def __init__(self, coord, x:float, y:float):
+    def __init__(self, coord:CenterOfGravity, x:float, y:float):
         self.coord = coord
         self.oldUserFlag = self.coord.userDefined
-        self.oldUserCoord = self.coord.user.clone()
+        self.oldUserCoord = V2().clone(self.coord.user)
         self.newCoord = V2(x, y)
     
     def execute(self):
@@ -1531,7 +1531,7 @@ class ComSetUserCoords(CommandUndo):
 
 class ComResetUserCoords(CommandUndo):
 
-    def __init__(self, coords):
+    def __init__(self, coords:CenterOfGravity):
         self.coords = coords
         self.oldUserFlag = self.coords.userDefined
     

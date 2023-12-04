@@ -29,7 +29,7 @@ class EditorShapeView:
     def __init__(self, width, height, cursor:Cursor):
         self.viewOffset = EditorCamera(width, height)
         self.cursor = cursor
-        self.pivot = EditorPoint()
+        self.pivot = EditorState.getInstance().getPivot()
 
         self.objectsUnderCursor = []
         self.hideOthers = False
@@ -43,22 +43,22 @@ class EditorShapeView:
     def startMoveTransform(self):
         shape = EditorState.getInstance().getCurrentShape()
         if shape:
-            CommandExec.addCommand(ComStartTransform(self.transform, shape, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.MOVE))
+            CommandExec.addCommand(ComStartTransform(self.transform, shape, self.cursor.viewCoords, self.pivot, ContinuousTransform.MOVE))
 
     def startRotateTransform(self):
         shape = EditorState.getInstance().getCurrentShape()
         if shape:
-            CommandExec.addCommand(ComStartTransform(self.transform, shape, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.ROTATE))
+            CommandExec.addCommand(ComStartTransform(self.transform, shape, self.cursor.viewCoords, self.pivot, ContinuousTransform.ROTATE))
 
     def startScaleTransform(self):
         shape = EditorState.getInstance().getCurrentShape()
         if shape:
-            CommandExec.addCommand(ComStartTransform(self.transform, shape, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.SCALE))
+            CommandExec.addCommand(ComStartTransform(self.transform, shape, self.cursor.viewCoords, self.pivot, ContinuousTransform.SCALE))
 
     def startRotateScaleTransform(self):
         shape = EditorState.getInstance().getCurrentShape()
         if shape:
-            CommandExec.addCommand(ComStartTransform(self.transform, shape, self.cursor.viewCoords, self.pivot.local, ContinuousTransform.ROTATESCALE))
+            CommandExec.addCommand(ComStartTransform(self.transform, shape, self.cursor.viewCoords, self.pivot, ContinuousTransform.ROTATESCALE))
 
     def cancelTransform(self):
         CommandExec.addCommand(ComCancelTransform(self.transform))
@@ -94,7 +94,7 @@ class EditorShapeView:
 
 
     def setHelperPoint(self):
-        CommandExec.addCommand(ComSetPivot(self.pivot.local, self.cursor.viewCoords))
+        CommandExec.addCommand(ComSetPivot(self.pivot, self.cursor.viewCoords))
 
     def resize(self, x:float, y:float):
         CommandExec.addCommand(ComResizeView(self.viewOffset, x, y))
@@ -179,7 +179,7 @@ class EditorShapeView:
                     shape.bufferData(buffer)
                     buffer.addCenterOfGravity(shape.physics.cog.final, True)
 
-        buffer.addHelperPoint(self.pivot.local)
+        buffer.addHelperPoint(self.pivot)
 
         self.shader.update(buffer.verts, buffer.colors, buffer.indices)
 

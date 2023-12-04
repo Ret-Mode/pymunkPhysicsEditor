@@ -57,7 +57,7 @@ class EditorConstraintView:
         self.viewBodyAOffset = EditorCamera(width//2, width//2, width//2, height//2)
         self.viewBodyBOffset = EditorCamera(width//2, width//2, width//2, 0)
         self.cursor = cursor
-        self.pivot = EditorPoint()
+        self.pivot = EditorState.getInstance().getPivot()
 
         self.mode = EditorConstraintView.DEFAULT
 
@@ -78,7 +78,7 @@ class EditorConstraintView:
 
 
     def setHelperPoint(self):
-        CommandExec.addCommand(ComSetPivot(self.pivot.local, self.cursor.viewCoords))
+        CommandExec.addCommand(ComSetPivot(self.pivot, self.cursor.viewCoords))
 
     def resize(self, x:float, y:float):
         CommandExec.addCommand(ComResizeView(self.viewAllOffset, x//2, y))
@@ -184,7 +184,7 @@ class EditorConstraintView:
             constraint.bufferBodies(buffer)
             constraint.bufferInternals(buffer)
 
-            buffer.addHelperPoint(self.pivot.local)
+            buffer.addHelperPoint(self.pivot)
             self.shader.update(buffer.verts, buffer.colors, buffer.indices)
 
             self.shader.draw()
@@ -200,7 +200,7 @@ class EditorConstraintView:
             constraint.bufferBodyA(buffer)
             constraint.bufferInternalA(buffer)
 
-            buffer.addHelperPoint(self.pivot.local)
+            buffer.addHelperPoint(self.pivot)
             self.shader.update(buffer.verts, buffer.colors, buffer.indices)
 
             self.shader.draw()
@@ -214,7 +214,7 @@ class EditorConstraintView:
             constraint.bufferBodyB(buffer)
             constraint.bufferInternalB(buffer)
 
-            buffer.addHelperPoint(self.pivot.local)
+            buffer.addHelperPoint(self.pivot)
             self.shader.update(buffer.verts, buffer.colors, buffer.indices)
 
             self.shader.draw()

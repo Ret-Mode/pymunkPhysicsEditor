@@ -142,7 +142,7 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
     def setCommandPipeline(self, view: EditorShapeView):
         self.view = view
         self.cursor = view.cursor
-        self.transform.pivot = view.pivot.local
+        self.transform.pivot = view.pivot
 
 
     def on_update(self, dt):
@@ -179,7 +179,7 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
             self.bodyList.setLabel('--')
             self.updateListOfLabels([], self.shapeList)
             self.shapeProp.switchTo(None)
-        self.transform.updatePivot(self.view.pivot.local)
+        self.transform.updatePivot(self.view.pivot)
         
         return retVal
         
