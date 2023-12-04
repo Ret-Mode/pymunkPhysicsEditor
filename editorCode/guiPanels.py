@@ -257,7 +257,7 @@ class ShapePhysicsPanel(PhysicsPanel):
     def __init__(self, label:str = '--', newName:str = 'ENTITY'):
         super().__init__(label = '--', newName = 'ENTITY')
         self.cogLine = LabelledCoord('CoG', '0.0')
-
+        self.radiusLine = SettableOkButton('Radius', "0.000", self.setRadius)
         self.elasticity = SettableOkButton('Elasticity', "0.000", self.setElasticity)
         self.friction = SettableOkButton('Friction', "1.000", self.setFriction)
         self.sensor:SettableBoolButton = SettableBoolButton("Sensor", False, self.setSensor)
@@ -266,6 +266,7 @@ class ShapePhysicsPanel(PhysicsPanel):
         self.filterMask = SettableOkButton('Mask', "0", self.setFilterMask)
 
         self.add(self.cogLine)
+        self.add(self.radiusLine)
         self.add(self.elasticity)
         self.add(self.friction)
         self.add(self.sensor)
@@ -275,12 +276,16 @@ class ShapePhysicsPanel(PhysicsPanel):
 
     def setCurrent(self, current:ShapeI):
         super().setCurrent(current)
+        self.radiusLine.setNewVal(floatToString(current.internal.radius.final, "0.000"))
         self.elasticity.setNewVal(floatToString(current.elasticity, "0.000"))
         self.friction.setNewVal(floatToString(current.friction, "1.000"))
         self.sensor.setNewVal(current.isSensor)
         self.filterGroup.setNewVal(hexToString(current.shapeFilterGroup, "0"))
         self.filterCategory.setNewVal(hexToString(current.shapeFilterCategory, "0"))
         self.filterMask.setNewVal(hexToString(current.shapeFilterMask, "0"))
+
+    def setRadius(self):
+        pass
 
     def setFilterMask(self):
         if self.current:
