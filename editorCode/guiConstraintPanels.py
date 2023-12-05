@@ -182,10 +182,11 @@ class AnchorButtons(arcade.gui.UIBoxLayout):
 
         row1.add(Button("A>B", "sixthWidth", self.anchorAtoAnchorB))
         row1.add(Button("B>A", "sixthWidth", self.anchorBtoAnchorA))
-        row1.add(Button("B>P", "sixthWidth", self.anchorBtoPivot))
         row1.add(Button("P>A", "sixthWidth", self.pivottoAnchorA))
         row1.add(Button("P>B", "sixthWidth", self.pivottoAnchorB))
         row1.add(Button("A>P", "sixthWidth", self.anchorAtoPivot))
+        row1.add(Button("B>P", "sixthWidth", self.anchorBtoPivot))
+
 
         row2.add(Button("P>CA", "sixthWidth", self.pivottoCogA))
         row2.add(Button("A>CA", "sixthWidth", self.anchorAtoCogA))
@@ -221,19 +222,19 @@ class AnchorButtons(arcade.gui.UIBoxLayout):
         if self.current and self.current.bodyA and self.current.bodyB:
             CommandExec.addCommand(ComSetAnchorBFromCoords(self.current, self.current.bodyB.physics.cog.final))
 
-    def pivottoAnchorB(self):
+    def anchorBtoPivot(self):
         if self.current and self.current.bodyA and self.current.bodyB:
             CommandExec.addCommand(ComSetAnchorBFromCoords(self.current, self.pivot))
 
-    def pivottoAnchorA(self):
+    def anchorAtoPivot(self):
         if self.current and self.current.bodyA and self.current.bodyB:
             CommandExec.addCommand(ComSetAnchorAFromCoords(self.current, self.pivot))
 
-    def anchorAtoPivot(self):
+    def pivottoAnchorA(self):
         if self.current and self.current.bodyA and self.current.bodyB:
             CommandExec.addCommand(ComSetPivot(self.pivot, self.current.anchorA.final))
 
-    def anchorBtoPivot(self):
+    def pivottoAnchorB(self):
         if self.current and self.current.bodyA and self.current.bodyB:
             CommandExec.addCommand(ComSetPivot(self.pivot, self.current.anchorB.final))
 
@@ -320,33 +321,33 @@ class GrooveButtons(arcade.gui.UIBoxLayout):
 
     def grooveAtoGrooveB(self):
         if self.current and self.current.bodyA and self.current.bodyB:
-            CommandExec.addCommand(ComSetGrooveBFromCoords(self.current, self.current.grooveA.final))
+            CommandExec.addCommand(ComSetGrooveAFromCoords(self.current, self.current.grooveB.final))
 
     def grooveBtoGrooveA(self):
         if self.current and self.current.bodyA and self.current.bodyB:
-            CommandExec.addCommand(ComSetGrooveAFromCoords(self.current, self.current.grooveB.final))
-
-    def grooveAtoPivot(self):
-        if self.current and self.current.bodyA and self.current.bodyB:
-            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.grooveA.final))
+            CommandExec.addCommand(ComSetGrooveBFromCoords(self.current, self.current.grooveA.final))
 
     def pivottoGrooveA(self):
         if self.current and self.current.bodyA and self.current.bodyB:
-            CommandExec.addCommand(ComSetGrooveAFromCoords(self.current, self.pivot))
+            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.grooveA.final))
 
-    def grooveBtoPivot(self):
+    def grooveAtoPivot(self):
         if self.current and self.current.bodyA and self.current.bodyB:
-            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.grooveB.final))
+            CommandExec.addCommand(ComSetGrooveAFromCoords(self.current, self.pivot))
 
     def pivottoGrooveB(self):
         if self.current and self.current.bodyA and self.current.bodyB:
+            CommandExec.addCommand(ComSetPivot(self.pivot, self.current.grooveB.final))
+
+    def grooveBtoPivot(self):
+        if self.current and self.current.bodyA and self.current.bodyB:
             CommandExec.addCommand(ComSetGrooveBFromCoords(self.current, self.pivot))
 
-    def anchorBtoPivot(self):
+    def pivottoAnchorB(self):
         if self.current and self.current.bodyA and self.current.bodyB:
             CommandExec.addCommand(ComSetPivot(self.pivot, self.current.anchorB.final))
 
-    def pivottoAnchorB(self):
+    def anchorBtoPivot(self):
         if self.current and self.current.bodyA and self.current.bodyB:
             CommandExec.addCommand(ComSetAnchorBFromCoords(self.current, self.pivot))
 
