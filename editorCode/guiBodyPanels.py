@@ -11,15 +11,38 @@ from .guiButtons import Button, Label, TextButton, ScrollableLayout, TextInput, 
 from .guiPanels import BodyPhysicsPanel, AddNewPanel, SettableOkResetButton, ContainerTransformPanel, CursorPanel
 from .commandExec import ComAddBody, ComDelBody, ComSetContainerPosXY, ComApplyContainerPosXY, ComSetContainerAngleDeg, ComApplyContainerRotateDeg, ComSetContainerScale, ComApplyContainerScale
 from .commandExec import ComShiftBodyUp, ComShiftBodyDown, ComSetBodyAsCurrent, ComBodyClone
-from .commandExec import CommandExec, ComRenameBody, ComSetLastBodyAsCurrent
+from .commandExec import CommandExec, ComRenameBody, ComSetLastBodyAsCurrent, ComSetPivot
 from .database import Database
 from .editorState import EditorState
+
+class BasicEditButtons(arcade.gui.UIBoxLayout):
+
+    def __init__(self):
+        super().__init__(vertical = True)
+        self.pivot = EditorState.getInstance().getPivot()
+        row1 = arcade.gui.UIBoxLayout(vertical=False)
+
+        row1.add(Button("P>CoG", "halfWidth", self.pivotToCog))
+        row1.add(Button("P>CoG", "halfWidth", self.pivotToCog))
+
+        self.add(row1)
+
+    def pivotToCog(self):
+        current:BodyI = EditorState.getInstance().getCurrentBody()
+        if current:
+            CommandExec.addCommand(ComSetPivot(self.pivot, current.physics.cog.final))
+
+    def pivotToCog(self):
+        current:BodyI = EditorState.getInstance().getCurrentBody()
+        if current:
+            CommandExec.addCommand(ComSetPivot(self.pivot, current.physics.cog.final))
+
 
 class BodyButtons(arcade.gui.UIBoxLayout):
 
     def __init__(self) -> None:
         super().__init__(vertical=True)
-        self.rows: List[arcade.gui.UIBoxLayout] = [self.add(arcade.gui.UIBoxLayout(vertical=False)) for i in range(10)]
+        self.rows: List[arcade.gui.UIBoxLayout] = [self.add(arcade.gui.UIBoxLayout(vertical=False)) for i in range(11)]
 
         self.rows[0].add(Label(text="--BODY--", align='center'))
         
@@ -54,12 +77,15 @@ class BodyButtons(arcade.gui.UIBoxLayout):
         self.cursorLine: CursorPanel = CursorPanel()
         self.rows[7].add(self.cursorLine)
 
+        buttons = BasicEditButtons()
+        self.rows[8].add(buttons)
+
         self.currentDetails: BodyPhysicsPanel = BodyPhysicsPanel(label='--PHYSICS PROP--', newName='BODY')
 
-        self.rows[8].add(self.currentDetails)
+        self.rows[9].add(self.currentDetails)
 
         self.transform: ContainerTransformPanel = ContainerTransformPanel()
-        self.rows[9].add(self.transform)
+        self.rows[10].add(self.transform)
 
         self.view: EditorBodyView = None
         self.cursor: Cursor = None

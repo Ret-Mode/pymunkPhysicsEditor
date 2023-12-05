@@ -21,9 +21,10 @@ Missing features (ordered somewhat as they are planned to be developed):
 - [x] Cloning of objects
 - [x] Additional buttons to Constraints view (CoG to Pivot, etc)
 - [x] Add possibility of changing a shape radius
-- [ ] Additional buttons to other views (CoG to Pivot, etc)
+- [ ] Additional buttons to other views (CoG to Pivot, etc - needed for new matrix functions)
 - [ ] Snapping to points
 - [ ] Add GL texture loader
+- [ ] Auto mesh generation from texture
 
 Below is a list of functionalities that will be considered as extensions / maintenance updates
 (when the list above is completed, app should be practically usable)
