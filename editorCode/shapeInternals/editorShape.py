@@ -3,6 +3,7 @@ from .editorShapeI import ShapeI
 from .editorShapeSpec import PolygonSpec, CircleSpec, BoxSpec, RectSpec, LineSpec
 from .editorShapePhysics import PolygonPhysics, CirclePhysics, BoxPhysics, RectPhysics, LinePhysics
 
+import math
 
 class Polygon(ShapeI):
 
@@ -15,6 +16,8 @@ class Polygon(ShapeI):
     def bufferData(self, buffer:ShapeBuffer):
         buffer.addPolygon(self.internal.points)
 
+    def setRadius(self, radius:float):
+        self.internal.radius.set(radius)
 
 
 class Circle(ShapeI):
@@ -29,6 +32,9 @@ class Circle(ShapeI):
         buffer.addCircle(self.internal.center.final, self.internal.radius.final,
                          self.internal.drawLines)
 
+    def setRadius(self, radius:float):
+        coords = self.transform.getInvMat().mulRSXY(radius, 0.0)
+        self.internal.radius.set(math.sqrt(coords[0] ** 2 + coords[1] **2))
 
     # def clone(self, source:"Circle"):
     #     # self.box.clone(source.box)
@@ -54,6 +60,8 @@ class Box(ShapeI):
     def bufferData(self, buffer:ShapeBuffer):
         buffer.addBox(self.internal.points)
 
+    def setRadius(self, radius:float):
+        self.internal.radius.set(radius)
 
 class Rect(ShapeI):
 
@@ -66,6 +74,8 @@ class Rect(ShapeI):
     def bufferData(self, buffer:ShapeBuffer):
         buffer.addRect(self.internal.points)
 
+    def setRadius(self, radius:float):
+        self.internal.radius.set(radius)
 
 class Line(ShapeI):
 
@@ -77,3 +87,6 @@ class Line(ShapeI):
 
     def bufferData(self, buffer:ShapeBuffer):
         buffer.addLineShape(self.internal.points)
+
+    def setRadius(self, radius:float):
+        self.internal.radius.set(radius)

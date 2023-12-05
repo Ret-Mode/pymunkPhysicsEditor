@@ -570,6 +570,19 @@ class ComNewShapeAddPoint(CommandUndo):
         #self.shape.recalcPhysics()
 
 
+class ComSetShapeRadius(CommandUndo):
+    def __init__(self, shape:ShapeI, radius:float):
+        self.newRadius = radius
+        self.oldRadius = shape.getRadius()
+        self.shape = shape
+
+    def execute(self):
+        self.shape.setRadius(self.newRadius)
+
+    def undo(self):
+        self.shape.setRadius(self.oldRadius)
+
+
 class ComNewShapeNewWH(CommandUndo):
 
     def __init__(self, worldCoords: V2, shape: ShapeI):
