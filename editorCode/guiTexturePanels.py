@@ -281,11 +281,12 @@ class MappingDetailsPanel(arcade.gui.UIBoxLayout):
         self.mapOffset:TextureSizeIntPanel = TextureSizeIntPanel('MOffs')
         self.mapSize:TextureSizeIntPanel = TextureSizeIntPanel('MSize')
 
+        
         self.add(self.bodySelect)
         self.add(self.realSize)
         self.add(self.mapOffset)
         self.add(self.mapSize)
-
+        self.add(Button("Generate shape", "width", self.generateShape))
 
     def on_update(self, dt):
         retVal = super().on_update(dt)
@@ -305,6 +306,22 @@ class MappingDetailsPanel(arcade.gui.UIBoxLayout):
             self.mapSize.setSize(mapping.getMappingSize())
         self.currentMapping = mapping
 
+    def generateShape(self):
+        mapping = EditorState.getInstance().getCurrentMapping()
+        if not mapping:
+            return
+        texture = TextureContainerI.getInstance().getTexture(mapping.channel)
+        if texture:
+            data = texture.read()
+            data = bytes(data)
+            # TODO move code below somewhere else
+            from PIL import Image
+            from arcade.hitbox import calculate_hit_box_points_simple
+            image = Image.frombytes("RGBA", mapping.textureSize, data)
+            points = calculate_hit_box_points_simple(image)
+            print(points)
+            image.close()
+            del data
 
 class MappingOptsPanel(arcade.gui.UIBoxLayout):
 

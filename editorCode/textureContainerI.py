@@ -2,6 +2,11 @@ from typing import List, Tuple, Any
 
 from .textureMapping import TextureMapping
 
+class TextureI:
+
+    def read(self, level: int = 0, alignment: int = 1) -> bytearray:
+        raise NotImplementedError
+
 class TextureContainerI:
 
     _instance: "TextureContainerI" = None
@@ -24,7 +29,7 @@ class TextureContainerI:
         self.elems = elems
         self.nonEmptyChannels:List[int] = []
         self.paths: List[str] = ['' for i in range(self.elems)]
-        self.textures: List[any] = [None for i in range(self.elems)]
+        self.textures: List[TextureI] = [None for i in range(self.elems)]
         self.sizes: List[Tuple[int]] = [(0,0) for i in range(self.elems)] 
 
     def updateNonEmptyList(self):
@@ -59,7 +64,7 @@ class TextureContainerI:
             return self.paths[textureIndex]
         return None
 
-    def getTexture(self, textureIndex:int) -> Any:
+    def getTexture(self, textureIndex:int) -> TextureI:
         if 0 <= textureIndex <= self.elems:
             return self.textures[textureIndex]
         return None

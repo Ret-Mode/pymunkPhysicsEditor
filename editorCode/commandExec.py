@@ -426,6 +426,18 @@ class ComSelectPrevBody(CommandUndo):
         self.state.setCurrentBodyAndShape(self.oldBody, self.oldShape)
 
 
+class ComMoveObject(CommandUndo):
+    def __init__(self, obj:Union[BodyI, ShapeI], worldCoords:V2):
+        self.obj = obj
+        self.forward:V2 = V2().clone(worldCoords).unTV(obj.physics.cog.final)
+
+    def execute(self):
+        self.obj.transform.move(self.forward)
+
+    def undo(self):
+        self.obj.transform.invMove(self.forward)
+
+
 # END OF BODY functions
 
 # SHAPE new functions

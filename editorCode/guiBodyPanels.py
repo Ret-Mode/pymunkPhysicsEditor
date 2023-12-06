@@ -11,7 +11,7 @@ from .guiButtons import Button, Label, TextButton, ScrollableLayout, TextInput, 
 from .guiPanels import BodyPhysicsPanel, AddNewPanel, SettableOkResetButton, ContainerTransformPanel, CursorPanel
 from .commandExec import ComAddBody, ComDelBody, ComSetContainerPosXY, ComApplyContainerPosXY, ComSetContainerAngleDeg, ComApplyContainerRotateDeg, ComSetContainerScale, ComApplyContainerScale
 from .commandExec import ComShiftBodyUp, ComShiftBodyDown, ComSetBodyAsCurrent, ComBodyClone
-from .commandExec import CommandExec, ComRenameBody, ComSetLastBodyAsCurrent, ComSetPivot
+from .commandExec import CommandExec, ComRenameBody, ComSetLastBodyAsCurrent, ComSetPivot, ComMoveObject
 from .database import Database
 from .editorState import EditorState
 
@@ -23,7 +23,7 @@ class BasicEditButtons(arcade.gui.UIBoxLayout):
         row1 = arcade.gui.UIBoxLayout(vertical=False)
 
         row1.add(Button("P>CoG", "halfWidth", self.pivotToCog))
-        row1.add(Button("P>CoG", "halfWidth", self.pivotToCog))
+        row1.add(Button("M>P", "halfWidth", self.moveToPivot))
 
         self.add(row1)
 
@@ -32,10 +32,10 @@ class BasicEditButtons(arcade.gui.UIBoxLayout):
         if current:
             CommandExec.addCommand(ComSetPivot(self.pivot, current.physics.cog.final))
 
-    def pivotToCog(self):
+    def moveToPivot(self):
         current:BodyI = EditorState.getInstance().getCurrentBody()
         if current:
-            CommandExec.addCommand(ComSetPivot(self.pivot, current.physics.cog.final))
+            CommandExec.addCommand(ComMoveObject(current, self.pivot))
 
 
 class BodyButtons(arcade.gui.UIBoxLayout):

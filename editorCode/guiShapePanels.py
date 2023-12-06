@@ -9,7 +9,7 @@ from .editorCursor import Cursor
 from .shapeInternals.editorShapeI import ShapeI
 from .shapeInternals.editorShape import Polygon
 from .commandExec import ComNewShapeClone,  ComSetNewShapeAsCurrent, ComShiftNewShapeUp, ComShiftNewShapeDown, ComSetPivot
-from .commandExec import ComRenameNewShape, ComSelectNextBody, ComSelectPrevBody, ComAddNewShape, ComDelNewShape, CommandExec
+from .commandExec import ComRenameNewShape, ComSelectNextBody, ComSelectPrevBody, ComAddNewShape, ComDelNewShape, CommandExec, ComMoveObject
 from .database import Database
 from .editorState import EditorState
 
@@ -91,10 +91,10 @@ class BasicEditButtons(arcade.gui.UIBoxLayout):
         if current:
             CommandExec.addCommand(ComSetPivot(self.pivot, current.physics.cog.final))
 
-    def pivotToCog(self):
+    def moveToPivot(self):
         current:ShapeI = EditorState.getInstance().getCurrentShape()
         if current:
-            CommandExec.addCommand(ComSetPivot(self.pivot, current.physics.cog.final))
+            CommandExec.addCommand(ComMoveObject(current, self.pivot))
 
 
 class ShapeButtons(arcade.gui.UIBoxLayout):
