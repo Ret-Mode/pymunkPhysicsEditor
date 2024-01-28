@@ -19,10 +19,15 @@ Missing features (ordered somewhat as they are planned to be developed):
 - [x] Saving/loading (JSON)
 - [x] Supporting all parameters of pymunk objects (without a radius)
 - [x] Cloning of objects
-- [ ] Additional buttons (CoG to Pivot, etc)
-- [ ] Add possibility of changing a shape radius
+- [x] Additional buttons to Constraints view (CoG to Pivot, etc)
+- [x] Add possibility of changing a shape radius
+- [ ] Auto mesh generation from texture
+- [ ] Additional buttons to other views (CoG to Pivot, etc - needed for new matrix functions)
 - [ ] Snapping to points
 - [ ] Add GL texture loader
+- [ ] Selections
+- [ ] Macros
+
 
 Below is a list of functionalities that will be considered as extensions / maintenance updates
 (when the list above is completed, app should be practically usable)

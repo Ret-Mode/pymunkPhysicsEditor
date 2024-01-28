@@ -398,6 +398,34 @@ class Mat:
         self.r1c2 = - offset.y * 1.0/scale
         return self
     
+    # TODO
+    # @staticmethod
+    # def newMoveMatrix(x:float, y:float):
+    #     mat = Mat()
+    #     mat.r0c2 = x
+    #     mat.r1c2 = y
+    #     return mat
+    
+    # @staticmethod
+    # def newRotateMatrix(angle:Angle):
+    #     mat = Mat()
+    #     mat.r0c0 = angle.cos
+    #     mat.r0c1 = -angle.sin
+    #     mat.r1c0 = angle.sin
+    #     mat.r1c1 = angle.cos
+    #     return mat
+    
+    # @staticmethod
+    # def newScaleMatrix(scale:float):
+    #     mat = Mat()
+    #     mat.r0c0 = scale
+    #     mat.r1c1 = scale
+    #     return mat
+    # create move (with inv)
+    # create rot (with inv)
+    # create scale (with inv)
+    # create inv
+    
 
 class ContainerTransform:
     

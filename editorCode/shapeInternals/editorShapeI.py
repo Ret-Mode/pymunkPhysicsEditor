@@ -35,6 +35,12 @@ class ShapeI:
         self.shapeFilterCategory:int = 0xFFFFFFFF
         self.shapeFilterMask:int = 0xFFFFFFFF
 
+    def setRadius(self, radius:float):
+        raise NotImplementedError
+
+    def getRadius(self) -> float:
+        return self.internal.radius.get()
+    
     # untransformed physics
     def recalcPhysics(self) -> None:
         self.physics.recalcPhysics(self.internal, self.transform)

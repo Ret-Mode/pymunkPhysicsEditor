@@ -143,7 +143,6 @@ class BoxPhysics(ShapePhysics):
         point = internal.halfWH.final
         
         radius = internal.radius.get()
-        print(point, radius)
         self.cog.calc.setFromV(internal.points[0].final)
         a = point.length() * math.sqrt(2.0)
         self.area = a * a + 4 * a * radius + math.pi * radius * radius

@@ -8,8 +8,8 @@ from .editorShapeView import EditorShapeView
 from .editorCursor import Cursor
 from .shapeInternals.editorShapeI import ShapeI
 from .shapeInternals.editorShape import Polygon
-from .commandExec import ComNewShapeClone,  ComSetNewShapeAsCurrent, ComShiftNewShapeUp, ComShiftNewShapeDown
-from .commandExec import ComRenameNewShape, ComSelectNextBody, ComSelectPrevBody, ComAddNewShape, ComDelNewShape, CommandExec
+from .commandExec import ComNewShapeClone,  ComSetNewShapeAsCurrent, ComShiftNewShapeUp, ComShiftNewShapeDown, ComSetPivot
+from .commandExec import ComRenameNewShape, ComSelectNextBody, ComSelectPrevBody, ComAddNewShape, ComDelNewShape, CommandExec, ComMoveObject
 from .database import Database
 from .editorState import EditorState
 
@@ -74,11 +74,34 @@ class DetailsPanel(arcade.gui.UIBoxLayout):
             self.currentPanel.refresh(shape.internal)
 
 
+class BasicEditButtons(arcade.gui.UIBoxLayout):
+
+    def __init__(self):
+        super().__init__(vertical = True)
+        self.pivot = EditorState.getInstance().getPivot()
+        row1 = arcade.gui.UIBoxLayout(vertical=False)
+
+        row1.add(Button("P>CoG", "halfWidth", self.pivotToCog))
+        row1.add(Button("P>CoG", "halfWidth", self.pivotToCog))
+
+        self.add(row1)
+
+    def pivotToCog(self):
+        current:ShapeI = EditorState.getInstance().getCurrentShape()
+        if current:
+            CommandExec.addCommand(ComSetPivot(self.pivot, current.physics.cog.final))
+
+    def moveToPivot(self):
+        current:ShapeI = EditorState.getInstance().getCurrentShape()
+        if current:
+            CommandExec.addCommand(ComMoveObject(current, self.pivot))
+
+
 class ShapeButtons(arcade.gui.UIBoxLayout):
 
     def __init__(self) -> None:
         super().__init__(vertical = True)
-        self.rows: List[arcade.gui.UIBoxLayout] = [self.add(arcade.gui.UIBoxLayout(vertical=False)) for i in range(11)]
+        self.rows: List[arcade.gui.UIBoxLayout] = [self.add(arcade.gui.UIBoxLayout(vertical=False)) for i in range(12)]
 
         self.rows[0].add(Label(text="Parent", align='center', width='thirdWidth'))
         
@@ -120,17 +143,20 @@ class ShapeButtons(arcade.gui.UIBoxLayout):
         self.cursorLine: CursorPanel = CursorPanel()
         self.rows[7].add(self.cursorLine)
 
+        buttons = BasicEditButtons()
+        self.rows[8].add(buttons)
+
         self.currentDetails: ShapePhysicsPanel = ShapePhysicsPanel(label='--PHYSICS PROP--', newName='SHAPE')
 
-        self.rows[8].add(self.currentDetails)
+        self.rows[9].add(self.currentDetails)
 
         self.transform: ContainerTransformPanel = ContainerTransformPanel()
 
-        self.rows[9].add(self.transform)
+        self.rows[10].add(self.transform)
 
         self.shapeProp: DetailsPanel = DetailsPanel()
         
-        self.rows[10].add(self.shapeProp)
+        self.rows[11].add(self.shapeProp)
 
         self.view: EditorShapeView = None
         self.cursor: Cursor = None

@@ -12,7 +12,7 @@ from .guiButtons import Button, Label, TextButton, TextInput, ScrollableCBLabel,
 from .guiTimeMeasure import TimeMeasure
 from .editorTypes import V2
 from .editorShapes import Container
-from .commandExec import ComSetUserParam, ComResetUserParam, ComSetPivotXY, ComSetPivotRelativeXY, ComSetUserCoords, ComResetUserCoords
+from .commandExec import ComSetUserParam, ComResetUserParam, ComSetPivotXY, ComSetPivotRelativeXY, ComSetUserCoords, ComResetUserCoords, ComSetShapeRadius
 from .commandExec import ComSetContainerPosXY, ComApplyContainerPosXY, ComSetContainerAngle, ComApplyContainerRotate, ComSetContainerScale, ComApplyContainerScale
 from .commandExec import CommandExec, ComNewShapeSetMask, ComNewShapeSetCategory, ComNewShapeSetGroup, ComNewShapeSetSensor, ComNewShapeSetFriction, ComNewShapeSetElasticity
 
@@ -285,11 +285,12 @@ class ShapePhysicsPanel(PhysicsPanel):
         self.filterMask.setNewVal(hexToString(current.shapeFilterMask, "0"))
 
     def setRadius(self):
-        pass
+        if self.current:
+            CommandExec.addCommand(ComSetShapeRadius(self.current, floatFromString(self.radiusLine.getVal(), '0.000')))
 
     def setFilterMask(self):
         if self.current:
-            CommandExec.addCommand(ComNewShapeSetMask(self.current, hexFromString(self.filterMask.getVal(), "0")))
+            CommandExec.addCommand(ComNewShapeSetMask(self.current, hexFromString(self.filterMask.getVal(), "0.000")))
 
     def setFilterCategory(self):
         if self.current:
@@ -305,17 +306,17 @@ class ShapePhysicsPanel(PhysicsPanel):
 
     def setElasticity(self):
         if self.current:
-            CommandExec.addCommand(ComNewShapeSetElasticity(self.current, floatFromString(self.elasticity.getVal(), "0.0")))
+            CommandExec.addCommand(ComNewShapeSetElasticity(self.current, floatFromString(self.elasticity.getVal(), "0.000")))
 
     def setFriction(self):
         if self.current:
-            CommandExec.addCommand(ComNewShapeSetFriction(self.current, floatFromString(self.friction.getVal(), "1.0")))
+            CommandExec.addCommand(ComNewShapeSetFriction(self.current, floatFromString(self.friction.getVal(), "1.000")))
 
     def setCurrentDetails(self, current: PhysicsProp):
         super().setCurrentDetails(current)
         cog = current.cog.final
-        cogX = distanceInPixelsToString(cog.x, '0.0')
-        cogY = distanceInPixelsToString(cog.y, '0.0')
+        cogX = distanceInPixelsToString(cog.x, '0.000')
+        cogY = distanceInPixelsToString(cog.y, '0.000')
         self.cogLine.setNewVal(cogX, cogY)
     
 
