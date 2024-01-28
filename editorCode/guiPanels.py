@@ -326,20 +326,20 @@ class CursorPanel(arcade.gui.UIBoxLayout):
         self.description = Label(text="Cursor", width='thirdWidth', align='left')
         self.xCoord = Label(text='0.000', width='thirdWidth', align='left')
         self.yCoord = Label(text='0.000', width='thirdWidth', align='left')
-        self.oldX:str = '0.000'
-        self.oldY:str = '0.000'
+        self.oldX:float = 0.0
+        self.oldY:float = 0.0
         self.add(self.description)
         self.add(self.xCoord)
         self.add(self.yCoord)
 
     def setNewVal(self, x:float, y:float):
-        x = floatToString(x, '0.0')
-        y = floatToString(y, '0.0')
         if self.oldX != x:
             self.oldX = x
+            x = floatToString(x, '0.000')
             self.xCoord.setText(x)
         if self.oldY != y:
             self.oldY = y
+            y = floatToString(y, '0.000')
             self.yCoord.setText(y)
 
 
@@ -564,19 +564,19 @@ class SettableCoordButton(arcade.gui.UIBoxLayout):
         if valX != self.oldX:
             self.xCoord.text = valX
             self.oldX = valX
-            self.xCoord.trigger_full_render()
+            self.xCoord.trigger_render()
         if valY != self.oldY:
             self.yCoord.text = valY
             self.oldY = valY
-            self.yCoord.trigger_full_render()
+            self.yCoord.trigger_render()
 
     def refresh(self):
         if self.xCoord.text != self.oldX:
             self.xCoord.text = self.oldX
-            self.xCoord.trigger_full_render()
+            self.xCoord.trigger_render()
         if self.yCoord.text != self.oldY:
             self.yCoord.text = self.oldY
-            self.yCoord.trigger_full_render()
+            self.yCoord.trigger_render()
 
     def getX(self):
         return self.xCoord.text

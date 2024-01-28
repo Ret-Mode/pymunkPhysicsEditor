@@ -320,8 +320,14 @@ class Label(arcade.gui.UILabel):
         
     def setText(self, text:str):
         if self.text != text:
-            self.text = text
+            self.label.text = text
+            self.trigger_render()
 
+    def do_render(self, surface: Surface):
+        self.prepare_render(surface)
+        surface.clear()
+        return super().do_render(surface)
+    
 
 class TextInput(arcade.gui.UIInputText):
 
@@ -332,6 +338,14 @@ class TextInput(arcade.gui.UIInputText):
                         width=editorButtonSetup[width], 
                         height=editorButtonSetup['height'])
         self.caret.color = (255,255,255)
+
+    def trigger_full_render(self):
+        return super().trigger_render()
+
+    def do_render(self, surface: Surface):
+        self.prepare_render(surface)
+        surface.clear()
+        return super().do_render(surface)
 
 
 class TextUpdatableInput(arcade.gui.UIInputText):
