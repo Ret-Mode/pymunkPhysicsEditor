@@ -1,29 +1,29 @@
 {
   "Bodies": {
-    "MainFrame": {
+    "BODY": {
       "physics": {
         "hasCustomMass": false,
         "hasCustomMoment": false,
         "hasCustomCog": false,
-        "customMass": 30.0,
-        "customMoment": 9.913043065401968,
+        "customMass": 6.809659922116737,
+        "customMoment": 21.67418841400867,
         "cog": [
-          0.38491748948260895,
-          0.7084083823889367
+          -0.09466833671654075,
+          0.30438906119548204
         ]
       },
       "type": "Dynamic",
       "shapes": {
-        "SHAPE_1": {
+        "SHAPE": {
           "physics": {
             "hasCustomDensity": false,
-            "hasCustomMass": true,
-            "customMass": 30.0,
+            "hasCustomMass": false,
+            "customMass": 5.6990189680449435,
             "customDensity": 1.0,
-            "customMoment": 9.913043065401968,
+            "customMoment": 20.287670322591236,
             "cog": [
-              0.38491748948260895,
-              0.7084083823889367
+              -0.0007493503298074258,
+              0.18856318716305828
             ],
             "elasticity": 0.0,
             "friction": 1.0,
@@ -36,28 +36,73 @@
           "internal": {
             "points": [
               [
-                -0.526056023689768,
-                0.9571610926034801
+                3.628819648572735,
+                -0.2182455309512923
               ],
               [
-                -0.44440470747055105,
-                1.1367939882857585
+                0.645824896030657,
+                -0.2890100050079476
               ],
               [
-                0.8347992466305225,
-                1.1585676726108827
+                -1.1613909029546896,
+                -0.2617928996015415
               ],
               [
-                1.4118018812463262,
-                0.6741031963768593
+                -3.5891567052060886,
+                0.08658604960045269
               ],
               [
-                1.4444624077340134,
-                0.3257242471748647
+                -3.240777756004094,
+                0.6799189474600995
               ],
               [
-                -0.5042823393646438,
-                0.3148374050123026
+                2.218973588520913,
+                0.58738078907832
+              ],
+              [
+                3.4872907004594245,
+                0.18456762906351365
+              ]
+            ],
+            "radius": 0.01
+          }
+        },
+        "SHAPE_1": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 1.1106409540717936,
+            "customDensity": 1.0,
+            "customMoment": 0.6095261800228235,
+            "cog": [
+              -0.5765937356632006,
+              0.8987250170965804
+            ],
+            "elasticity": 0.0,
+            "friction": 1.0,
+            "isSensor": false,
+            "filterGroup": 0,
+            "filterCategory": 4294967295,
+            "filterMask": 4294967295
+          },
+          "type": "Polygon",
+          "internal": {
+            "points": [
+              [
+                -2.4623685413808873,
+                0.7452400004354738
+              ],
+              [
+                -0.8728895856467878,
+                1.1643834236941228
+              ],
+              [
+                0.34099331547891154,
+                1.1589400026128422
+              ],
+              [
+                0.8091275284690918,
+                0.6690321052975374
               ]
             ],
             "radius": 0.01
@@ -70,54 +115,11 @@
         "hasCustomMass": false,
         "hasCustomMoment": false,
         "hasCustomCog": false,
-        "customMass": 10.0,
-        "customMoment": 3.16185121075479,
+        "customMass": 3.141592653589793,
+        "customMoment": 1.5707963267948966,
         "cog": [
-          -1.9899470443794143,
-          -1.184820161203239
-        ]
-      },
-      "type": "Dynamic",
-      "shapes": {
-        "SHAPE": {
-          "physics": {
-            "hasCustomDensity": false,
-            "hasCustomMass": true,
-            "customMass": 10.0,
-            "customDensity": 1.0,
-            "customMoment": 3.16185121075479,
-            "cog": [
-              -1.9899470443794143,
-              -1.184820161203239
-            ],
-            "elasticity": 0.0,
-            "friction": 1.0,
-            "isSensor": false,
-            "filterGroup": 0,
-            "filterCategory": 4294967295,
-            "filterMask": 4294967295
-          },
-          "type": "Circle",
-          "internal": {
-            "offset": [
-              -1.9899470443794143,
-              -1.184820161203239
-            ],
-            "radius": 0.795217103784217
-          }
-        }
-      }
-    },
-    "Wheel_1": {
-      "physics": {
-        "hasCustomMass": false,
-        "hasCustomMoment": false,
-        "hasCustomCog": false,
-        "customMass": 10.0,
-        "customMoment": 3.16185121075479,
-        "cog": [
-          1.9716538536640988,
-          -1.1182894590986914
+          -1.935950893563085,
+          -1.2753706600489583
         ]
       },
       "type": "Dynamic",
@@ -125,16 +127,16 @@
         "SHAPE_2": {
           "physics": {
             "hasCustomDensity": false,
-            "hasCustomMass": true,
-            "customMass": 10.0,
+            "hasCustomMass": false,
+            "customMass": 3.141592653589793,
             "customDensity": 1.0,
-            "customMoment": 3.16185121075479,
+            "customMoment": 1.5707963267948966,
             "cog": [
-              1.9716538536640988,
-              -1.1182894590986914
+              -1.935950893563085,
+              -1.2753706600489583
             ],
             "elasticity": 0.0,
-            "friction": 1.0,
+            "friction": 20.0,
             "isSensor": false,
             "filterGroup": 0,
             "filterCategory": 4294967295,
@@ -143,10 +145,53 @@
           "type": "Circle",
           "internal": {
             "offset": [
-              1.9716538536640988,
-              -1.1182894590986914
+              -1.935950893563085,
+              -1.2753706600489583
             ],
-            "radius": 0.795217103784217
+            "radius": 1.0
+          }
+        }
+      }
+    },
+    "Wheel2": {
+      "physics": {
+        "hasCustomMass": true,
+        "hasCustomMoment": false,
+        "hasCustomCog": false,
+        "customMass": 300.0,
+        "customMoment": 1.5707963267948966,
+        "cog": [
+          2.2635795215258483,
+          -1.047753835382891
+        ]
+      },
+      "type": "Dynamic",
+      "shapes": {
+        "SHAPE_3": {
+          "physics": {
+            "hasCustomDensity": false,
+            "hasCustomMass": false,
+            "customMass": 3.141592653589793,
+            "customDensity": 1.0,
+            "customMoment": 1.5707963267948966,
+            "cog": [
+              2.2635795215258483,
+              -1.047753835382891
+            ],
+            "elasticity": 0.0,
+            "friction": 20.0,
+            "isSensor": false,
+            "filterGroup": 0,
+            "filterCategory": 4294967295,
+            "filterMask": 4294967295
+          },
+          "type": "Circle",
+          "internal": {
+            "offset": [
+              2.2635795215258483,
+              -1.047753835382891
+            ],
+            "radius": 1.0
           }
         }
       }
@@ -158,39 +203,20 @@
       "maxForce": Infinity,
       "errorBias": 0.001797010299914434,
       "selfCollide": false,
-      "restLength": 0.0,
-      "stiffness": 500.0,
-      "damping": 40.0,
-      "anchorA": [
-        -1.9899290139033203,
-        -1.1442870163928827
+      "grooveA": [
+        -1.935950893563085,
+        -1.2753706600489583
+      ],
+      "grooveB": [
+        -1.9245700523297806,
+        0.44313636617984553
       ],
       "anchorB": [
-        -1.9899470443794143,
-        -1.184820161203239
+        -1.935950893563085,
+        -1.2753706600489583
       ],
-      "type": "Damped Spring",
-      "bodyA": "MainFrame",
-      "bodyB": "Wheel"
-    },
-    "CNSTRNT_4": {
-      "maxBias": Infinity,
-      "maxForce": Infinity,
-      "errorBias": 0.001797010299914434,
-      "selfCollide": false,
-      "restLength": 0.0,
-      "stiffness": 500.0,
-      "damping": 40.0,
-      "anchorA": [
-        -1.9899290139033203,
-        -1.1442870163928827
-      ],
-      "anchorB": [
-        -1.9899470443794143,
-        -1.184820161203239
-      ],
-      "type": "Damped Spring",
-      "bodyA": "MainFrame",
+      "type": "Groove",
+      "bodyA": "BODY",
       "bodyB": "Wheel"
     },
     "CNSTRNT_1": {
@@ -199,41 +225,20 @@
       "errorBias": 0.001797010299914434,
       "selfCollide": false,
       "grooveA": [
-        -1.9969126292184831,
-        0.10882963728844919
+        2.2635795215258483,
+        -1.047753835382891
       ],
       "grooveB": [
-        -1.9923419149327692,
-        -1.1907575055686936
+        2.2635795215258483,
+        0.23828122398038598
       ],
       "anchorB": [
-        -1.9899470443794143,
-        -1.184820161203239
+        2.2635795215258483,
+        -1.047753835382891
       ],
       "type": "Groove",
-      "bodyA": "MainFrame",
-      "bodyB": "Wheel"
-    },
-    "CNSTRNT_5": {
-      "maxBias": Infinity,
-      "maxForce": Infinity,
-      "errorBias": 0.001797010299914434,
-      "selfCollide": false,
-      "grooveA": [
-        -1.9969126292184831,
-        0.10882963728844919
-      ],
-      "grooveB": [
-        -1.9923419149327692,
-        -1.1907575055686936
-      ],
-      "anchorB": [
-        -1.9899470443794143,
-        -1.184820161203239
-      ],
-      "type": "Groove",
-      "bodyA": "MainFrame",
-      "bodyB": "Wheel"
+      "bodyA": "BODY",
+      "bodyB": "Wheel2"
     },
     "CNSTRNT_2": {
       "maxBias": Infinity,
@@ -242,80 +247,38 @@
       "selfCollide": false,
       "restLength": 0.0,
       "stiffness": 500.0,
-      "damping": 40.0,
+      "damping": 1.0,
       "anchorA": [
-        1.9587152839094406,
-        -1.084665959387955
+        -1.935950893563085,
+        -1.2753706600489583
       ],
       "anchorB": [
-        1.969009840514173,
-        -1.1140789782586191
+        -1.935950893563085,
+        -1.2753706600489583
       ],
       "type": "Damped Spring",
-      "bodyA": "MainFrame",
-      "bodyB": "Wheel_1"
-    },
-    "CNSTRNT_6": {
-      "maxBias": Infinity,
-      "maxForce": Infinity,
-      "errorBias": 0.001797010299914434,
-      "selfCollide": false,
-      "restLength": 0.0,
-      "stiffness": 500.0,
-      "damping": 40.0,
-      "anchorA": [
-        1.9587152839094406,
-        -1.084665959387955
-      ],
-      "anchorB": [
-        1.969009840514173,
-        -1.1140789782586191
-      ],
-      "type": "Damped Spring",
-      "bodyA": "MainFrame",
-      "bodyB": "Wheel_1"
+      "bodyA": "BODY",
+      "bodyB": "Wheel"
     },
     "CNSTRNT_3": {
       "maxBias": Infinity,
       "maxForce": Infinity,
       "errorBias": 0.001797010299914434,
       "selfCollide": false,
-      "grooveA": [
-        1.979737142857143,
-        0.026470000000000216
-      ],
-      "grooveB": [
-        1.970364285714286,
-        -1.1076457142857143
-      ],
-      "anchorB": [
-        1.9716538536640988,
-        -1.1182894590986914
-      ],
-      "type": "Groove",
-      "bodyA": "MainFrame",
-      "bodyB": "Wheel_1"
-    },
-    "CNSTRNT_7": {
-      "maxBias": Infinity,
-      "maxForce": Infinity,
-      "errorBias": 0.001797010299914434,
-      "selfCollide": false,
-      "grooveA": [
-        1.979737142857143,
-        0.026470000000000216
-      ],
-      "grooveB": [
-        1.970364285714286,
-        -1.1076457142857143
+      "restLength": 0.0,
+      "stiffness": 500.0,
+      "damping": 1.0,
+      "anchorA": [
+        2.2635795215258483,
+        -1.047753835382891
       ],
       "anchorB": [
-        1.9716538536640988,
-        -1.1182894590986914
+        2.2635795215258483,
+        -1.047753835382891
       ],
-      "type": "Groove",
-      "bodyA": "MainFrame",
-      "bodyB": "Wheel_1"
+      "type": "Damped Spring",
+      "bodyA": "BODY",
+      "bodyB": "Wheel2"
     }
   },
   "Mappings": {
@@ -326,11 +289,11 @@
         0
       ],
       "size": [
-        192,
+        256,
         96
       ],
       "anchor": [
-        96.0,
+        128.0,
         48.0
       ],
       "subAnchor": [
@@ -339,15 +302,15 @@
       ],
       "subScale": 0.03125,
       "subRotate": 0.0,
-      "body": "MainFrame",
+      "body": "BODY",
       "GLmapping": [
-        -3.0,
+        -4.0,
         -1.5,
-        3.0,
+        4.0,
         -1.5,
-        -3.0,
+        -4.0,
         1.5,
-        3.0,
+        4.0,
         1.5
       ],
       "GLuv": [
@@ -365,158 +328,74 @@
       "textureChannel": "1",
       "offset": [
         0,
-        32
+        0
       ],
       "size": [
         64,
-        32
+        64
       ],
       "anchor": [
         32.0,
         32.0
       ],
       "subAnchor": [
-        -1.9899470443794143,
-        -0.7872116093111305
+        -1.935950893563085,
+        -1.2753706600489583
       ],
-      "subScale": 0.02485053449325678,
+      "subScale": 0.03125,
       "subRotate": 0.0,
       "body": "Wheel",
       "GLmapping": [
-        -2.785164148163631,
-        -1.184820161203239,
-        -1.1947299405951974,
-        -1.184820161203239,
-        -2.785164148163631,
-        -0.389603057419022,
-        -1.1947299405951974,
-        -0.389603057419022
+        -2.935950893563085,
+        -2.2753706600489583,
+        -0.9359508935630849,
+        -2.2753706600489583,
+        -2.935950893563085,
+        -0.27537066004895827,
+        -0.9359508935630849,
+        -0.27537066004895827
       ],
       "GLuv": [
         0.0,
-        0.5,
+        0.0,
         1.0,
-        0.5,
+        0.0,
         0.0,
         1.0,
         1.0,
         1.0
       ]
     },
-    "MAP:1_1:2": {
-      "textureChannel": "2",
-      "offset": [
-        0,
-        0
-      ],
-      "size": [
-        64,
-        32
-      ],
-      "anchor": [
-        32.0,
-        32.0
-      ],
-      "subAnchor": [
-        -1.9899470443794143,
-        -1.5824287130953474
-      ],
-      "subScale": 0.02485053449325678,
-      "subRotate": 0.0,
-      "body": "Wheel",
-      "GLmapping": [
-        -2.785164148163631,
-        -1.9800372649874558,
-        -1.1947299405951974,
-        -1.9800372649874558,
-        -2.785164148163631,
-        -1.184820161203239,
-        -1.1947299405951974,
-        -1.184820161203239
-      ],
-      "GLuv": [
-        0.0,
-        0.0,
-        1.0,
-        0.0,
-        0.0,
-        0.5,
-        1.0,
-        0.5
-      ]
-    },
-    "MAP:1:1": {
+    "MAP:1_1": {
       "textureChannel": "1",
       "offset": [
         0,
-        30
-      ],
-      "size": [
-        64,
-        34
-      ],
-      "anchor": [
-        32.0,
-        32.0
-      ],
-      "subAnchor": [
-        1.9716538536640988,
-        -0.7455314416998398
-      ],
-      "subScale": 0.02485053449325678,
-      "subRotate": 0.0,
-      "body": "Wheel_1",
-      "GLmapping": [
-        1.176436749879882,
-        -1.167990528085205,
-        2.7668709574483157,
-        -1.167990528085205,
-        1.176436749879882,
-        -0.3230723553144744,
-        2.7668709574483157,
-        -0.3230723553144744
-      ],
-      "GLuv": [
-        0.0,
-        0.46875,
-        1.0,
-        0.46875,
-        0.0,
-        1.0,
-        1.0,
-        1.0
-      ]
-    },
-    "MAP:1_1:2:2": {
-      "textureChannel": "2",
-      "offset": [
-        0,
         0
       ],
       "size": [
         64,
-        32
+        64
       ],
       "anchor": [
         32.0,
         32.0
       ],
       "subAnchor": [
-        1.9716538536640988,
-        -1.5158980109907998
+        2.2635795215258483,
+        -1.047753835382891
       ],
-      "subScale": 0.02485053449325678,
+      "subScale": 0.03125,
       "subRotate": 0.0,
-      "body": "Wheel_1",
+      "body": "Wheel2",
       "GLmapping": [
-        1.176436749879882,
-        -1.9135065628829082,
-        2.7668709574483157,
-        -1.9135065628829082,
-        1.176436749879882,
-        -1.1182894590986914,
-        2.7668709574483157,
-        -1.1182894590986914
+        1.2635795215258483,
+        -2.047753835382891,
+        3.2635795215258483,
+        -2.047753835382891,
+        1.2635795215258483,
+        -0.04775383538289102,
+        3.2635795215258483,
+        -0.04775383538289102
       ],
       "GLuv": [
         0.0,
@@ -524,29 +403,22 @@
         1.0,
         0.0,
         0.0,
-        0.5,
         1.0,
-        0.5
+        1.0,
+        1.0
       ]
     }
   },
   "Textures": {
     "0": {
-      "path": "data/textures/truck.png",
+      "path": "data/textures/shark.png",
       "size": [
-        192,
+        256,
         96
       ]
     },
     "1": {
       "path": "data/textures/wheel1.png",
-      "size": [
-        64,
-        64
-      ]
-    },
-    "2": {
-      "path": "data/textures/wheel2.png",
       "size": [
         64,
         64

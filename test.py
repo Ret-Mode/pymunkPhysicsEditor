@@ -5,6 +5,7 @@ import pymunk
 
 from loaders.arcadeLoader import SpriteLoader
 
+import sys
 
 class Keys:
     def __init__(self):
@@ -75,10 +76,6 @@ class Runner(arcade.Window):
         self.vehicle.loadFile('data/states/car1.json')
         self.vehicle.addAll()
 
-        #self.ttest = SpriteLoader(self.space)
-        #self.ttest.loadFile('data/states/test.json')
-        #self.ttest.addAll()
-
         self.camera = Camera()
         self.camera.setWidthInMeters(40.0)
         self.camera.update()
@@ -100,6 +97,8 @@ class Runner(arcade.Window):
     def on_update(self, delta_time: float):
         if 'Wheel' not in self.vehicle.bodies:
             print(self.vehicle.bodies.keys())
+
+            sys.exit(-1)
         wheel = self.vehicle.bodies['Wheel']
         wheel.angular_velocity *= 0.95
         if self.keys.isPressed(arcade.key.W):
@@ -110,7 +109,7 @@ class Runner(arcade.Window):
         self.level.update()
         self.vehicle.update()
         #self.ttest.update()
-        self.vec = self.vehicle.bodies["MainFrame"].position
+        self.vec = self.vehicle.bodies["BODY"].position
         self.camera.move(self.vec)
         self.camera.update()
         return super().on_update(delta_time)
@@ -120,10 +119,6 @@ class Runner(arcade.Window):
         self.camera.use()
         self.level.draw()
         self.vehicle.draw()
-        #self.ttest.draw()
-        #arcade.draw_circle_outline(self.camera.cursorCoords.x, self.camera.cursorCoords.y, 1.0, (255,0,0), border_width=0.1, num_segments=16)
-        #print(self.vehicle.constraints['CNSTRNT_3'].max_bias, self.vehicle.constraints['CNSTRNT_3'].max_force, self.vehicle.constraints['CNSTRNT_3'].error_bias)
-
 
 
 Runner(800, 600, "ShaderTest").run()
