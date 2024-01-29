@@ -318,6 +318,9 @@ class Label(arcade.gui.UILabel):
                         style=editorButtonSetup['style'],
                         align=align)
         
+    def getText(self) -> str:
+        return self.label.text
+    
     def setText(self, text:str):
         if self.text != text:
             self.label.text = text
@@ -339,6 +342,14 @@ class TextInput(arcade.gui.UIInputText):
                         height=editorButtonSetup['height'])
         self.caret.color = (255,255,255)
 
+    def setText(self, text:str):
+        if self.text != text:
+            self.text = text
+            self.trigger_render()
+
+    def getText(self) -> str:
+        return self.text
+
     def trigger_full_render(self):
         return super().trigger_render()
 
@@ -346,32 +357,6 @@ class TextInput(arcade.gui.UIInputText):
         self.prepare_render(surface)
         surface.clear()
         return super().do_render(surface)
-
-
-class TextUpdatableInput(arcade.gui.UIInputText):
-
-    def __init__(self, text: str, width: str = 'width'):
-        super().__init__(text=text, 
-                        font_size=editorButtonSetup['style']['font_size'],
-                        text_color=(255, 255, 255, 255),
-                        width=editorButtonSetup[width], 
-                        height=editorButtonSetup['height'])
-        self.caret.color = (255,255,255)
-        self.oldVal = text
-
-    def refresh(self):
-        if self.text != self.oldVal:
-            self.text = self.oldVal
-            self.trigger_full_render()
-
-    def setNewVal(self, val:str):
-        if val != self.oldVal or val != self.text:
-            self.text = val
-            self.oldVal = val
-            self.trigger_full_render()
-
-    def getVal(self):
-        return self.text
 
 
 class TexturePreview(arcade.gui.UITextureButton):

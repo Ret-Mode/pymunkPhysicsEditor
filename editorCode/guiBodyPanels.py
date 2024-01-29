@@ -7,7 +7,7 @@ from .editorTypes import V2, UnboundAngle
 from .editorCursor import Cursor
 from .editorBodyView import EditorBodyView
 from .editorShapes import Container
-from .guiButtons import Button, Label, TextButton, ScrollableLayout, TextInput, editorButtonSetup
+from .guiButtons import Button, Label, TextButton, ScrollableLayout, editorButtonSetup
 from .guiPanels import BodyPhysicsPanel, AddNewPanel, SettableOkResetButton, ContainerTransformPanel, CursorPanel
 from .commandExec import ComAddBody, ComDelBody, ComSetContainerPosXY, ComApplyContainerPosXY, ComSetContainerAngleDeg, ComApplyContainerRotateDeg, ComSetContainerScale, ComApplyContainerScale
 from .commandExec import ComShiftBodyUp, ComShiftBodyDown, ComSetBodyAsCurrent, ComBodyClone

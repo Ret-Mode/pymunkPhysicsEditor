@@ -78,11 +78,10 @@ class LoadSaveButtons(arcade.gui.UIBoxLayout):
         self.add(self.fileName)
         self.add(buttons)
 
-    def setFileName(self, filename):
-        self.fileName.text = filename
-        self.fileName.trigger_full_render()
+    def setFileName(self, filename:str):
+        self.fileName.setText(filename)
 
-    def getFileName(self):
+    def getFileName(self) -> str:
         return self.fileName.text
 
     def save(self):

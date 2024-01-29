@@ -460,15 +460,12 @@ class LabelledValue(arcade.gui.UIBoxLayout):
         self.add(self.value)
 
     def refresh(self):
-        if self.value.text != self.oldVal:
-            self.value.text = self.oldVal
-            self.value.trigger_full_render()
+        self.value.setText(self.oldVal)
 
     def setNewVal(self, val:str):
         if val != self.oldVal:
-            self.value.text = val
             self.oldVal = val
-            self.value.trigger_full_render()
+            self.value.setText(self.oldVal)
 
     def getVal(self):
         return self.value.text
@@ -490,27 +487,21 @@ class LabelledCoord(arcade.gui.UIBoxLayout):
 
     def setNewVal(self, valX:str, valY:str):
         if valX != self.oldX:
-            self.xCoord.text = valX
             self.oldX = valX
-            self.xCoord.trigger_full_render()
+            self.xCoord.setText(self.oldX)
         if valY != self.oldY:
-            self.yCoord.text = valY
             self.oldY = valY
-            self.yCoord.trigger_full_render()
+            self.yCoord.setText(self.oldY)
 
     def refresh(self):
-        if self.xCoord.text != self.oldX:
-            self.xCoord.text = self.oldX
-            self.xCoord.trigger_full_render()
-        if self.yCoord.text != self.oldY:
-            self.yCoord.text = self.oldY
-            self.yCoord.trigger_full_render()
+        self.xCoord.setText(self.oldX)
+        self.yCoord.setText(self.oldY)
 
     def getX(self):
-        return self.xCoord.text
+        return self.xCoord.getText()
     
     def getY(self):
-        return self.yCoord.text
+        return self.yCoord.getText()
     
 
 class SettableOkResetButton(arcade.gui.UIBoxLayout):
@@ -529,18 +520,15 @@ class SettableOkResetButton(arcade.gui.UIBoxLayout):
         self.add(self.resetButton)
 
     def refresh(self):
-        if self.value.text != self.oldVal:
-            self.value.text = self.oldVal
-            self.value.trigger_full_render()
+        self.value.setText(self.oldVal)
 
     def setNewVal(self, val:str):
         if val != self.oldVal:
-            self.value.text = val
             self.oldVal = val
-            self.value.trigger_full_render()
+            self.value.setText(self.oldVal)
 
     def getVal(self):
-        return self.value.text
+        return self.value.getText()
         
 
 class SettableCoordButton(arcade.gui.UIBoxLayout):
@@ -565,25 +553,21 @@ class SettableCoordButton(arcade.gui.UIBoxLayout):
         if valX != self.oldX:
             self.xCoord.text = valX
             self.oldX = valX
-            self.xCoord.trigger_render()
+            self.xCoord.setText(self.oldX)
         if valY != self.oldY:
             self.yCoord.text = valY
             self.oldY = valY
-            self.yCoord.trigger_render()
+            self.yCoord.setText(self.oldY)
 
     def refresh(self):
-        if self.xCoord.text != self.oldX:
-            self.xCoord.text = self.oldX
-            self.xCoord.trigger_render()
-        if self.yCoord.text != self.oldY:
-            self.yCoord.text = self.oldY
-            self.yCoord.trigger_render()
+        self.xCoord.setText(self.oldX)
+        self.yCoord.setText(self.oldY)
 
     def getX(self):
-        return self.xCoord.text
+        return self.xCoord.getText()
     
     def getY(self):
-        return self.yCoord.text
+        return self.yCoord.getText()
     
 
 class SettableBoolButton(arcade.gui.UIBoxLayout):
@@ -635,18 +619,15 @@ class SettableOkButton(arcade.gui.UIBoxLayout):
         self.add(self.resetButton)
 
     def refresh(self):
-        if self.value.text != self.oldVal:
-            self.value.text = self.oldVal
-            self.value.trigger_full_render()
+        self.value.setText(self.oldVal)
 
     def setNewVal(self, val:str):
         if val != self.oldVal:
-            self.value.text = val
             self.oldVal = val
-            self.value.trigger_full_render()
+            self.value.setText(self.oldVal)
 
     def getVal(self):
-        return self.value.text
+        return self.value.getText()
     
 
 class SettableCoordOkButton(arcade.gui.UIBoxLayout):
@@ -669,27 +650,21 @@ class SettableCoordOkButton(arcade.gui.UIBoxLayout):
 
     def setNewVal(self, valX:str, valY:str):
         if valX != self.oldX:
-            self.xCoord.text = valX
             self.oldX = valX
-            self.xCoord.trigger_full_render()
+            self.xCoord.setText(self.oldX)
         if valY != self.oldY:
-            self.yCoord.text = valY
             self.oldY = valY
-            self.yCoord.trigger_full_render()
+            self.yCoord.setText(self.oldY)
 
     def refresh(self):
-        if self.xCoord.text != self.oldX:
-            self.xCoord.text = self.oldX
-            self.xCoord.trigger_full_render()
-        if self.yCoord.text != self.oldY:
-            self.yCoord.text = self.oldY
-            self.yCoord.trigger_full_render()
+        self.xCoord.setText(self.oldX)
+        self.yCoord.setText(self.oldY)
 
     def getX(self):
-        return self.xCoord.text
+        return self.xCoord.getText()
     
     def getY(self):
-        return self.yCoord.text
+        return self.yCoord.getText()
     
 
 class ScrollableConstantPanel(arcade.gui.UIBoxLayout):
