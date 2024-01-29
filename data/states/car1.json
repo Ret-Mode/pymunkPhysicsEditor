@@ -2,10 +2,10 @@
   "Bodies": {
     "BODY": {
       "physics": {
-        "hasCustomMass": false,
+        "hasCustomMass": true,
         "hasCustomMoment": false,
         "hasCustomCog": false,
-        "customMass": 6.809659922116737,
+        "customMass": 300.0,
         "customMoment": 21.67418841400867,
         "cog": [
           -0.09466833671654075,
@@ -155,10 +155,10 @@
     },
     "Wheel2": {
       "physics": {
-        "hasCustomMass": true,
+        "hasCustomMass": false,
         "hasCustomMoment": false,
         "hasCustomCog": false,
-        "customMass": 300.0,
+        "customMass": 3.141592653589793,
         "customMoment": 1.5707963267948966,
         "cog": [
           2.2635795215258483,
