@@ -343,9 +343,8 @@ class TextInput(arcade.gui.UIInputText):
         self.caret.color = (255,255,255)
 
     def setText(self, text:str):
-        if self.text != text:
-            self.text = text
-            self.trigger_render()
+        self.text = text
+        self.trigger_render()
 
     def getText(self) -> str:
         return self.text

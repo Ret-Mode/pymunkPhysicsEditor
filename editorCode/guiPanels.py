@@ -551,11 +551,9 @@ class SettableCoordButton(arcade.gui.UIBoxLayout):
 
     def setNewVal(self, valX:str, valY:str):
         if valX != self.oldX:
-            self.xCoord.text = valX
             self.oldX = valX
             self.xCoord.setText(self.oldX)
         if valY != self.oldY:
-            self.yCoord.text = valY
             self.oldY = valY
             self.yCoord.setText(self.oldY)
 
