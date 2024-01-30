@@ -21,6 +21,7 @@ class BodyPhysics(PhysicsProp):
 
         # TODO fix mass settings - for body it seems that only mass 
         # should be set by user
+        # TODO add proper setup of density
         if self.mass.userDefined:
             self.mass.final = self.mass.user * transform.objectScale * transform.objectScale
         else:
