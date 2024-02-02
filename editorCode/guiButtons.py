@@ -334,13 +334,26 @@ class Label(arcade.gui.UILabel):
 
 class TextInput(arcade.gui.UIInputText):
 
-    def __init__(self, text: str, width: str = 'width', callback: Callable[[Any], None]=print):
+    def __init__(self, text: str, width: str = 'width', okCB: Callable[[None], None]=None, resetCB: Callable[[None], None]=None):
         super().__init__(text=text, 
                         font_size=editorButtonSetup['style']['font_size'],
                         text_color=(255, 255, 255, 255),
                         width=editorButtonSetup[width], 
                         height=editorButtonSetup['height'])
         self.caret.color = (255,255,255)
+        self.okCB: Callable[[None], None] = okCB
+        self.resetCB: Callable[[None], None] = resetCB
+
+    def on_event(self, event: UIEvent) -> bool | None:
+        if self._active and isinstance(event, UITextEvent) and (event.text == '\r' or event.text == '\r\n' or event.text == '\n'):
+            if self.okCB:
+                self.okCB()
+        elif self._active and isinstance(event, UIKeyPressEvent) and event.symbol == arcade.key.ESCAPE:
+            if self.resetCB:
+                self.resetCB()
+        else:
+            super().on_event(event)
+        return False
 
     def setText(self, text:str):
         self.text = text

@@ -509,7 +509,7 @@ class SettableOkResetButton(arcade.gui.UIBoxLayout):
     def __init__(self, label:str, default:str = '', okCB=None, resetCB=None) -> None:
         super().__init__(vertical=False)
         self.description = Label(text=label, width='thirdWidth', align='left')
-        self.value = TextInput(text=default, width='halfWidth')
+        self.value = TextInput(text=default, width='halfWidth', okCB=okCB, resetCB=resetCB)
         self.okButton = Button(text="Set", width='tvelveWidth', callback=okCB)
         self.resetButton = Button(text="Reset", width='tvelveWidth', callback=resetCB)
         self.oldVal = default
@@ -536,8 +536,8 @@ class SettableCoordButton(arcade.gui.UIBoxLayout):
     def __init__(self, label:str, default:str = '0.0', setCB=None, relativeCB=None) -> None:
         super().__init__(vertical=False)
         self.description = Label(text=label, width='sixthWidth', align='left')
-        self.xCoord = TextInput(text=default, width='thirdWidth')
-        self.yCoord = TextInput(text=default, width='thirdWidth')
+        self.xCoord = TextInput(text=default, width='thirdWidth', okCB=setCB, resetCB=relativeCB)
+        self.yCoord = TextInput(text=default, width='thirdWidth', okCB=setCB, resetCB=relativeCB)
         self.setButton = Button(text="Set", width='tvelveWidth', callback=setCB)
         self.relButton = Button(text="Rel", width='tvelveWidth', callback=relativeCB)
         self.oldX = default
@@ -606,7 +606,7 @@ class SettableOkButton(arcade.gui.UIBoxLayout):
     def __init__(self, label:str, default:str = '', okCB=None) -> None:
         super().__init__(vertical=False)
         self.description = Label(text=label, width='thirdWidth', align='left')
-        self.value = TextInput(text=default, width='halfWidth')
+        self.value = TextInput(text=default, width='halfWidth', okCB=okCB, resetCB=self.refresh)
         self.okButton = Button(text="Set", width='tvelveWidth', callback=okCB)
         self.resetButton = Button(text="Reset", width='tvelveWidth', callback=self.refresh)
         self.oldVal = default
@@ -633,8 +633,8 @@ class SettableCoordOkButton(arcade.gui.UIBoxLayout):
     def __init__(self, label:str, default:str = '0.0', setCB=None) -> None:
         super().__init__(vertical=False)
         self.description = Label(text=label, width='sixthWidth', align='left')
-        self.xCoord = TextInput(text=default, width='thirdWidth')
-        self.yCoord = TextInput(text=default, width='thirdWidth')
+        self.xCoord = TextInput(text=default, width='thirdWidth',okCB=setCB, resetCB=self.refresh)
+        self.yCoord = TextInput(text=default, width='thirdWidth',okCB=setCB, resetCB=self.refresh)
         self.setButton = Button(text="S", width='tvelveWidth', callback=setCB)
         self.relButton = Button(text="R", width='tvelveWidth', callback=self.refresh)
         self.oldX = default

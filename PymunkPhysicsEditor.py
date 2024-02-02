@@ -117,7 +117,7 @@ class EditorView(arcade.View):
     #@TimeMeasure.measureUpdate
     def on_update(self, delta_time: float):
         self._getActiveView().update()
-        print(1/delta_time)
+        #print(1/delta_time)
 
     def draw_cursor(self):
         buffer = ShapeBuffer.getInstance()
