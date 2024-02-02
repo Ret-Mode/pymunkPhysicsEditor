@@ -526,6 +526,8 @@ class SlideJoint(ConstraintI):
         this['maxForce'] = self.maxForce
         this['errorBias'] = self.errorBias
         this['selfCollide'] = self.selfCollide
+        this['anchorA'] = [self.anchorA.final.x, self.anchorA.final.y]
+        this['anchorB'] = [self.anchorB.final.x, self.anchorB.final.y]
         this['min'] = self.min
         this['max'] = self.max
         this['type'] = self.type
