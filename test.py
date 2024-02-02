@@ -102,7 +102,7 @@ class Runner(arcade.Window):
         wheel = self.vehicle.bodies['Wheel']
         wheel.angular_velocity *= 0.95
         if self.keys.isPressed(arcade.key.W):
-            wheel.angular_velocity = min(-20.0, wheel.angular_velocity - 1.5)
+            wheel.angular_velocity = min(-30.0, wheel.angular_velocity - 1.5)
         if self.keys.isPressed(arcade.key.S):
             wheel.angular_velocity = max(7.0, wheel.angular_velocity + 0.5)
         self.space.step(0.016)

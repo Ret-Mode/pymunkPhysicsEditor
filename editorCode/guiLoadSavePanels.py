@@ -1,7 +1,7 @@
 from .guiButtons import Button, Label, TextInput, ScrollableLayout
 from .editorFilesystem import EditorDir
 from .commandExec import CommandExec, ComLoad, ComSave, ComExport
-
+from .editorTester import Tester
 import arcade.gui
 from typing import List, Callable
 
@@ -73,10 +73,21 @@ class LoadSaveButtons(arcade.gui.UIBoxLayout):
 
         self.fileName = TextInput('')
         buttons = ButtonsPanel(self.save, self.saveNew, self.load, self.export)
+        test = Button("Test", 'width', self.test)
 
         self.add(self.list)
         self.add(self.fileName)
         self.add(buttons)
+        self.add(test)
+
+    def test(self):
+        fileName = self.getFileName()
+        if '.' in fileName:
+            fileName = fileName[:fileName.rfind('.')]
+        if len(fileName) < 1:
+            return
+        fileName += '.json'
+        Tester.getInstance().execute("test.py")
 
     def setFileName(self, filename:str):
         self.fileName.setText(filename)

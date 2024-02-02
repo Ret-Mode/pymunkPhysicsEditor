@@ -3,10 +3,10 @@
     "BODY": {
       "physics": {
         "hasCustomMass": true,
-        "hasCustomMoment": false,
+        "hasCustomMoment": true,
         "hasCustomCog": false,
-        "customMass": 300.0,
-        "customMoment": 21.67418841400867,
+        "customMass": 600.0,
+        "customMoment": 200.0,
         "cog": [
           -0.09466833671654075,
           0.30438906119548204
@@ -246,8 +246,8 @@
       "errorBias": 0.001797010299914434,
       "selfCollide": false,
       "restLength": 0.0,
-      "stiffness": 500.0,
-      "damping": 1.0,
+      "stiffness": 8000.0,
+      "damping": 250.0,
       "anchorA": [
         -1.935950893563085,
         -1.2753706600489583
@@ -266,8 +266,8 @@
       "errorBias": 0.001797010299914434,
       "selfCollide": false,
       "restLength": 0.0,
-      "stiffness": 500.0,
-      "damping": 1.0,
+      "stiffness": 8000.0,
+      "damping": 250.0,
       "anchorA": [
         2.2635795215258483,
         -1.047753835382891
@@ -406,6 +406,48 @@
         1.0,
         1.0,
         1.0
+      ]
+    },
+    "MAP:0_1": {
+      "textureChannel": "0",
+      "offset": [
+        166,
+        51
+      ],
+      "size": [
+        8,
+        9
+      ],
+      "anchor": [
+        128.0,
+        48.0
+      ],
+      "subAnchor": [
+        -0.1848124116252574,
+        2.5503018861684987
+      ],
+      "subScale": 0.30948575438509235,
+      "subRotate": 0.0,
+      "body": "BODY",
+      "GLmapping": [
+        -1.4227554291656261,
+        1.1576159914355835,
+        1.053130605915113,
+        1.1576159914355835,
+        -1.4227554291656261,
+        3.942987780901414,
+        1.053130605915113,
+        3.942987780901414
+      ],
+      "GLuv": [
+        0.6484375,
+        0.53125,
+        0.6796875,
+        0.53125,
+        0.6484375,
+        0.625,
+        0.6796875,
+        0.625
       ]
     }
   },
