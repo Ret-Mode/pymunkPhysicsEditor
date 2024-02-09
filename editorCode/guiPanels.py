@@ -124,7 +124,8 @@ class ContainerTransformPanel(arcade.gui.UIBoxLayout):
         s = scaleFromString(self.scaleLine.getVal(), 1.0)
         return s
 
-
+# TODO -> need to add one more reset button
+# currently theres set and reset, need to add functionaly for "Esc" button
 class PhysicsPanel(arcade.gui.UIBoxLayout):
 
     def __init__(self, label:str = '--', newName:str = 'ENTITY'):
@@ -157,16 +158,18 @@ class PhysicsPanel(arcade.gui.UIBoxLayout):
     def setUserMass(self):
         if self.current:
             scale = self.current.transform.objectScale
-            mass = self.getMass() / (scale * scale)
-            if mass:
-                CommandExec.addCommand(ComSetUserParam(self.current.physics.mass, mass))
+            if scale != 0.0:
+                mass = self.getMass() / (scale * scale)
+                if mass:
+                    CommandExec.addCommand(ComSetUserParam(self.current.physics.mass, mass))
 
     def setUserMoment(self):
         if self.current:
             scale = self.current.transform.objectScale
-            moment = self.getMoment() / (scale * scale * scale * scale)
-            if moment:
-                CommandExec.addCommand(ComSetUserParam(self.current.physics.moment, moment))
+            if scale != 0.0:
+                moment = self.getMoment() / (scale * scale * scale * scale)
+                if moment:
+                    CommandExec.addCommand(ComSetUserParam(self.current.physics.moment, moment))
 
     def resetDensity(self):
         if self.current:
@@ -533,7 +536,7 @@ class SettableOkResetButton(arcade.gui.UIBoxLayout):
 
 class SettableCoordButton(arcade.gui.UIBoxLayout):
 
-    def __init__(self, label:str, default:str = '0.0', setCB=None, relativeCB=None) -> None:
+    def __init__(self, label:str, default:str = '0.000', setCB=None, relativeCB=None) -> None:
         super().__init__(vertical=False)
         self.description = Label(text=label, width='sixthWidth', align='left')
         self.xCoord = TextInput(text=default, width='thirdWidth', okCB=setCB, resetCB=relativeCB)
@@ -617,12 +620,13 @@ class SettableOkButton(arcade.gui.UIBoxLayout):
         self.add(self.resetButton)
 
     def refresh(self):
-        self.value.setText(self.oldVal)
+        if self.oldVal != self.value.getText():
+            self.value.setText(self.oldVal)
 
     def setNewVal(self, val:str):
-        if val != self.oldVal:
-            self.oldVal = val
-            self.value.setText(self.oldVal)
+        self.oldVal = val
+        if val != self.value.getText():
+            self.value.setText(val)
 
     def getVal(self):
         return self.value.getText()
