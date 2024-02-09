@@ -38,9 +38,9 @@ class EditorView(arcade.View):
     modes = {'BODY': None,
              'SHAPE': None,
              'CNSTRNT': None,
-             'OPTIONS': None,
              'TEX': None,
-             'LD/SV': None}
+             'LD/SV': None,
+             'OPTIONS': None}
 
 
     def _getActiveView(self):
@@ -143,10 +143,18 @@ class EditorView(arcade.View):
         
     def on_key_press(self, key, modifiers):
         view = self._getActiveView()
+        
+        if key == arcade.key.TAB:
+            modes = list(self.modes.keys())
+            self.changeMainMode(modes[(modes.index(self.currentMode) + 1) % len(modes)])
+            return
+
 
         if self.currentMode == 'BODY':
             if key == ord('m'):
                 view.startMoveTransform()
+            elif key == ord('n'):
+                pass
             elif key == ord('r'):
                 view.startRotateTransform()
             elif key == ord('s'):
@@ -167,6 +175,8 @@ class EditorView(arcade.View):
                 #     EditorView.modes[self.currentMode].currentDetails.setCurrentDetails(self.editorShapeView.current)
             elif key == ord('m'):
                 view.startMoveTransform()
+            elif key == ord('n'):
+                pass
             elif key == ord('r'):
                 view.startRotateTransform()
             elif key == ord('s'):
@@ -185,10 +195,14 @@ class EditorView(arcade.View):
                 view.undo()
             elif key == ord('y'):
                 view.redo()
+            elif key == ord('n'):
+                pass
 
         elif self.currentMode == 'TEX':
             if key == ord('m'):
                 view.startMoveTransform()
+            elif key == ord('n'):
+                pass
             elif key == ord('r'):
                 view.startRotateTransform()
             elif key == ord('s'):
