@@ -14,6 +14,7 @@ class Keys:
                   arcade.key.A: False,
                   arcade.key.D: False,
                   arcade.key.E: False,
+                  arcade.key.LSHIFT: False,
                   arcade.key.SPACE: False
                   }
 
@@ -80,6 +81,8 @@ class Runner(arcade.Window):
         self.camera.setWidthInMeters(40.0)
         self.camera.update()
 
+        self.dt = 0.016
+
     def on_resize(self, width: float, height: float):
         self.camera.resize(width, height)
         return super().on_resize(width, height)
@@ -90,6 +93,7 @@ class Runner(arcade.Window):
     
     def on_key_press(self, key, modifiers):
         self.keys.setKey(key)
+        print(key)
 
     def on_key_release(self, key: int, modifiers: int):
         self.keys.unsetKey(key)
@@ -100,12 +104,21 @@ class Runner(arcade.Window):
 
             sys.exit(-1)
         wheel = self.vehicle.bodies['Wheel']
+
+        # TODO ###############
         wheel.angular_velocity *= 0.95
         if self.keys.isPressed(arcade.key.W):
-            wheel.angular_velocity = min(-30.0, wheel.angular_velocity - 1.5)
+            wheel.angular_velocity = max(-30.0, wheel.angular_velocity - 10.5 * self.dt / 0.016)
         if self.keys.isPressed(arcade.key.S):
-            wheel.angular_velocity = max(7.0, wheel.angular_velocity + 0.5)
-        self.space.step(0.016)
+            wheel.angular_velocity = min(7.0, wheel.angular_velocity + 5 * self.dt / 0.016)
+        print(wheel.angular_velocity)
+        if self.keys.isPressed(arcade.key.LSHIFT):
+            self.dt = max (0.002, self.dt - 0.0003)
+        else:
+            self.dt = min (0.016, self.dt + 0.0003)
+        # ###################
+        
+        self.space.step(self.dt)
         self.level.update()
         self.vehicle.update()
         #self.ttest.update()
