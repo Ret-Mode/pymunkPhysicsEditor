@@ -7,7 +7,7 @@ from .database import Database
 from .editorState import EditorState
 from .shapeBuffer import ShapeBuffer
 
-from .commandExec import CommandExec
+from .commandExec import CommandExec, ComSelectNextBody, ComSelectPrevBody
 from .commandExec import ComSetPivot, ComScaleView, ComResizeView, ComMoveCursor, ComMoveView
 from .commandExec import ComStartTransform, ComCancelTransform,ComApplyTransform
 from .lineShader import LineDraw
@@ -24,9 +24,9 @@ from .pymunkTester import testBodies
 
 class EditorBodyView:
 
-    def __init__(self, width, height, cursor:Cursor):
+    def __init__(self, width, height):
         self.viewOffset = EditorCamera(width, height)
-        self.cursor = cursor
+        self.cursor = Cursor.getInstance()
         self.pivot = EditorState.getInstance().getPivot()
 
         self.objectsUnderCursor = []
@@ -172,3 +172,9 @@ class EditorBodyView:
 
     def redo(self):
         CommandExec.redo()
+
+    def basicNext(self):
+        CommandExec.addCommand(ComSelectNextBody())
+
+    def basicPrev(self):
+        CommandExec.addCommand(ComSelectPrevBody())

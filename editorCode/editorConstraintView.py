@@ -52,11 +52,11 @@ class EditorConstraintView:
                     ConstraintI.SLIDEJOINT: [DEFAULT, DISTMAX, ANCHORA, ANCHORB]
                     }
 
-    def __init__(self, width, height, cursor:Cursor):
+    def __init__(self, width, height):
         self.viewAllOffset = EditorCamera(width//2, height)
         self.viewBodyAOffset = EditorCamera(width//2, width//2, width//2, height//2)
         self.viewBodyBOffset = EditorCamera(width//2, width//2, width//2, 0)
-        self.cursor = cursor
+        self.cursor = Cursor.getInstance()
         self.pivot = EditorState.getInstance().getPivot()
 
         self.mode = EditorConstraintView.DEFAULT

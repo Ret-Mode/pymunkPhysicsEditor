@@ -8,8 +8,8 @@ from ctypes import *
 
 class EditorOptionView:
 
-    def __init__(self, width, height, cursor:Cursor):
-        self.cursor = cursor
+    def __init__(self, width, height):
+        self.cursor = Cursor.getInstance()
         self.view = EditorCamera(width, height)
 
     def update(self):

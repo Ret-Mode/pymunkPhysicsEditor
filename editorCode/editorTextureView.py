@@ -20,10 +20,10 @@ from .textureContainerI import TextureContainerI
 
 class EditorTextureView:
 
-    def __init__(self, width, height, cursor:Cursor):
+    def __init__(self, width, height):
         self.viewOffset = EditorCamera(width//2, height)
         self.textureView = EditorCamera(width//2, height, width//2)
-        self.cursor = cursor
+        self.cursor = Cursor.getInstance()
         self.pivot = EditorState.getInstance().getPivot()
         self.texPivot = V2()
         self.texCursor = V2()

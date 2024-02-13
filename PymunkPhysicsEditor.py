@@ -62,7 +62,7 @@ class EditorView(arcade.View):
     def __init__(self):
         super().__init__()
 
-        self.cursor = Cursor()
+        self.cursor = Cursor.getInstance()
         self.cursorView = CursorCamera(globalWindowSetup['width'], globalWindowSetup['height'])
 
         self.manager = arcade.gui.UIManager()
@@ -75,12 +75,12 @@ class EditorView(arcade.View):
         self.midbtn = False
 
         self.editableWidth = globalWindowSetup['width'] - self.buttonPanel.widthOfPanel()
-        self.editorShapeView = EditorShapeView(self.editableWidth, globalWindowSetup['height'], self.cursor)
-        self.editorBodyView = EditorBodyView(self.editableWidth, globalWindowSetup['height'], self.cursor)
-        self.editorConstraintView = EditorConstraintView(self.editableWidth, globalWindowSetup['height'], self.cursor)
-        self.editorLoadSaveView = EditorLoadSaveView(self.editableWidth, globalWindowSetup['height'], self.cursor)
-        self.editorOptionView = EditorOptionView(self.editableWidth, globalWindowSetup['height'], self.cursor)
-        self.editorTextureView = EditorTextureView(self.editableWidth, globalWindowSetup['height'], self.cursor)
+        self.editorShapeView = EditorShapeView(self.editableWidth, globalWindowSetup['height'])
+        self.editorBodyView = EditorBodyView(self.editableWidth, globalWindowSetup['height'])
+        self.editorConstraintView = EditorConstraintView(self.editableWidth, globalWindowSetup['height'])
+        self.editorLoadSaveView = EditorLoadSaveView(self.editableWidth, globalWindowSetup['height'])
+        self.editorOptionView = EditorOptionView(self.editableWidth, globalWindowSetup['height'])
+        self.editorTextureView = EditorTextureView(self.editableWidth, globalWindowSetup['height'])
 
         self.setupModes()
 
@@ -143,7 +143,7 @@ class EditorView(arcade.View):
         
     def on_key_press(self, key, modifiers):
         view = self._getActiveView()
-        
+
         if key == arcade.key.TAB:
             modes = list(self.modes.keys())
             self.changeMainMode(modes[(modes.index(self.currentMode) + 1) % len(modes)])
@@ -154,7 +154,7 @@ class EditorView(arcade.View):
             if key == ord('m'):
                 view.startMoveTransform()
             elif key == ord('n'):
-                pass
+                view.basicNext()
             elif key == ord('r'):
                 view.startRotateTransform()
             elif key == ord('s'):

@@ -24,9 +24,9 @@ from .pymunkTester import testBodies
 
 class EditorLoadSaveView:
 
-    def __init__(self, width, height, cursor:Cursor):
+    def __init__(self, width, height):
         self.viewOffset = EditorCamera(width, height)
-        self.cursor = cursor
+        self.cursor = Cursor.getInstance()
         self.pivot = EditorPoint()
 
         self.objectsUnderCursor = []

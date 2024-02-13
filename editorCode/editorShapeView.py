@@ -3,7 +3,7 @@ from .editorCursor import Cursor
 from .editorShapes import Container
 from .shapeInternals.editorShapeI import ShapeI
 from .editorCamera import EditorCamera
-from .commandExec import CommandExec, ComCancelTransform, ComStartTransform, ComNewShapeAddPoint, ComNewShapeNewWH
+from .commandExec import CommandExec, ComCancelTransform, ComStartTransform, ComNewShapeAddPoint, ComNewShapeNewWH #, ComSelectNextShape, ComSelectPrevShape
 from .commandExec import ComMoveCursor, ComSetPivot, ComResizeView, ComScaleView, ComMoveView, ComApplyTransform, ComNewShapeNewCircleRadius
 from .editorViewTransform import ContinuousTransform
 from .database import Database
@@ -26,9 +26,9 @@ class EditorShapeView:
 
     modes = ['SHAPE_EDIT_VERTEX', 'ROTATE_CURRENT', 'MOVE_CURRENT']
 
-    def __init__(self, width, height, cursor:Cursor):
+    def __init__(self, width, height):
         self.viewOffset = EditorCamera(width, height)
-        self.cursor = cursor
+        self.cursor = Cursor.getInstance()
         self.pivot = EditorState.getInstance().getPivot()
 
         self.objectsUnderCursor = []
@@ -222,3 +222,9 @@ class EditorShapeView:
 
     def redo(self):
         CommandExec.redo()
+
+    # def basicNext(self):
+    #     CommandExec.addCommand(ComSelectNextShape())
+
+    # def basicPrev(self):
+    #     CommandExec.addCommand(ComSelectPrevShape())
